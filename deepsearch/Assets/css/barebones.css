@@ -1,0 +1,212 @@
+/*----margins----*/
+.no-margin{
+    margin: 0;
+}
+.margin-auto{
+    margin: auto;
+}
+.full-margin-top{
+    margin-top: 1em;
+}
+.full-margin-bottom{
+    margin-bottom: 1em;
+}
+.mid-margin-all{
+    margin: 0.5em;
+}
+.mid-margin-top{
+    margin-top: 0.5em;
+}
+.mid-margin-right{
+    margin-right: 0.5em;
+}
+.mid-margin-bottom{
+    margin-bottom: 0.5em;
+}
+.mid-margin-left{
+    margin-left: 0.5em;
+}
+.tiny-margin-top{
+    margin-top: 0.25em;
+}
+.tiny-margin-right{
+    margin-right: 0.25em;
+}
+.tiny-margin-bottom{
+    margin-bottom: 0.25em;
+}
+.tiny-margin-left{
+    margin-left: 0.25em;
+}
+
+/*----padding----*/
+.no-padding{
+    padding: 0;
+}
+.full-padding-top{
+    padding-top: 1em;
+}
+.full-padding-right{
+    padding-right: 1em;
+}
+.full-padding-bottom{
+    padding-bottom: 1em;
+}
+.full-padding-left{
+    padding-left: 1em;
+}
+.full-padding-all{
+    padding: 1em;
+}
+.mid-padding-top{
+    padding-top: 0.5em;
+}
+.mid-padding-right{
+    padding-right: 0.5em;
+}
+.mid-padding-bottom{
+    padding-bottom: 0.5em;
+}
+.mid-padding-left{
+    padding-left: 0.5em;
+}
+.mid-padding-all{
+    padding: 0.5em;
+}
+.tiny-padding-top{
+    padding-top: 0.25em;
+}
+.tiny-padding-right{
+    padding-right: 0.25em;
+}
+.tiny-padding-bottom{
+    padding-bottom: 0.25em;
+}
+.tiny-padding-left{
+    padding-left: 0.25em;
+}
+.tiny-padding-all{
+    padding: 0.25em;
+}
+
+/*----vertical-align----*/
+.vertical-top{
+    vertical-align: top;
+}
+.vertical-middle{
+    vertical-align: middle;
+}
+.vertical-bottom{
+    vertical-align: bottom;
+}
+.vh-centralize{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+/*----object positions----*/
+.clear-left{
+    clear: left;
+}
+.clear-right{
+    clear: right;
+}
+.clear-both{
+    clear: both;
+}
+.float-none{
+    float: none;
+}
+.float-left{
+    float: left;
+}
+.float-right{
+    float: right;
+}
+
+/*----height options----*/
+.height-auto{
+    height: auto;
+}
+.height-100vh {
+    min-height: 100vh;
+    height: auto;
+}
+.height-95vh {
+    min-height: 95vh;
+    height: auto;
+}
+.height-90vh {
+    min-height: 90vh;
+    height: auto;
+}
+.height-80vh{
+    min-height: 80vh;
+    height: auto;
+}
+.height-70vh{
+    min-height: 70vh;
+    height: auto;
+}
+.height-60vh{
+    min-height: 60vh;
+    height: auto;
+}
+.height-50vh {
+    min-height: 50vh;
+    height: auto;
+}
+.height-40vh {
+    min-height: 40vh;
+    height: auto;
+}
+.height-30vh {
+    min-height: 30vh;
+    height: auto;
+}
+.height-25vh {
+    min-height: 25vh;
+    height: auto;
+}
+.height-20vh {
+    min-height: 20vh;
+    height: auto;
+}
+.height-15vh{
+    min-height: 15vh;
+    height: auto;
+}
+.height-10vh{
+    min-height: 15vh;
+    height: auto;
+}
+.height-5vh{
+    min-height: 5vh;
+    height: auto;
+}
+
+/*----positions----*/
+.position-absolute{
+    position: absolute;
+}
+.position-relative{
+    position: relative;
+}
+.position-static{
+    position: static;
+}
+
+/*----transparency----*/
+.modal-light{
+    opacity: 0.5;
+}
+.modal-mid{
+    opacity: 0.65;
+}
+.modal-thick{
+    opacity: 0.9;
+}
+
