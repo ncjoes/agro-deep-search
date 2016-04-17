@@ -30,11 +30,20 @@ foreach($__autoload as $file)
 
 function __autoload( $path )
 {
-    if ( preg_match( '/\\\\/', $path ) )
+    if( preg_match( '/\\\\/', $path ) )
     {
         $path = str_replace('\\', DIRECTORY_SEPARATOR, $path );
+    }
+
+    if( preg_match('#PHPCrawl#', $path))
+    {
+        $path .= ".class.php";
+    }
+    else
+    {
         $path .= ".php";
     }
+
     if(!is_file($path))
     {
         echo "<br/>File (<b>$path</b>) not found" ;
