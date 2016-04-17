@@ -13,13 +13,15 @@ require_once("raw-header.php");
     <nav class="navbar navbar-inverse bg-color1 navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="<?php home_url('/'); ?>"><span class="glyphicon glyphicon-home"></span> <?= strtoupper(site_info('short-name',0)); ?></a>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a class="navbar-brand" href="<?php home_url('/'); ?>">
+                    <span class="glyphicon glyphicon-home"></span> <?= site_info('name',0); ?>
+                </a>
             </div>
             <div id="navbar" class="collapse navbar-collapse navbar-right">
                 <ul class="nav navbar-nav">
@@ -27,10 +29,31 @@ require_once("raw-header.php");
                     $session_user = $requestContext->getSession()->getUser();
                     $default_privilege = $session_user->getDefaultPrivilege();
                     ?>
-                    <li <?= $s = ($requestContext->isRequestUrl($default_privilege->defaultController()) ? 'class="active"': ''); ?>>
-                        <a href="<?php home_url('/'.$default_privilege->defaultController().'/');?>">
-                            <span class="glyphicon glyphicon-dashboard"></span> <?php echo ucwords(str_replace('-',' ',$default_privilege->defaultController()) ); ?>
+                    <li class="dropdown <?=$rc->isRequestUrl('crawl-engine') ? 'active': ''; ?>">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <span class="glyphicon glyphicon-cloud-download"></span>
+                            Crawl Engine
+                            <span class="glyphicon glyphicon-collapse-down"></span>
                         </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php home_url('/crawl-engine/'); ?>"><span class="glyphicon glyphicon-forward"></span> Run Crawl</a></li>
+                            <li><a href="<?php home_url('/crawl-engine/manage-links/'); ?>"><span class="glyphicon glyphicon-link"></span> Manage Links</a></li>
+                            <li><a href="<?php home_url('/crawl-engine/manage-forms/'); ?>"><span class="glyphicon glyphicon-book"></span> Manage Forms</a></li>
+                            <li><a href="<?php home_url('/crawl-engine/manage-features/'); ?>"><span class="glyphicon glyphicon-leaf"></span> Manage Features</a></li>
+                            <li><a href="<?php home_url('/crawl-engine/crawl-settings/'); ?>"><span class="glyphicon glyphicon-cog"></span> Crawler Configurations</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown <?=$rc->isRequestUrl($default_privilege->defaultController()) ? 'active': ''; ?>">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <span class="glyphicon glyphicon-edit"></span>
+                            <?php echo ucwords(str_replace('-',' ',$default_privilege->defaultController()) ); ?>
+                            <span class="glyphicon glyphicon-collapse-down"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php home_url('/admin-panel/manage-posts/'); ?>">Manage Posts</a></li>
+                            <li><a href="<?php home_url('/admin-panel/manage-pages/'); ?>">Manage Website Pages</a></li>
+                            <li><a href="<?php home_url('/admin-panel/manage-categories/'); ?>">Manage Post Categories</a></li>
+                        </ul>
                     </li>
                     <li class="dropdown <?= ($rc->isRequestUrl('my-account') ? 'active': ''); ?>">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">

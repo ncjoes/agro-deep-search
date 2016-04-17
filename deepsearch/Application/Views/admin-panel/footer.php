@@ -22,18 +22,21 @@ $mode = "navbar-fixed-bottom";
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand">&copy; <?= date('Y').' '.site_info('short-name',0); ?></a>
         </div>
         <div id="navbar-footer" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a>&copy; <?= '2015 - '.date('Y').' '.site_info('name',0); ?></a></li>
+            <ul class="nav navbar-nav navbar-right">
+                <li <?= ($rc->isRequestUrl('page/privacy-policy') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/privacy-policy'); ?>">Privacy</a></li>
+                <li <?= ($rc->isRequestUrl('page/terms-of-use') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/terms-of-use'); ?>">Terms</a></li>
+                <li>
+                    <a href="<?php site_info('designer-url'); ?>" target="_blank" title="Built with BareBones PHP Framework by <?php site_info('designer-name') ?>">
+                        <span class="glyphicon glyphicon-picture"></span> Credits
+                    </a>
+                </li>
+                <li><a href="#top" title="Back Up"><span class="glyphicon glyphicon-circle-arrow-up"></span></a></li>
             </ul>
-<ul class="nav navbar-nav navbar-right">
-    <li><a href="<?php site_info('contractor-url'); ?>" target="_blank"><span class="glyphicon glyphicon-certificate"></span> Powered By <?php site_info('contractor-name'); ?></a></li>
-    <li><a href="<?php site_info('designer-url'); ?>" target="_blank" title="Built with BareBones PHP Framework by <?php site_info('designer-name') ?>"><span class="glyphicon glyphicon-picture"></span> Design</a></li>
-    <li><a href="#top" title="Back Up"><span class="glyphicon glyphicon-circle-arrow-up"></span></a></li>
-</ul>
-</div><!--/.nav-collapse -->
-</div>
+        </div><!--/.nav-collapse -->
+    </div>
 </nav>
 
 <!-- Bootstrap core JavaScript
@@ -42,6 +45,7 @@ $mode = "navbar-fixed-bottom";
 <script src="<?php home_url('/Assets/js/jquery.min.js'); ?>"></script>
 <script src="<?php home_url('/Assets/js/bootstrap.min.js'); ?>"></script>
 <script src="<?php home_url('/Assets/js/barebones.js'); ?>"></script>
+<?= isset($extra_footers) ? $extra_footers : ""; ?>
 
 </div>
 </body>

@@ -25,14 +25,14 @@ class UserPrivilege_Mapper extends A_Mapper
     public function __construct()
     {
         parent::__construct();
-        $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_users_privileges WHERE id=?");
-        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_users_privileges ORDER by category,name");
-        $this->selectByUserIdStmt = self::$PDO->prepare("SELECT * FROM app_users_privileges WHERE user_id=? ORDER BY privilege ASC;");
-        $this->selectByStatusStmt = self::$PDO->prepare("SELECT * FROM app_users_privileges WHERE status=? ORDER BY user_id,privilege;");
-        $this->selectByPrivilegeStmt = self::$PDO->prepare("SELECT * FROM app_users_privileges WHERE privilege=?;");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_users_privileges SET user_id=?,privilege=?,status=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_users_privileges (user_id,privilege,status)VALUES(?,?,?)");
-        $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_users_privileges WHERE id=?");
+        $this->selectStmt = self::$PDO->prepare("SELECT * FROM bb_users_privileges WHERE id=?");
+        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM bb_users_privileges ORDER by category,name");
+        $this->selectByUserIdStmt = self::$PDO->prepare("SELECT * FROM bb_users_privileges WHERE user_id=? ORDER BY privilege ASC;");
+        $this->selectByStatusStmt = self::$PDO->prepare("SELECT * FROM bb_users_privileges WHERE status=? ORDER BY user_id,privilege;");
+        $this->selectByPrivilegeStmt = self::$PDO->prepare("SELECT * FROM bb_users_privileges WHERE privilege=?;");
+        $this->updateStmt = self::$PDO->prepare("UPDATE bb_users_privileges SET user_id=?,privilege=?,status=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO bb_users_privileges (user_id,privilege,status)VALUES(?,?,?)");
+        $this->deleteStmt = self::$PDO->prepare("DELETE FROM bb_users_privileges WHERE id=?");
     }
 
     /**

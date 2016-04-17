@@ -165,7 +165,7 @@ $fields = $data['fields'];
 
                                 <div class="form-group form-group-sm">
                                     <label for="biography">Biography</label>
-                                    <textarea name="biography" id="biography" class="form-control" style="height: 20em;"><?= isset($fields['biography']) ? $fields['biography'] : ''; ?></textarea>
+                                    <textarea name="biography" id="biography" class="form-control html-editor" spellcheck="true" style="height: 20em;"><?= isset($fields['biography']) ? $fields['biography'] : ''; ?></textarea>
                                 </div>
 
                             </div>
@@ -183,5 +183,6 @@ $fields = $data['fields'];
         </div>
     </div>
 <?php
+require_once ("Application/Views/_includes/tinymce_config.php");
 require_once("footer.php");
 ?>

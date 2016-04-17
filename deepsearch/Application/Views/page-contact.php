@@ -7,14 +7,14 @@
  * Time:    11:25 PM
  **/
 
-include_once('header.php');
+include_once('header-2.php');
 
 $fields = $requestContext->getAllFields(INPUT_POST);
 ?>
     <form method="post" enctype="multipart/form-data" action="<?php home_url('/contact/send/'); ?>">
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1">
-                <h2 class="page-header full-margin-bottom"><span class="glyphicon glyphicon-envelope"></span> Get in touch with us</h2>
+                <h2 class="page-header"><span class="glyphicon glyphicon-envelope"></span> Get in touch with us</h2>
                 <div class="row">
                     <div class="col-md-6">
                         <h3 class="page-header tiny-margin-top">Contact Details</h3>
@@ -50,7 +50,7 @@ $fields = $requestContext->getAllFields(INPUT_POST);
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <h4 class="page-header tiny-margin-top">We value your comments and feedback</h4>
+                        <h4 class="page-header">We value your comments and feedback</h4>
                         <?php if(isset($data['status'])){ ?><div class="text-center mid-margin-bottom lead <?= $data['status'] ? 'text-success bg-success' : 'text-danger bg-danger';?>"><?= $requestContext->getFlashData(); ?></div><?php } ?>
                         <div class="form-group form-group-sm">
                             <div class="row">

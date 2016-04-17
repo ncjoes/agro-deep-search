@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8b905d37-5902-4c70-94a3-fbb87c9d99db" name="nwubanfarms.com" url="http://nwubanfarms.com">
+        <fileTransfer host="nwubanfarms.com" port="21" password="df9bdf92df98df93dff5dfe7dfeedf9fdff5dfc9dfc5dfcedfcfdfcedff5dfea" username="jcnwobodo@nwubanfarms.com">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

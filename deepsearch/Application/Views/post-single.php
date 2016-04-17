@@ -8,7 +8,7 @@
  * Time:    9:48 AM
  **/
 
-include_once('header.php');
+include_once('header-2.php');
 
 $section = $data['item'];
 $rel_posts = $data['posts'];
@@ -16,7 +16,7 @@ $categories = $data['categories'];
 ?>
     <div class="row">
         <div class="col-md-6 col-md-offset-1 col-sm-10 col-sm-offset-1">
-            <h3 class="page-header full-margin-top full-margin-bottom"><?= $section->getTitle(); ?></h3>
+            <h3 class="page-header"><?= $section->getTitle(); ?></h3>
             <?php
             if(is_object( $section->getFeaturedImage() ))
             {
@@ -41,7 +41,7 @@ $categories = $data['categories'];
 
         <div class="col-md-3 col-md-offset-1 col-sm-10 col-sm-offset-1">
             <div>
-                <h4 class="page-header full-margin-top full-margin-bottom">
+                <h4 class="page-header">
                     <span class="glyphicon glyphicon-tag"></span> <?= is_object($section->getCategory()) ? $section->getCategory()->getName() : 'In the same category'; ?>
                 </h4>
                 <?php

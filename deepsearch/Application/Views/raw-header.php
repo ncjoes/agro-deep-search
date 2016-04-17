@@ -1,10 +1,13 @@
 <?php
 /**
  * Phoenix Laboratories NG.
- * Author: J. C. Nwobodo (phoenixlabs.ng@gmail.com)
- * Project: BareBones PHP Framework
- * Date:    1/7/2016
- * Time:    8:11 PM
+ * Website: phoenixlabsng.com
+ * Email:   info@phoenixlabsng.com
+ * * * * * * * * * * * * * * * * * * *
+ * Project: NwubanFarms.com
+ * Author:  J. C. Nwobodo (Fibonacci)
+ * Date:    4/17/2016
+ * Time:    5:11 PM
  **/
 
 $requestContext = $rc = \System\Request\RequestContext::instance();
@@ -31,5 +34,3 @@ $page_title = isset($data['page-title']) ? $data['page-title'] : site_info('name
 <body>
 <div id="outer-body-wrapper">
     <div id="inner-body-wrapper">
-
-        <div class="container-fluid height-60vh">

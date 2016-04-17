@@ -8,15 +8,17 @@
  * Time:    4:25 AM
  **/
 
-include_once('header.php');
+include_once('header-2.php');
 ?>
+    <div>
+        <h3 class="page-header">
+            <small class="lead">Welcome to </small><?php site_info('short-name'); ?> Administrative Control Panel
+        </h3>
+    </div>
     <div class="row">
         <div class="col-md-7">
-            <h3 class="page-header no-margin">
-                <small class="lead">Welcome to </small><?php site_info('short-name'); ?> Staff Portal
-            </h3>
             <p>
-                <img src="<?php home_url("/Assets/images/board-room.jpg") ?>" class="img-responsive img-thumbnail"/>
+                <img src="<?php home_url("/Assets/images/admin-panel-wide.png") ?>" class="img-responsive img-thumbnail"/>
             </p>
         </div>
 
@@ -28,9 +30,9 @@ include_once('header.php');
                     if($rc->fieldIsSet('login',INPUT_POST))
                     {
                         ?>
-                        <div class="text-danger bg-danger text-center lead">
+                        <p class="text-danger bg-danger text-center">
                             <?php print_r($rc->getFlashData()); ?>
-                        </div>
+                        </p>
                         <?php
                     }
                     ?>

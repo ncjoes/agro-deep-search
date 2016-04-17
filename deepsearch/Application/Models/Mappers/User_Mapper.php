@@ -24,14 +24,14 @@ class User_Mapper extends A_Mapper
     public function __construct()
     {
         parent::__construct();
-        $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_users WHERE id=?");
-        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_users");
-        $this->selectByEmailStmt = self::$PDO->prepare("SELECT * FROM app_users WHERE email=?");
-        $this->selectByPhoneStmt = self::$PDO->prepare("SELECT * FROM app_users WHERE phone=?");
-        $this->selectByStatusStmt = self::$PDO->prepare("SELECT * FROM app_users WHERE status=:status ORDER BY first_name, middle_name, last_name LIMIT :start, :limit");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_users SET photo=?,title=?,first_name=?,middle_name=?,last_name=?,email=?,phone=?,password=?,address1=?,address2=?,city=?,zip_code=?,state=?,country=?,biography=?,status=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_users (photo,title,first_name,middle_name,last_name,email,phone,password,address1,address2,city,zip_code,state,country,biography,status)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-        $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_users WHERE id=?");
+        $this->selectStmt = self::$PDO->prepare("SELECT * FROM bb_users WHERE id=?");
+        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM bb_users");
+        $this->selectByEmailStmt = self::$PDO->prepare("SELECT * FROM bb_users WHERE email=?");
+        $this->selectByPhoneStmt = self::$PDO->prepare("SELECT * FROM bb_users WHERE phone=?");
+        $this->selectByStatusStmt = self::$PDO->prepare("SELECT * FROM bb_users WHERE status=:status ORDER BY first_name, middle_name, last_name LIMIT :start, :limit");
+        $this->updateStmt = self::$PDO->prepare("UPDATE bb_users SET photo=?,title=?,first_name=?,middle_name=?,last_name=?,email=?,phone=?,password=?,address1=?,address2=?,city=?,zip_code=?,state=?,country=?,biography=?,status=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO bb_users (photo,title,first_name,middle_name,last_name,email,phone,password,address1,address2,city,zip_code,state,country,biography,status)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $this->deleteStmt = self::$PDO->prepare("DELETE FROM bb_users WHERE id=?");
     }
 
     /**

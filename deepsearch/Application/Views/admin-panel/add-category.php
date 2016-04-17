@@ -63,8 +63,8 @@ if($rc->fieldIsSet('add', INPUT_POST)) if($data['status']==1) $fields = array();
                         </div>
                     </div>
                 </div>
-                <div class="btn-group pull-right">
-                    <button name="add" type="submit" class="btn btn-success">
+                <div class="text-right">
+                    <button name="add" type="submit" class="btn btn-primary">
                         Add Category <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>

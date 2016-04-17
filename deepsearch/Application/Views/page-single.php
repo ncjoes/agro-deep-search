@@ -7,14 +7,14 @@
  * Time:    12:42 AM
  **/
 
-include_once('header.php');
+include_once('header-2.php');
 
 $page = $data['item'];
 $rel_pages = $data['pages'];
 ?>
     <div class="row">
         <div class="col-md-6 col-md-offset-1 col-sm-10 col-sm-offset-1">
-            <h3 class="page-header full-margin-top full-margin-bottom"><?= $page->getTitle(); ?></h3>
+            <h3 class="page-header"><?= $page->getTitle(); ?></h3>
             <div>
                 <?= $page->getContent(); ?>
             </div>
@@ -22,7 +22,7 @@ $rel_pages = $data['pages'];
 
         <div class="col-md-3 col-md-offset-1 col-sm-10 col-sm-offset-1">
             <div>
-                <h4 class="page-header full-margin-top full-margin-bottom">
+                <h4 class="page-header">
                     <span class="glyphicon glyphicon-link"></span> <?= isset($data['sidebar-title']) ? $data['sidebar-title'] : 'Related Pages'; ?>
                 </h4>
                 <?php

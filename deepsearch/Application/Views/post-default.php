@@ -8,14 +8,14 @@
  * Time:    8:48 AM
  **/
 
-require_once('header.php');
+require_once('header-2.php');
 
 $posts = $data['posts'];
 $categories = $data['categories'];
 ?>
     <div class="row">
         <div class="full-padding-all">
-            <h2 class="page-header no-margin">
+            <h2 class="page-header">
                 <span class="glyphicon glyphicon-bullhorn"></span> <?= $data['page-title']; ?>
             </h2>
             <div class="text-center">
@@ -63,7 +63,7 @@ $categories = $data['categories'];
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <h4 class="page-header full-margin-bottom">
+                    <h4 class="page-header">
                         <span class="glyphicon glyphicon-tags"></span> &nbsp;&nbsp;Categories
                     </h4>
                     <?php

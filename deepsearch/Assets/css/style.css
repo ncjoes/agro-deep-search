@@ -2,19 +2,21 @@
 @import url("barebones.css");
 
 body{
-    font-family: "Times New Roman";
+    font-family: Gadugi;
     font-size: 12px;
-    background: rgb(170,171,175) no-repeat fixed center;
+    background: rgb(240,240,240) url("../images/body-bg.jpg") no-repeat fixed center;
     background-size: cover;
 }
 #outer-body-wrapper{
-    padding: 1% 3% 0 3%;
+    padding: 0 3%;
     background: white;
     margin: 0;
     opacity: 0.95;
 }
 #inner-body-wrapper{
     max-width: 1420px;
+    min-height: 100vh;
+    height: auto;
     margin: 0 auto !important;
 }
 
@@ -31,8 +33,11 @@ body{
 .navbar{
     border-radius: 0;
 }
+li.active a, li.active a:focus{
+    background-color: #ccc !important;
+}
 .navbar-inverse{
-    background-color: green !important;
+    background-color: #eeeeee !important;
     border: none;
 }
 
@@ -45,59 +50,31 @@ body{
 }
 
 .sc-link{
-    color: white !important;
-    background-color: darkgreen !important;
+    color: #000000 !important;
+    background-color: #eeeeee !important;
 }
 .sc-link:hover, .sc-link:focus{
-    background-color: forestgreen !important;
+    background-color: #eeeeee !important;
 }
 
 input[required], select[required], textarea[required]{
-    border-right: 2px solid orangered;
+    border-right: 2px dotted #ccc;
 }
 
-.btn-primary{
-    background-color: darkgreen !important;
-    border: 1px solid green;
-}
-.btn-primary:hover, .btn-primary:focus{
-    background-color: white !important;
-    color: darkgreen;
-}
-.img-thumbnail{
-    background-color: lightgreen;
-    border: 1px solid green;
-}
-
-a{
-    color: green;
-}
-a:hover, a:focus{
-    color: darkgreen;
-}
-li.active a{
-    color: white !important;
-    background-color: forestgreen !important;
-}
-.navbar-inverse a, .navbar-inverse{
-    color: white !important;
-}
-.navbar-nav a, .navbar-header a{
-    color: inherit !important;
+.navbar-inverse a, .navbar-inverse, .navbar-nav a, .navbar-header a{
+    color: black !important;
 }
 .navbar-nav a:hover, .navbar-nav a:focus, .navbar-inverse a:hover, .navbar-inverse a:focus{
-    color: rgb(210,240,210) !important;
+    color: black !important;
     text-decoration: none;
+    background-color: #dddddd !important;
 }
 .navbar-nav .dropdown-menu a, .dropdown-menu li.active a{
-    color: forestgreen !important;
     background-color: white !important;
-    text-decoration: none;
 }
-.navbar-nav .dropdown-menu a:hover, .navbar-nav .dropdown-menu a:focus,
-.dropdown-menu li.active a:hover, .dropdown-menu li.active a:focus{
-    background-color: whitesmoke !important;
-    text-decoration: none;
+.navbar-brand{
+    font-weight: bold;
+    font-size: inherit !important;
 }
 
 @media all and (max-width: 1024px) {

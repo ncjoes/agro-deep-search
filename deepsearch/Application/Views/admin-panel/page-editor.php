@@ -7,7 +7,6 @@
  * Time:    4:36 PM
  **/
 
-
 require_once("header.php");
 
 const MODE_CREATE = 'create-page';
@@ -55,11 +54,11 @@ $fields['status'] = isset($fields['status']) ? $fields['status'] : 1;
                         </div>
                         <div class="form-group form-group-sm">
                             <label for="page-content"><span class="glyphicon glyphicon-pencil"></span> Content</label>
-                            <textarea name="page-content" id="page-content" class="form-control" style="height: 30em;" required><?= isset($fields['page-content']) ? $fields['page-content'] : ''; ?></textarea>
+                            <textarea name="page-content" id="page-content" class="form-control html-editor" spellcheck="true" spellcheck="true" style="height: 30em;"><?= isset($fields['page-content']) ? $fields['page-content'] : ''; ?></textarea>
                         </div>
                         <div class="form-group form-group-sm">
                             <label for="page-excerpt"><span class="glyphicon glyphicon-star-empty"></span> Excerpt</label>
-                            <textarea name="page-excerpt" id="page-excerpt" class="form-control" style="height: 10em;" required><?= isset($fields['page-excerpt']) ? $fields['page-excerpt'] : ''; ?></textarea>
+                            <textarea name="page-excerpt" id="page-excerpt" class="form-control html-editor" spellcheck="true" style="height: 10em;"><?= isset($fields['page-excerpt']) ? $fields['page-excerpt'] : ''; ?></textarea>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -127,5 +126,6 @@ $fields['status'] = isset($fields['status']) ? $fields['status'] : 1;
         </div>
     </div>
 <?php
+require_once ("Application/Views/_includes/tinymce_config.php");
 require_once("footer.php");
 ?>

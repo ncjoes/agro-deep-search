@@ -54,11 +54,11 @@ $fields['status'] = isset($fields['status']) ? $fields['status'] : 1;
                         </div>
                         <div class="form-group form-group-sm">
                             <label for="post-content"><span class="glyphicon glyphicon-pencil"></span> Content</label>
-                            <textarea name="post-content" id="post-content" class="form-control" style="height: 30em;" required><?= isset($fields['post-content']) ? $fields['post-content'] : ''; ?></textarea>
+                            <textarea name="post-content" id="post-content" class="form-control html-editor" spellcheck="true"" style="height: 30em;"><?= isset($fields['post-content']) ? $fields['post-content'] : ''; ?></textarea>
                         </div>
                         <div class="form-group form-group-sm">
                             <label for="post-excerpt"><span class="glyphicon glyphicon-star-empty"></span> Excerpt</label>
-                            <textarea name="post-excerpt" id="post-excerpt" class="form-control" style="height: 10em;" required><?= isset($fields['post-excerpt']) ? $fields['post-excerpt'] : ''; ?></textarea>
+                            <textarea name="post-excerpt" id="post-excerpt" class="form-control html-editor" spellcheck="true" style="height: 10em;"><?= isset($fields['post-excerpt']) ? $fields['post-excerpt'] : ''; ?></textarea>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -125,5 +125,6 @@ $fields['status'] = isset($fields['status']) ? $fields['status'] : 1;
         </div>
     </div>
 <?php
+require_once ("Application/Views/_includes/tinymce_config.php");
 require_once("footer.php");
 ?>

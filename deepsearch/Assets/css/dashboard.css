@@ -75,6 +75,9 @@ body {
 /*
  * Button Links
  */
+.panel-title{
+    font-size: inherit !important;
+}
 .sidebar ul.btn-group{
     width: 100%;
 }
@@ -83,4 +86,5 @@ body {
     width: 100%;
     text-align: left;
     text-decoration: none;
+    font-size: inherit !important;
 }

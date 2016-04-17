@@ -12,14 +12,18 @@ namespace Application\Controllers;
 use System\Request\RequestContext;
 
 
-use Application\Models\Lga;
-use Application\Models\Zone;
-
+/**
+ * Class Default_Controller
+ * @package Application\Controllers
+ */
 class Default_Controller extends A_Controller
 {
+    /**
+     * @param RequestContext $requestContext
+     */
     protected function doExecute(RequestContext $requestContext)
     {
-        $data = array('page-title'=>"Search");
+        $data = array('page-title'=>"Nwuban Farms");
 
         $requestContext->setResponseData($data);
         $requestContext->setView('index.php');

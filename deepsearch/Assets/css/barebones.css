@@ -99,7 +99,7 @@
 .vertical-bottom{
     vertical-align: bottom;
 }
-.vh-centralize{
+.box-centralize{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -141,6 +141,10 @@
 }
 .height-90vh {
     min-height: 90vh;
+    height: auto;
+}
+.height-85vh{
+    min-height: 85vh;
     height: auto;
 }
 .height-80vh{
