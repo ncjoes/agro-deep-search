@@ -4,6 +4,10 @@
  *
  * @package phpcrawl
  */
+
+namespace _Libraries\PHPCrawl;
+
+
 class PHPCrawlerDocumentInfo
 { 
   /**
@@ -105,7 +109,7 @@ class PHPCrawlerDocumentInfo
    * Flag indicating whether content was completely received from the page or file.
    *
    * The conten of the current document may not be received comepletely due to settings made
-   * with {@link PHPCrawler::setContentSizeLimit()) and/or {@link PHPCrawler::setTrafficLimit()}.
+   * with {@link PHPCrawl::setContentSizeLimit()) and/or {@link PHPCrawl::setTrafficLimit()}.
    *
    * @var bool TRUE if the crawler received the complete source/content of this page or file.
    * @section 2 Content-related information

@@ -5,6 +5,12 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\UrlCache;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerURLDescriptor;
+
 class PHPCrawlerMemoryURLCache extends PHPCrawlerURLCacheBase
 {
   protected $urls = array();

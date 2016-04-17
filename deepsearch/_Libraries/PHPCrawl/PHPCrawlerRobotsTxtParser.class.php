@@ -4,13 +4,17 @@
  *
  * @package phpcrawl
  * @internal
- */  
+ */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerRobotsTxtParser
 { 
   public function __construct()
   {
-    // Init PageRequest-class
-    if (!class_exists("PHPCrawlerHTTPRequest")) include_once($classpath."/PHPCrawlerHTTPRequest.class.php");
     $this->PageRequest = new PHPCrawlerHTTPRequest();
   }
   

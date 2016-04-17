@@ -4,6 +4,10 @@
  *
  * @package phpcrawl.enums
  */
+
+namespace _Libraries\PHPCrawl\Enums;
+
+
 class PHPCrawlerHTTPProtocols
 {
   /**

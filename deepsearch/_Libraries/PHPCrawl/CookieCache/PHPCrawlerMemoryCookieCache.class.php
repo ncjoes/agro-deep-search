@@ -5,6 +5,13 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\CookieCache;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerCookieDescriptor;
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerMemoryCookieCache extends PHPCrawlerCookieCacheBase
 {
   protected $cookies = array();

@@ -4,6 +4,10 @@
  *
  * @package phpcrawl
  */
+
+namespace _Libraries\PHPCrawl;
+
+
 class PHPCrawlerURLDescriptor
 {
   /**
@@ -51,8 +55,6 @@ class PHPCrawlerURLDescriptor
   
   /**
    * Initiates an URL-descriptor
-   *
-   * @internal
    */
   public function __construct($url_rebuild, $link_raw = null, $linkcode = null, $linktext = null, $refering_url = null, $url_link_depth = null)
   {

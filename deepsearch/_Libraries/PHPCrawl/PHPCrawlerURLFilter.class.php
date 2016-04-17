@@ -5,6 +5,12 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerURLFilter
 {
   /**

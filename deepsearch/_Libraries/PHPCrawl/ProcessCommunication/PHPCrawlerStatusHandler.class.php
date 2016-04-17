@@ -5,6 +5,13 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\ProcessCommunication;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerStatus;
+use _Libraries\PHPCrawl\PHPCrawlerBenchmark;
+
 class PHPCrawlerStatusHandler
 {
   protected $crawlerStatus;

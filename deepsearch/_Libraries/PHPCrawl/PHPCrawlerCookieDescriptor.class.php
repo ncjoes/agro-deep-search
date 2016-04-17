@@ -3,7 +3,13 @@
  * Describes a cookie within the PHPCrawl-system.
  *
  * @package phpcrawl
- */ 
+ */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerCookieDescriptor
 {
   /**

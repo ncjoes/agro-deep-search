@@ -5,6 +5,15 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\UrlCache\PHPCrawlerMemoryURLCache;
+use _Libraries\PHPCrawl\UrlCache\PHPCrawlerURLCacheBase;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerLinkSearchDocumentSections;
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerLinkFinder
 {
   /**
@@ -73,12 +82,8 @@ class PHPCrawlerLinkFinder
   public function __construct()
   {
     // Setup internal linkcache
-    if (!class_exists("PHPCrawlerMemoryURLCache")) include_once(dirname(__FILE__)."/UrlCache/PHPCrawlerMemoryURLCache.class.php");
     $this->LinkCache = new PHPCrawlerMemoryURLCache();
     $this->LinkCache->url_distinct_property = PHPCrawlerURLCacheBase::URLHASH_URL;
-    
-    // PHPCrawlerLinkSearchDocumentSections-class
-    if (!class_exists("PHPCrawlerLinkSearchDocumentSections")) include_once(dirname(__FILE__)."/Enums/PHPCrawlerLinkSearchDocumentSections.class.php");
   }
   
   /**

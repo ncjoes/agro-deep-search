@@ -5,6 +5,15 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\Utils;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerCookieDescriptor;
+use _Libraries\PHPCrawl\PHPCrawlerURLDescriptor;
+use _Libraries\PHPCrawl\PHPCrawlerUrlPartsDescriptor;
+use _Libraries\PHPCrawl\PHPCrawlerHTTPRequest;
+
 class PHPCrawlerUtils
 {
   /**
@@ -26,7 +35,7 @@ class PHPCrawlerUtils
    */
   public static function splitURL($url)
   {
-    // Protokoll der URL hinzufügen (da ansonsten parse_url nicht klarkommt)
+    // Protokoll der URL hinzuf gen (da ansonsten parse_url nicht klarkommt)
     if (!preg_match("#^[a-z0-9-]+://# i", $url))
       $url = "http://" . $url;
     
@@ -74,13 +83,13 @@ class PHPCrawlerUtils
       $domain = substr($host, $pos+1);
     }
     
-    // DEFAULT VALUES für protocol, path, port etc. (wenn noch nicht gesetzt)
+    // DEFAULT VALUES fï¿½r protocol, path, port etc. (wenn noch nicht gesetzt)
       
     // Wenn Protokoll leer -> Protokoll ist "http://"
     if ($protocol == "") $protocol="http://";
     
     // Wenn Port leer -> Port setzen auf 80 or 443
-    // (abhängig vom Protokoll)
+    // (abhï¿½ngig vom Protokoll)
     if ($port == "")
     {
       if (strtolower($protocol) == "http://") $port=80;
@@ -90,7 +99,7 @@ class PHPCrawlerUtils
     // Wenn Pfad leet -> Pfad ist "/"
     if ($path=="") $path = "/";
     
-    // Rückgabe-Array
+    // Rckgabe-Array
     $url_parts["protocol"] = $protocol;
     $url_parts["host"] = $host;
     $url_parts["path"] = $path;
@@ -121,14 +130,14 @@ class PHPCrawlerUtils
    * @param bool $normalize   If TRUE, the URL will be returned normalized.
    *                          (I.e. http://www.foo.com/path/ insetad of http://www.foo.com:80/path/)
    * @return string The URL
-   *                         
+   * @throws \Exception
    */
   public static function buildURLFromParts($url_parts, $normalize = false)
   {
     // Host has to be set aat least
     if (!isset($url_parts["host"]))
     {
-      throw new Exception("Cannot generate URL, host not specified!");
+      throw new \Exception("Cannot generate URL, host not specified!");
     }
     
     if (!isset($url_parts["protocol"]) || $url_parts["protocol"] == "") $url_parts["protocol"] = "http://";
@@ -139,7 +148,7 @@ class PHPCrawlerUtils
     if (!isset($url_parts["auth_username"])) $url_parts["auth_username"]= "";
     if (!isset($url_parts["auth_password"])) $url_parts["auth_password"]= "";
     
-    // Autentication-part
+    // Authentication-part
     $auth_part = "";
     if ($url_parts["auth_username"] != "" && $url_parts["auth_password"] != "")
     {
@@ -235,7 +244,7 @@ class PHPCrawlerUtils
   { 
     $url_parts = $BaseUrl->toArray();
     
-    // Dedoce HTML-entities
+    // Decode HTML-entities
     $link = PHPCrawlerEncodingUtils::decodeHtmlEntities($link);
     
     // Remove anchor ("#..."), but ONLY at the end, not if # is at the beginning !
@@ -505,7 +514,7 @@ class PHPCrawlerUtils
   {
     $args = func_get_args();
     
-    // Für jedes zu sortierende Feld ein eigenes Array bilden
+    // Fï¿½r jedes zu sortierende Feld ein eigenes Array bilden
     @reset($array);
     while (list($field) = @each($array)) 
     {
@@ -521,7 +530,7 @@ class PHPCrawlerUtils
       }
     }
 
-    // Argumente für array_multisort bilden
+    // Argumente fï¿½r array_multisort bilden
     for ($x=1; $x<count($args); $x++)
     {
       if (is_string($args[$x]))
@@ -647,7 +656,7 @@ class PHPCrawlerUtils
     
     // Throw exception?
     if ($throw_exception == true)
-      throw new Exception($error_str);
+      throw new \Exception($error_str);
     
     return null;
   }

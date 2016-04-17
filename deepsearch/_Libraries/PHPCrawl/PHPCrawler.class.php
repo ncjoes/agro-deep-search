@@ -7,6 +7,26 @@
  * @version 0.83
  * @License GPL2
  */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+use _Libraries\PHPCrawl\Utils\PHPCrawlerEncodingUtils;
+use _Libraries\PHPCrawl\UrlCache\PHPCrawlerMemoryURLCache;
+use _Libraries\PHPCrawl\UrlCache\PHPCrawlerSQLiteURLCache;
+use _Libraries\PHPCrawl\CookieCache\PHPCrawlerCookieCacheBase;
+use _Libraries\PHPCrawl\CookieCache\PHPCrawlerSQLiteCookieCache;
+use _Libraries\PHPCrawl\CookieCache\PHPCrawlerMemoryCookieCache;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerAbortReasons;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerRequestErrors;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerMultiProcessModes;
+use _Libraries\PHPCrawl\ProcessCommunication\PHPCrawlerProcessHandler;
+use _Libraries\PHPCrawl\ProcessCommunication\PHPCrawlerStatusHandler;
+use _Libraries\PHPCrawl\ProcessCommunication\PHPCrawlerDocumentInfoQueue;
+
+
 class PHPCrawler
 {
   public $class_version = "0.83rc1";
@@ -214,84 +234,23 @@ class PHPCrawler
    */
   public function __construct()
   { 
-    // Create uniqid for this crawlerinstance
-    $this->crawler_uniqid = getmypid().time();
-    
-    // Include needed class-files
-    $classpath = dirname(__FILE__);
+        // Create unique-id for this crawler-instance
+        $this->crawler_uniqid = getmypid().time();
 
-    // Utils-classes
-    if (!class_exists("PHPCrawlerUtils")) include_once($classpath."/Utils/PHPCrawlerUtils.class.php");
-    if (!class_exists("PHPCrawlerEncodingUtils")) include_once($classpath."/Utils/PHPCrawlerEncodingUtils.class.php");
-    
-    // URL-Cache-classes
-    if (!class_exists("PHPCrawlerURLCacheBase")) include_once($classpath."/UrlCache/PHPCrawlerURLCacheBase.class.php");
-    if (!class_exists("PHPCrawlerMemoryURLCache")) include_once($classpath."/UrlCache/PHPCrawlerMemoryURLCache.class.php");
-    if (!class_exists("PHPCrawlerSQLiteURLCache")) include_once($classpath."/UrlCache/PHPCrawlerSQLiteURLCache.class.php");
-    
-    // PageRequest-class
-    if (!class_exists("PHPCrawlerHTTPRequest")) include_once($classpath."/PHPCrawlerHTTPRequest.class.php");
-    $this->PageRequest = new PHPCrawlerHTTPRequest();
-    $this->PageRequest->setHeaderCheckCallbackFunction($this, "handleHeaderInfo");
-      
-    // Cookie-Cache-class
-    if (!class_exists("PHPCrawlerCookieCacheBase")) include_once($classpath."/CookieCache/PHPCrawlerCookieCacheBase.class.php");
-    if (!class_exists("PHPCrawlerMemoryCookieCache")) include_once($classpath."/CookieCache/PHPCrawlerMemoryCookieCache.class.php");
-    if (!class_exists("PHPCrawlerSQLiteCookieCache")) include_once($classpath."/CookieCache/PHPCrawlerSQLiteCookieCache.class.php");
-    
-    // URL-filter-class
-    if (!class_exists("PHPCrawlerURLFilter")) include_once($classpath."/PHPCrawlerURLFilter.class.php");
-    $this->UrlFilter = new PHPCrawlerURLFilter();
-    
-    // RobotsTxtParser-class
-    if (!class_exists("PHPCrawlerRobotsTxtParser")) include_once($classpath."/PHPCrawlerRobotsTxtParser.class.php");
-    $this->RobotsTxtParser = new PHPCrawlerRobotsTxtParser();
-    
-    // ProcessReport-class
-    if (!class_exists("PHPCrawlerProcessReport")) include_once($classpath."/PHPCrawlerProcessReport.class.php");
-    
-    // UserSendDataCache-class
-    if (!class_exists("PHPCrawlerUserSendDataCache")) include_once($classpath."/PHPCrawlerUserSendDataCache.class.php");
-    $this->UserSendDataCache = new PHPCrawlerUserSendDataCache();
-    
-    // URLDescriptor-class
-    if (!class_exists("PHPCrawlerURLDescriptor")) include_once($classpath."/PHPCrawlerURLDescriptor.class.php");
-    
-    // PageInfo-class
-    if (!class_exists("PHPCrawlerDocumentInfo")) include_once($classpath."/PHPCrawlerDocumentInfo.class.php");
-    
-    // Benchmark-class
-    if (!class_exists("PHPCrawlerBenchmark")) include_once($classpath."/PHPCrawlerBenchmark.class.php");
-    
-    // URLDescriptor-class
-    if (!class_exists("PHPCrawlerUrlPartsDescriptor")) include_once($classpath."/PHPCrawlerUrlPartsDescriptor.class.php");
-    
-    // CrawlerStatus-class
-    if (!class_exists("PHPCrawlerStatus")) include_once($classpath."/PHPCrawlerStatus.class.php");
-    
-    // AbortReasons-class
-    if (!class_exists("PHPCrawlerAbortReasons")) include_once($classpath."/Enums/PHPCrawlerAbortReasons.class.php");
-    
-    // RequestErrors-class
-    if (!class_exists("PHPCrawlerRequestErrors")) include_once($classpath."/Enums/PHPCrawlerRequestErrors.class.php");
-    
-    // PHPCrawlerUrlCacheTypes-class
-    if (!class_exists("PHPCrawlerUrlCacheTypes")) include_once($classpath."/Enums/PHPCrawlerUrlCacheTypes.class.php");
-    
-    // PHPCrawlerMultiProcessModes-class
-    if (!class_exists("PHPCrawlerMultiProcessModes")) include_once($classpath."/Enums/PHPCrawlerMultiProcessModes.class.php");
-    
-    // PHPCrawlerProcessHandler-class
-    if (!class_exists("PHPCrawlerProcessHandler")) include_once($classpath."/ProcessCommunication/PHPCrawlerProcessHandler.class.php");
-    
-    // PHPCrawlerStatusHandler-class
-    if (!class_exists("PHPCrawlerStatusHandler")) include_once($classpath."/ProcessCommunication/PHPCrawlerStatusHandler.class.php");
-    
-    // PHPCrawlerDocumentInfoQueue-class
-    if (!class_exists("PHPCrawlerDocumentInfoQueue")) include_once($classpath."/ProcessCommunication/PHPCrawlerDocumentInfoQueue.class.php");
-    
-    // Set default temp-dir
-    $this->working_base_directory = PHPCrawlerUtils::getSystemTempDir();
+        $this->PageRequest = new PHPCrawlerHTTPRequest();
+        $this->PageRequest->setHeaderCheckCallbackFunction($this, "handleHeaderInfo");
+
+        // URL-filter-class
+        $this->UrlFilter = new PHPCrawlerURLFilter();
+
+        // RobotsTxtParser-class
+        $this->RobotsTxtParser = new PHPCrawlerRobotsTxtParser();
+
+        // UserSendDataCache-class
+        $this->UserSendDataCache = new PHPCrawlerUserSendDataCache();
+
+        // Set default temp-dir
+        $this->working_base_directory = PHPCrawlerUtils::getSystemTempDir();
   }
   
   /**
@@ -416,6 +375,8 @@ class PHPCrawler
    * @param int $multiprocess_mode The multiprocess-mode to use.
    *                               One of the {@link PHPCrawlerMultiProcessModes}-constants
    * @section 1 Basic settings
+   *
+   * @throws \Exception
    */
   public function goMultiProcessed($process_count = 3, $multiprocess_mode = 1)
   { 
@@ -425,25 +386,25 @@ class PHPCrawler
     // Check if fork is supported
     if (!function_exists("pcntl_fork"))
     {
-      throw new Exception("PHPCrawl running with multi processes not supported in this PHP-environment (function pcntl_fork() missing).".
+      throw new \Exception("PHPCrawl running with multi processes not supported in this PHP-environment (function pcntl_fork() missing).".
                           "Try running from command-line (cli) and/or installing the PHP PCNTL-extension.");
     }
     
     if (!function_exists("sem_get"))
     {
-      throw new Exception("PHPCrawl running with multi processes not supported in this PHP-environment (function sem_get() missing).".
+      throw new \Exception("PHPCrawl running with multi processes not supported in this PHP-environment (function sem_get() missing).".
                           "Try installing the PHP SEMAPHORE-extension.");
     }
     
     if (!function_exists("posix_kill"))
     {
-      throw new Exception("PHPCrawl running with multi processes not supported in this PHP-environment (function posix_kill() missing).".
+      throw new \Exception("PHPCrawl running with multi processes not supported in this PHP-environment (function posix_kill() missing).".
                           "Try installing the PHP POSIX-extension.");
     }
     
     if (!class_exists("PDO"))
     {
-      throw new Exception("PHPCrawl running with multi processes not supported in this PHP-environment (class PDO missing).".
+      throw new \Exception("PHPCrawl running with multi processes not supported in this PHP-environment (class PDO missing).".
                           "Try installing the PHP PDO-extension.");
     }
     
@@ -989,7 +950,7 @@ class PHPCrawler
    *
    * Example:
    * <code>
-   * class MyCrawler extends PHPCrawler 
+   * class MyCrawler extends PHPCrawl 
    * {
    *   function handleHeaderInfo(PHPCrawlerResponseHeader $header)
    *   {
@@ -1028,7 +989,7 @@ class PHPCrawler
    *
    * Example:
    * <code>
-   * class MyCrawler extends PHPCrawler 
+   * class MyCrawler extends PHPCrawl 
    * {
    *   protected $mysql_link;
    *
@@ -1069,7 +1030,7 @@ class PHPCrawler
    *
    * Example:
    * <code>
-   * class MyCrawler extends PHPCrawler
+   * class MyCrawler extends PHPCrawl
    * {
    *   function handleDocumentInfo($PageInfo)
    *   {

@@ -13,6 +13,10 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl;
+
+
 class PHPCrawlerBenchmark
 {
   protected static $benchmark_results = array();

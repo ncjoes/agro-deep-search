@@ -4,6 +4,10 @@
  *
  * @package phpcrawl
  */
+
+namespace _Libraries\PHPCrawl;
+
+
 class PHPCrawlerProcessReport
 {
   /**

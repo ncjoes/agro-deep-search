@@ -5,6 +5,12 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\UrlCache;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerURLDescriptor;
+
 abstract class PHPCrawlerURLCacheBase
 {
   protected $url_priorities = array();

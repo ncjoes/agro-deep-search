@@ -4,6 +4,12 @@
  *
  * @package phpcrawl
  */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerResponseHeader
 {
   /**
@@ -11,7 +17,6 @@ class PHPCrawlerResponseHeader
    *
    * @param string $header_string A complete response-header as it was send by the server
    * @param string $source_url    The URL of the website the header was recevied from.
-   * @internal
    */
   public function __construct($header_string, $source_url)
   {

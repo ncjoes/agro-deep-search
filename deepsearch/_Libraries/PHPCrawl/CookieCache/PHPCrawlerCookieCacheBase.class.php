@@ -5,6 +5,12 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\CookieCache;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerCookieDescriptor;
+
 abstract class PHPCrawlerCookieCacheBase
 {
   /**

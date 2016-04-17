@@ -5,6 +5,12 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\ProcessCommunication;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerStatus;
+
 class PHPCrawlerProcessHandler
 {
   protected $crawler_uniqid;

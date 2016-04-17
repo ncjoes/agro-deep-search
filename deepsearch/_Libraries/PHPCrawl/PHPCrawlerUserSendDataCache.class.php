@@ -6,6 +6,12 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl;
+
+
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerUserSendDataCache
 {
   /**
@@ -28,6 +34,7 @@ class PHPCrawlerUserSendDataCache
    * @param string $url_regex       Regular expression defining the URL(s) the post-data should be send to.
    * @param array  $post_data_array Post-data-array, the keys are the post-data-keys, the values the post-values.
    *                                (like array("key1" => "value1", "key2" => "value2")
+   * @return bool
    */
   public function addPostData($url_regex, $post_data_array)
   {

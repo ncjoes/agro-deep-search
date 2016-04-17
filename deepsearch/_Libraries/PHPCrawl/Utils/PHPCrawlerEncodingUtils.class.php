@@ -5,6 +5,10 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\Utils;
+
+
 class PHPCrawlerEncodingUtils
 {
   /**

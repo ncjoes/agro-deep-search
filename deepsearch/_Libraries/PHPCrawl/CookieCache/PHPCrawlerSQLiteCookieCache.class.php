@@ -5,6 +5,14 @@
  * @package phpcrawl
  * @internal
  */
+
+namespace _Libraries\PHPCrawl\CookieCache;
+
+
+use _Libraries\PHPCrawl\PHPCrawlerCookieDescriptor;
+use _Libraries\PHPCrawl\PHPCrawlerBenchmark;
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
+
 class PHPCrawlerSQLiteCookieCache extends PHPCrawlerCookieCacheBase
 {
   protected $PDO;
