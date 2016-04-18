@@ -27,7 +27,7 @@ $data = $rc->getResponseData();
                     <ul class="nav navbar-nav navbar-right">
                         <li <?= ($rc->isRequestUrl('page/privacy-policy') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/privacy-policy'); ?>">Privacy</a></li>
                         <li <?= ($rc->isRequestUrl('page/terms-of-use') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/terms-of-use'); ?>">Terms</a></li>
-                        <li <?= ($rc->isRequestUrl('admin-panel') ? 'class="active"': ''); ?>><a href="<?php home_url('/admin-panel/'); ?>">ACP</a></li>
+                        <li <?= ($rc->isRequestUrl('login') ? 'class="active"': ''); ?>><a href="<?php home_url('/login/'); ?>">ACP</a></li>
                         <li>
                             <a href="<?php site_info('designer-url'); ?>" target="_blank" title="Built with BareBones PHP Framework by <?php site_info('designer-name') ?>">
                                 <span class="glyphicon glyphicon-picture"></span> Credits

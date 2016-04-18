@@ -37,16 +37,16 @@ require_once("raw-header.php");
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="<?php home_url('/crawl-engine/'); ?>"><span class="glyphicon glyphicon-forward"></span> Run Crawl</a></li>
-                            <li><a href="<?php home_url('/crawl-engine/manage-links/'); ?>"><span class="glyphicon glyphicon-link"></span> Manage Links</a></li>
+                            <li><a href="<?php home_url('/crawl-engine/manage-links/'); ?>"><span class="glyphicon glyphicon-link"></span> Link Frontier</a></li>
                             <li><a href="<?php home_url('/crawl-engine/manage-forms/'); ?>"><span class="glyphicon glyphicon-book"></span> Manage Forms</a></li>
                             <li><a href="<?php home_url('/crawl-engine/manage-features/'); ?>"><span class="glyphicon glyphicon-leaf"></span> Manage Features</a></li>
                             <li><a href="<?php home_url('/crawl-engine/crawl-settings/'); ?>"><span class="glyphicon glyphicon-cog"></span> Crawler Configurations</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown <?=$rc->isRequestUrl($default_privilege->defaultController()) ? 'active': ''; ?>">
+                    <li class="dropdown <?=$rc->isRequestUrl('admin-panel') ? 'active': ''; ?>">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <span class="glyphicon glyphicon-edit"></span>
-                            <?php echo ucwords(str_replace('-',' ',$default_privilege->defaultController()) ); ?>
+                            Admin Panel
                             <span class="glyphicon glyphicon-collapse-down"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">

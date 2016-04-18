@@ -21,10 +21,18 @@ class CrawlEngine_Controller extends A_Controller
 {
     public function doExecute(RequestContext $requestContext)
     {
+        $requestContext->setView('crawl-engine/index.php');
         if($requestContext->getRequestUrlParam(1)=='start')
         {
             $this->doCrawl($requestContext);
         }
+    }
+
+    protected function CrawlSettings(RequestContext $requestContext)
+    {
+        $data['page-title'] = "Default Crawl Settings";
+        $requestContext->setResponseData($data);
+        $requestContext->setView('crawl-engine/crawl-settings.php');
     }
 
     protected function doCrawl(RequestContext $requestContext)

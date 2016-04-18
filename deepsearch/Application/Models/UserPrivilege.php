@@ -102,7 +102,7 @@ class UserPrivilege extends A_DomainObject implements I_StatefulObject
             } break;
 
             case (self::UT_ADMIN) :{
-                $command = 'admin-panel';
+                $command = 'crawl-engine';
             } break;
         }
         return $command;
