@@ -49,11 +49,18 @@ body{
     background-color: #FFF;
 }
 
-@media all and (max-width: 1024px) {
+@media all and (max-width: 800px) {
     #centered-content{
-        margin-top: 10%;
+        position: relative;
+        margin-top: 2%;
+        margin-left: auto;
+        margin-right: auto;
+        top: auto;
+        left: auto;
+        transform: translate(0,0);
     }
-}@media all and (max-width: 768px) {
+}
+@media all and (max-width: 768px) {
     #centered-content{
         position: relative;
         margin-top: 4%;
@@ -62,12 +69,15 @@ body{
         top: auto;
         left: auto;
         transform: translate(0,0);
-
-        max-width: 90%;
-        min-width: 75%;
     }
     #logo{
         max-width: 320px;
         height: auto;
+    }
+}
+@media all and (max-width: 768px) {
+    #centered-content{
+        min-width: 94%;
+        width: auto;
     }
 }
