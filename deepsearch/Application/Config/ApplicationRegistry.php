@@ -19,6 +19,7 @@ class ApplicationRegistry
         'charset'               => "UTF-8",
         'host-name'             => "127.0.0.1",
         'cookie-name'           => "DS_SESSION_ID",
+        'parent-site-url'       => "http://127.0.0.1/_www/PhoenixLabs/nwubanfarms.com/",
         'site-url'              => "http://127.0.0.1/_www/PhoenixLabs/nwubanfarms.com/deepsearch",
         'deployment-path'       => '_www/PhoenixLabs/nwubanfarms.com/deepsearch',
         'views-directory'       => 'Application/Views',
