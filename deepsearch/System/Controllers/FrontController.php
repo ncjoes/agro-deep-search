@@ -26,12 +26,21 @@ final class FrontController
      * @var string
      * Directory of Page Controllers in Applications
      */
-    private static $dir = "Application\\Controllers";
+    private $file_path;
+    private $class_path;
 
     /**
      * FrontController constructor.
      */
-    private function __construct() {}
+    private function __construct()
+    {
+        $this->file_path = dirname(__FILE__);
+        $path_components = explode('\\', $this->file_path);
+        $path_components[sizeof($path_components)-2] = "Application";
+        $this->file_path = implode('\\', $path_components);
+
+        $this->class_path = "Application\\Controllers";
+    }
 
     /**
      *
@@ -85,28 +94,19 @@ final class FrontController
      */
     public function getController($action='Default' )
     {
-        if ( preg_match( '/\W-/', $action ) )
-        {
-            throw new \Exception("Sorry, your request could not be understood.");
-        }
-
+        global $NO_READ;
         $action = strlen($action) ? $action : 'Default';
 
+        if ( preg_match( '/\W-/', $action ) ) throw new \Exception("Sorry, your request could not be understood.");
+        if ( in_array($action, $NO_READ) ) throw new Exceptions\CommandNotFoundException("Sorry, your request could not be understood.");
+
         $class_name = str_replace(' ','',ucwords( strtolower( str_replace('-',' ',$action) ) ) ).'_Controller';
+        $file = $this->file_path."\\".$class_name.'.php';
+        $class = $this->class_path."\\{$class_name}";
 
-        $file = (!empty(self::$dir)) ? self::$dir."\\".$class_name.'.php' : $class_name.'.php';
-        if ( ! file_exists( $file ) )
-        {
-            //print_r($file);
-            throw new Exceptions\CommandNotFoundException( "<br/>Can not find file ($file)" );
-        }
+        if ( ! file_exists( $file ) )  throw new Exceptions\CommandNotFoundException( "Page not found /{$action}");
+        if ( ! class_exists( $class ) )  throw new \Exception( "Can not find Class: {$class}" );
 
-        $class = self::$dir."\\{$class_name}";
-        if ( ! class_exists( $class ) )
-        {
-            throw new Exceptions\CommandNotFoundException( "<br/>Can not find class: $class" );
-        }
-        $controller = new $class();
-        return $controller;
+        return new $class();
     }
 }

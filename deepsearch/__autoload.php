@@ -13,7 +13,7 @@ $__autoload = array(
     "Application/Config/routes.php",
     "Application/Config/no-read.php",
     "System/Functions/form-elements.php"
-);
+    );
 foreach($__autoload as $file)
 {
     if(defined('PARENT_DIR')) $file = PARENT_DIR.'/'.$file;
@@ -46,7 +46,7 @@ function __autoload( $path )
 
     if(!is_file($path))
     {
-        echo "<br/>File (<b>$path</b>) not found" ;
+        echo "File not found"."<br/>".$path;
         exit;
     }
     require_once($path);

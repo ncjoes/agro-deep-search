@@ -1,7 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine On
 
-RewriteCond %{SCRIPT_FILENAME} !-d
-RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*.css'"
 
-RewriteRule ^.*$ ./index.php
+RewriteRule . index.php [L]

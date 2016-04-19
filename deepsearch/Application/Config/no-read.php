@@ -11,7 +11,14 @@
  **/
 
 $NO_READ = array(
-    'index.php',
+    '_Libraries',
+    'Application',
+    'Assets',
+    'cgi-bin',
+    'System',
     '.gitignore',
-    'README.md'
+    '.htaccess',
+    '_autoload.php',
+    'index.php',
+    'README.md',
 );

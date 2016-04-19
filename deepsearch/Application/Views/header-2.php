@@ -24,7 +24,7 @@ require_once("raw-header.php");
             <form name="search-form" method="get" enctype="application/x-www-form-urlencoded" action="<?php home_url('/'); ?>" class="nav navbar-form navbar-left">
                 <div class="form-group form-group-sm">
                     <label for="search">
-                        <input name="search" id="search" type="search" required class="form-control" size="70" placeholder="Search" value="<?= $data['search-term']; ?>"/>
+                        <input name="search" id="search" type="search" required class="form-control" size="70" placeholder="Search" value="<?= isset($data['search-term']) ? $data['search-term'] : ''; ?>"/>
                     </label>
                 </div>
                 <div class="form-group form-group-sm">

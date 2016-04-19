@@ -27,12 +27,17 @@ try
     $request_url = $requestContext->getRequestUrl();
 
     if(isset($ROUTES[$request_url])) header('Location:'.home_url('/'.$ROUTES[$request_url], 0));
+
     if(is_file($request_url))
     {
-        if( ! in_array($request_url, $NO_RAD) )
+        $request_url_components = explode('/', $request_url);
+        $file_path = dirname($request_url);
+        $file_name = $request_url_components[sizeof($request_url_components)-1];
+
+        if( ! in_array($request_url, $NO_READ) and ! in_array($file_path, $NO_READ) and ! in_array($file_name, $NO_READ) )
         {
-            echo $request_url;
-            //readfile($request_url);
+            //echo $request_url;
+            readfile($request_url);
             exit;
         }
     }
