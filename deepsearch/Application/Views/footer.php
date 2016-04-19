@@ -25,6 +25,9 @@ $data = $rc->getResponseData();
                 </div>
                 <div id="navbar-footer" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a href="<?php site_info('parent-site-url'); ?>"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li <?= ($rc->isRequestUrl('page/about') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/about/')?>">About</a></li>
+                        <li <?= ($rc->isRequestUrl('contact') ? 'class="active"': ''); ?>><a href="<?php home_url('/contact/')?>">Contact</a></li>
                         <li <?= ($rc->isRequestUrl('page/privacy-policy') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/privacy-policy'); ?>">Privacy</a></li>
                         <li <?= ($rc->isRequestUrl('page/terms-of-use') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/terms-of-use'); ?>">Terms</a></li>
                         <li <?= ($rc->isRequestUrl('login') ? 'class="active"': ''); ?>><a href="<?php home_url('/login/'); ?>">ACP</a></li>

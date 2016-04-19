@@ -10,7 +10,7 @@
 include_once('header-1.php');
 ?>
 <div class="text-center full-padding-top full-margin-top full-margin-bottom full-padding-bottom">
-    <h1 class="page-header">Nwuban Farms <small><sup><span class="glyphicon glyphicon-registration-mark"></span></sup></small></h1>
+    <h1 class="page-header">Nwuban Farms NG <small><sup><span class="glyphicon glyphicon-registration-mark"></span></sup></small></h1>
     <h5><label for="search">Deep Search</label></h5>
 </div>
 <div class="full-margin-top full-padding-top">
@@ -27,6 +27,13 @@ include_once('header-1.php');
                 </div>
             </div>
         </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <h3 class="text-center">Work in Progress, <small style="font-style: oblique;">Please call back soon</small></h3>
+            </div>
+        </div>
+        <hr/>
     </form>
 </div>
 <?php

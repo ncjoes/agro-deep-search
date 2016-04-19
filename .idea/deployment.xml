@@ -10,6 +10,7 @@
           <excludedPaths>
             <excludedPath local="true" path="$PROJECT_DIR$/.idea" />
             <excludedPath local="true" path="$PROJECT_DIR$/deepsearch/Tests" />
+            <excludedPath local="true" path="$PROJECT_DIR$/deepsearch/Application/Config/ApplicationRegistry.php" />
           </excludedPaths>
         </serverdata>
       </paths>

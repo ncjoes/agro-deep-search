@@ -34,6 +34,7 @@ require_once("raw-header.php");
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="<?php site_info('parent-site-url'); ?>"><span class="glyphicon glyphicon-home"></span></a></li>
                 <li <?= ($rc->isRequestUrl('page/about') ? 'class="active"': ''); ?>><a href="<?php home_url('/page/about/')?>">About</a></li>
                 <li <?= ($rc->isRequestUrl('contact') ? 'class="active"': ''); ?>><a href="<?php home_url('/contact/')?>">Contact</a></li>
             </ul>
