@@ -23,7 +23,7 @@ foreach($__autoload as $file)
     }
     else
     {
-        echo "<br/>File '".$file."' not found" ;
+        echo "<br/>File -- ".$file." -- not found" ;
         exit;
     }
 }
@@ -34,7 +34,6 @@ function __autoload( $path )
     {
         $path = str_replace('\\', DIRECTORY_SEPARATOR, $path );
     }
-
     if( preg_match('#PHPCrawl#', $path))
     {
         $path .= ".class.php";

@@ -35,9 +35,9 @@ final class FrontController
     private function __construct()
     {
         $this->file_path = dirname(__FILE__);
-        $path_components = explode('\\', $this->file_path);
+        $path_components = explode(DIRECTORY_SEPARATOR, $this->file_path);
         $path_components[sizeof($path_components)-2] = "Application";
-        $this->file_path = implode('\\', $path_components);
+        $this->file_path = implode(DIRECTORY_SEPARATOR, $path_components);
 
         $this->class_path = "Application\\Controllers";
     }
@@ -101,10 +101,10 @@ final class FrontController
         if ( in_array($action, $NO_READ) ) throw new Exceptions\CommandNotFoundException("Sorry, your request could not be understood.");
 
         $class_name = str_replace(' ','',ucwords( strtolower( str_replace('-',' ',$action) ) ) ).'_Controller';
-        $file = $this->file_path."\\".$class_name.'.php';
+        $file = $this->file_path.DIRECTORY_SEPARATOR.$class_name.'.php';
         $class = $this->class_path."\\{$class_name}";
 
-        if ( ! file_exists( $file ) )  throw new Exceptions\CommandNotFoundException( "Page not found /{$action}");
+        if ( ! file_exists( $file ) )  throw new Exceptions\CommandNotFoundException( "Page /{$action} not found.");
         if ( ! class_exists( $class ) )  throw new \Exception( "Can not find Class: {$class}" );
 
         return new $class();
