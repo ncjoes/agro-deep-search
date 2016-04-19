@@ -1,6 +1,7 @@
 Options +FollowSymLinks
 RewriteEngine On
 
-RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*.css'"
+RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*/Assets/*'"
+RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*/Uploads/*'"
 
 RewriteRule . index.php [L]

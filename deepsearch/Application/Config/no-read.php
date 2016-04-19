@@ -13,7 +13,6 @@
 $NO_READ = array(
     '_Libraries',
     'Application',
-    'Assets',
     'cgi-bin',
     'System',
     '.gitignore',
