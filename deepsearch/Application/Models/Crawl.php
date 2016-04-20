@@ -23,6 +23,10 @@ use System\Utilities\DateTime;
 class Crawl extends A_StatefulObject
 {
     private $crawler_id;
+    private $num_links_followed;
+    private $num_documents_received;
+    private $num_byte_received;
+    private $process_run_time;
     private $start_time;
     private $end_time;
 
@@ -54,6 +58,82 @@ class Crawl extends A_StatefulObject
     public function setCrawlerId($crawler_id)
     {
         $this->crawler_id = $crawler_id;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumLinksFollowed()
+    {
+        return $this->num_links_followed;
+    }
+
+    /**
+     * @param mixed $num_links_followed
+     * @return Crawl
+     */
+    public function setNumLinksFollowed($num_links_followed)
+    {
+        $this->num_links_followed = $num_links_followed;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumDocumentsReceived()
+    {
+        return $this->num_documents_received;
+    }
+
+    /**
+     * @param mixed $num_documents_received
+     * @return Crawl
+     */
+    public function setNumDocumentsReceived($num_documents_received)
+    {
+        $this->num_documents_received = $num_documents_received;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumByteReceived()
+    {
+        return $this->num_byte_received;
+    }
+
+    /**
+     * @param mixed $num_byte_received
+     * @return Crawl
+     */
+    public function setNumByteReceived($num_byte_received)
+    {
+        $this->num_byte_received = $num_byte_received;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProcessRunTime()
+    {
+        return $this->process_run_time;
+    }
+
+    /**
+     * @param mixed $process_run_time
+     * @return Crawl
+     */
+    public function setProcessRunTime($process_run_time)
+    {
+        $this->process_run_time = $process_run_time;
         $this->markDirty();
         return $this;
     }
