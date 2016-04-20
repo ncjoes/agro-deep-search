@@ -23,12 +23,27 @@ class PageLink_Mapper extends A_Mapper
     {
         parent::__construct();
         $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_page_links WHERE id=?");
-        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_page_links");
+        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_page_links ORDER BY ext_reward DESC");
+        $this->selectRangeStmt = self::$PDO->prepare("SELECT * FROM app_page_links ORDER BY ext_reward DESC LIMIT :num_rows OFFSET :offset");
         $this->selectByUrlHashStmt = self::$PDO->prepare("SELECT * FROM app_page_links WHERE url_hash=?");
         $this->selectByParentPageLinkStmt = self::$PDO->prepare("SELECT * FROM app_page_links WHERE parent_page_link=?");
         $this->updateStmt = self::$PDO->prepare("UPDATE app_page_links SET url=?, url_hash=?, anchor=?, around_text=?, page_title=?, parent_page_link=?, last_crawl_time=?, target_distance=?, ext_reward=?, status=? WHERE id=?");
         $this->insertStmt = self::$PDO->prepare("INSERT INTO app_page_links (url,url_hash,anchor,around_text,page_title,parent_page_link,last_crawl_time,target_distance,ext_reward,status)VALUES(?,?,?,?,?,?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_page_links WHERE id=?");
+    }
+
+    /**
+     * @param int $num_rows number of records to retrieve
+     * @param int $offset offset from the first record
+     * @return \System\Models\Collections\Collection
+     */
+    public function findRange($num_rows=10, $offset=0)
+    {
+        $this->selectRangeStmt->bindParam(':num_rows', $num_rows, \PDO::PARAM_INT);
+        $this->selectRangeStmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $this->selectRangeStmt->execute();
+        $raw_data = $this->selectRangeStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection( $raw_data );
     }
 
     /**

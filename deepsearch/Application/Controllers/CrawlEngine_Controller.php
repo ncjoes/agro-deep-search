@@ -15,6 +15,7 @@ namespace Application\Controllers;
 
 
 use Application\Models\CrawlSetting;
+use Application\Utilities\FrontierManager;
 use System\Request\RequestContext;
 use Application\Utilities\DeepCrawler;
 
@@ -34,7 +35,7 @@ class CrawlEngine_Controller extends A_Controller
         }
 
         $data['fields'] = $fields;
-        $data['page-title'] = "Default Crawl Settings";
+        $data['page-title'] = "Run Web Crawl";
         $requestContext->setResponseData($data);
         $requestContext->setView('crawl-engine/index.php');
     }
@@ -50,21 +51,6 @@ class CrawlEngine_Controller extends A_Controller
         foreach ($crawl_settings_objects as $crawl_setting_object)
         {
             $fields['val'][$crawl_setting_object->getVarName()] = $crawl_setting_object->getCurrentValue();
-            /*
-            $multi_valued = explode("\n", $crawl_setting_object->getCurrentValue());
-            if(is_array($multi_valued))
-            {
-                $index = 0;
-                foreach ($multi_valued as $value)
-                {
-                    $fields['val'][$crawl_setting_object->getVarName()][$index++] = $value;
-                }
-            }
-            else
-            {
-                $fields['val'][$crawl_setting_object->getVarName()] = $crawl_setting_object->getCurrentValue();
-            }
-            */
         }
 
         if($requestContext->fieldIsSet('save-changes', INPUT_POST))
@@ -96,44 +82,41 @@ class CrawlEngine_Controller extends A_Controller
 
     protected function RunCrawl(RequestContext $requestContext)
     {
-        // Now, create a instance of your class, define the behaviour
-        // of the crawler (see class-reference for more options and details)
-        // and start the crawling-process.
+        if($requestContext->fieldIsSet('run-craw', INPUT_POST))
+        {
+            $fields = $requestContext->getAllFields(INPUT_POST);
 
-        set_time_limit(60 * 60 * 10);
+            set_time_limit($fields['max-run-time'] * 60);
 
-        $crawler = new DeepCrawler();
+            $crawler = new DeepCrawler();
+            foreach ($fields['val'] as $method => $value)
+            {
+                if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
+                {
+                    $crawler->$method($value);
+                }else{
+                    throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
+                }
+            }
 
-        // URL to crawl
-        $crawler->setURL("dev.ppsmbenugu.com.ng");
+            $crawler->setURL($fields['val']['setURL']);
+            if((int)$fields['url-option'] == 1){ $crawler->setURL(FrontierManager::instance()->getMostRelevantLink()); }
+            $crawler->setCrawlingDepthLimit(10);
+            $crawler->setUserAgentString(site_info('name',false)." [".home_url('',false)."]");
 
-        // Only receive content of files with content-type "text/html"
-        $crawler->addContentTypeReceiveRule("#text/html#");
+            $crawler->go();
 
-        // Ignore links to pictures, dont even request pictures
-        $crawler->addURLFilterRule("#\.(jpg|jpeg|gif|png|css|js)$# i");
+            print_r("<hr/>");
 
-        // Store and send cookie-data like a browser does
-        $crawler->enableCookieHandling(true);
-
-        // Set the traffic-limit to 1 MB (in bytes,
-        // for testing we don't want to "suck" the whole site)
-        $crawler->setTrafficLimit(1000 * 1024);
-
-        // That's enough, now here we go
-        $crawler->go();
-
-        // At the end, after the process is finished, we print a short
-        // report (see method getProcessReport() for more information)
-        $report = $crawler->getProcessReport();
-
-        if (PHP_SAPI == "cli") $lb = "\n";
-        else $lb = "<br />";
-
-        echo "Summary:".$lb;
-        echo "Links followed: ".$report->links_followed.$lb;
-        echo "Documents received: ".$report->files_received.$lb;
-        echo "Bytes received: ".$report->bytes_received." bytes".$lb;
-        echo "Process runtime: ".$report->process_runtime." sec".$lb;
+            $report = $crawler->getProcessReport();
+            if (PHP_SAPI == "cli") $lb = "\n";
+            else $lb = "<br />";
+            echo "Summary:".$lb;
+            echo "Links followed: ".$report->links_followed.$lb;
+            echo "Documents received: ".$report->files_received.$lb;
+            echo "Bytes received: ".$report->bytes_received." bytes".$lb;
+            echo "Process runtime: ".$report->process_runtime." sec".$lb;
+            echo "Reason for Termination: ".$report->abort_reason." ".$lb;
+        }
     }
 }

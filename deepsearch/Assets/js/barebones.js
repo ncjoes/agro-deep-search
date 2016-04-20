@@ -57,3 +57,13 @@ function filterSubList(parent_id, child_id)
         }
     }
 }
+
+function toggleNodeDisplay(node_selector)
+{
+    var node = document.getElementById(node_selector);
+    var display = node.getAttribute('style');
+    if(display == 'display:block')
+        node.setAttribute('style', 'display:none');
+    else
+        node.setAttribute('style', 'display:block');
+}

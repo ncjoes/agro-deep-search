@@ -169,24 +169,21 @@
     <div class="col-md-4">
         <div class="form-group form-group-sm">
             <label for="addContentTypeReceiveRule">Content-types to receive</label>
-            <span class="help-block">Separate multiple regex entries with new-line</span>
-            <textarea name="val[addContentTypeReceiveRule]" id="addContentTypeReceiveRule" class="form-control height-10vh"><?= isset($fields['val']['addContentTypeReceiveRule']) ? $fields['val']['addContentTypeReceiveRule'] : ''; ?></textarea>
+            <input name="val[addContentTypeReceiveRule]" id="addContentTypeReceiveRule" type="text" class="form-control" value="<?= isset($fields['val']['addContentTypeReceiveRule']) ? $fields['val']['addContentTypeReceiveRule'] : ''; ?>"/>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="form-group form-group-sm">
             <label for="addURLFollowRule">Link Follow Rules</label>
-            <span class="help-block">Separate multiple regex entries with new-line</span>
-            <textarea name="val[addURLFollowRule]" id="addURLFollowRule" class="form-control height-10vh"><?= isset($fields['val']['addURLFollowRule']) ? $fields['val']['addURLFollowRule'] : ''; ?></textarea>
+            <input name="val[addURLFollowRule]" id="addURLFollowRule" type="text" class="form-control" value="<?= isset($fields['val']['addURLFollowRule']) ? $fields['val']['addURLFollowRule'] : ''; ?>"/>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="form-group form-group-sm">
             <label for="addURLFilterRule">Link Filter Rules</label>
-            <span class="help-block">Separate multiple regex entries with new-line</span>
-            <textarea name="val[addURLFilterRule]" id="addURLFilterRule" class="form-control height-10vh"><?= isset($fields['val']['addURLFilterRule']) ? $fields['val']['addURLFilterRule'] : ''; ?></textarea>
+            <input name="val[addURLFilterRule]" id="addURLFilterRule" type="text" class="form-control" value="<?= isset($fields['val']['addURLFilterRule']) ? $fields['val']['addURLFilterRule'] : ''; ?>" />
         </div>
     </div>
     
