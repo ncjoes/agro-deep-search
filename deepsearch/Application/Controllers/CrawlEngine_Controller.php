@@ -124,6 +124,10 @@ class CrawlEngine_Controller extends A_Controller
             $report = $crawler->getProcessReport();
 
             //Update Crawl Record
+            $crawl->setNumLinksFollowed($report->links_followed);
+            $crawl->setNumDocumentsReceived($report->files_received);
+            $crawl->setNumByteReceived($report->bytes_received);
+            $crawl->setProcessRunTime($report->process_runtime);
             $crawl->setEndTime(new DateTime());
             switch ($report->abort_reason)
             {
