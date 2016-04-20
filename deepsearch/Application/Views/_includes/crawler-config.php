@@ -28,6 +28,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="form-group form-group-sm">
+            <div class="row">
+                <div class="col-xs-6">
+                    <label for="setCrawlingDepthLimit">Max. Crawling Depth</label>
+                </div>
+                <div class="col-xs-6">
+                    <input name="val[setCrawlingDepthLimit]" id="setCrawlingDepthLimit" type="number" class="form-control" value="<?= isset($fields['val']['setCrawlingDepthLimit']) ? $fields['val']['setCrawlingDepthLimit'] : ''; ?>" placeholder="30"/>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="col-md-4">
@@ -120,7 +132,7 @@
             <div class="form-group form-group-sm">
                 <div class="row">
                     <div class="col-xs-6">
-                        <label for="setTrafficLimit">Traffic limit (in KB)</label>
+                        <label for="setTrafficLimit">Traffic limit (in bytes)</label>
                     </div>
                     <div class="col-xs-6">
                         <input name="val[setTrafficLimit]" id="setTrafficLimit" type="number" class="form-control" value="<?= isset($fields['val']['setTrafficLimit']) ? $fields['val']['setTrafficLimit'] : ''; ?>" placeholder="102400"/>
@@ -131,7 +143,7 @@
             <div class="form-group form-group-sm">
                 <div class="row">
                     <div class="col-xs-6">
-                        <label for="setContentSizeLimit">Content Size Limit (in KB)</label>
+                        <label for="setContentSizeLimit">Content Size Limit (in bytes)</label>
                     </div>
                     <div class="col-xs-6">
                         <input name="val[setContentSizeLimit]" id="setContentSizeLimit" type="number" class="form-control" value="<?= isset($fields['val']['setContentSizeLimit']) ? $fields['val']['setContentSizeLimit'] : ''; ?>" placeholder="1024"/>

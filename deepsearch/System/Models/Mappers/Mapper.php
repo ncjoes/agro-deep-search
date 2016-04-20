@@ -27,6 +27,15 @@ abstract class Mapper
      */
     public function __construct()
     {
+        self::getPDO();
+    }
+
+    /**
+     * @return \PDO
+     * @throws \Exception
+     */
+    public static function getPDO()
+    {
         if ( ! isset(self::$PDO) )
         {
             $dsn = ApplicationRegistry::getDSN();
@@ -40,8 +49,8 @@ abstract class Mapper
             self::$PDO = new \PDO($dsn, $user, $password);
             self::$PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
+        return self::$PDO;
     }
-
     /**
      * @param $id
      * @return mixed

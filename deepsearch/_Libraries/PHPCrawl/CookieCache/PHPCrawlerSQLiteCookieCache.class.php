@@ -89,7 +89,7 @@ class PHPCrawlerSQLiteCookieCache extends PHPCrawlerCookieCacheBase
     $return_cookies = array();
 
     $Result = $this->PDO->query("SELECT * FROM cookies WHERE source_domain = '".$url_parts["domain"]."';");
-    $rows = $Result->fetchAll(PDO::FETCH_ASSOC);
+    $rows = $Result->fetchAll(\PDO::FETCH_ASSOC);
     $Result->closeCursor();
     
     $cnt = count($rows);
@@ -129,7 +129,7 @@ class PHPCrawlerSQLiteCookieCache extends PHPCrawlerCookieCacheBase
     // Open sqlite-file
     try
     {
-      $this->PDO = new PDO("sqlite:".$this->sqlite_db_file);
+      $this->PDO = new \PDO("sqlite:".$this->sqlite_db_file);
     }
     catch (Exception $e)
     {
@@ -138,8 +138,8 @@ class PHPCrawlerSQLiteCookieCache extends PHPCrawlerCookieCacheBase
     
     $this->PDO->exec("PRAGMA journal_mode = OFF");
     
-    $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-    $this->PDO->setAttribute(PDO::ATTR_TIMEOUT, 100);
+    $this->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
+    $this->PDO->setAttribute(\PDO::ATTR_TIMEOUT, 100);
     
     if ($create_tables == true)
     {

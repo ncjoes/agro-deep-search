@@ -9,8 +9,13 @@
 namespace _Libraries\PHPCrawl\UrlCache;
 
 
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
 use _Libraries\PHPCrawl\PHPCrawlerURLDescriptor;
 
+/**
+ * Class PHPCrawlerURLCacheBase
+ * @package _Libraries\PHPCrawl\UrlCache
+ */
 abstract class PHPCrawlerURLCacheBase
 {
   protected $url_priorities = array();

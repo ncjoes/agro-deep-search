@@ -9,6 +9,8 @@
 
 namespace System\Models;
 
+use System\Models\Mappers\Mapper;
+
 class DomainObjectWatcher
 {
     private $all = array();
@@ -84,10 +86,14 @@ class DomainObjectWatcher
     public function performOperations()
     {
         //START TRANSACTION
+        Mapper::getPDO()->exec("START TRANSACTION");
+
         $this->processDeletedObjects($this->delete);
         $this->processNewObjects($this->new);
         $this->processModifiedObjects($this->dirty);
+
         //END TRANSACTION
+        Mapper::getPDO()->exec("COMMIT;");
     }
 
     private function processNewObjects(&$array)

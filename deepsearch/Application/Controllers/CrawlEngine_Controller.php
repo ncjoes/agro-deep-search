@@ -14,10 +14,15 @@
 namespace Application\Controllers;
 
 
+use _Libraries\PHPCrawl\Enums\PHPCrawlerAbortReasons;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
+use Application\Models\Crawl;
 use Application\Models\CrawlSetting;
 use Application\Utilities\FrontierManager;
+use System\Models\DomainObjectWatcher;
 use System\Request\RequestContext;
 use Application\Utilities\DeepCrawler;
+use System\Utilities\DateTime;
 
 class CrawlEngine_Controller extends A_Controller
 {
@@ -88,6 +93,7 @@ class CrawlEngine_Controller extends A_Controller
 
             set_time_limit($fields['max-run-time'] * 60);
 
+            //Instantiate and setup Crawler Object
             $crawler = new DeepCrawler();
             foreach ($fields['val'] as $method => $value)
             {
@@ -98,17 +104,37 @@ class CrawlEngine_Controller extends A_Controller
                     throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
                 }
             }
-
             $crawler->setURL($fields['val']['setURL']);
             if((int)$fields['url-option'] == 1){ $crawler->setURL(FrontierManager::instance()->getMostRelevantLink()); }
-            $crawler->setCrawlingDepthLimit(10);
             $crawler->setUserAgentString(site_info('name',false)." [".home_url('',false)."]");
+            $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
+            $crawler->setCrawlingDepthLimit(10);
+            $crawler->enableResumption();
 
+            //Instantiate and setup Crawl object to record crawl-history
+            $crawl = new Crawl();
+            $crawl->setCrawlerId($crawler->getCrawlerId());
+            $crawl->setStartTime(new DateTime());
+            $crawl->setStatus(Crawl::STATUS_ONGOING);
+
+            DomainObjectWatcher::instance()->performOperations();
+
+            //Run Crawler
             $crawler->go();
-
-            print_r("<hr/>");
-
             $report = $crawler->getProcessReport();
+
+            //Update Crawl Record
+            $crawl->setEndTime(new DateTime());
+            switch ($report->abort_reason)
+            {
+                case PHPCrawlerAbortReasons::ABORTREASON_PASSEDTHROUGH : $crawl->setStatus(Crawl::STATUS_COMPLETE); break;
+                case PHPCrawlerAbortReasons::ABORTREASON_USERABORT :
+                case PHPCrawlerAbortReasons::ABORTREASON_TRAFFICLIMIT_REACHED :
+                case PHPCrawlerAbortReasons::ABORTREASON_FILELIMIT_REACHED : $crawl->setStatus(Crawl::STATUS_TERMINATED); break;
+            }
+
+            //Crawl Process Summary
+            print_r("<hr/>");
             if (PHP_SAPI == "cli") $lb = "\n";
             else $lb = "<br />";
             echo "Summary:".$lb;

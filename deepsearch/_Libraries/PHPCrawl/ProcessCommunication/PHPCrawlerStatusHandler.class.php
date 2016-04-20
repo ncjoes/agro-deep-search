@@ -11,6 +11,7 @@ namespace _Libraries\PHPCrawl\ProcessCommunication;
 
 use _Libraries\PHPCrawl\PHPCrawlerStatus;
 use _Libraries\PHPCrawl\PHPCrawlerBenchmark;
+use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
 
 class PHPCrawlerStatusHandler
 {
