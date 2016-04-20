@@ -11,6 +11,7 @@
  **/
 
 require_once("header.php");
+$fields = $data['fields'];
 ?>
 <div class="row">
     <div class="col-md-10 col-md-offset-1 main">
@@ -22,7 +23,7 @@ require_once("header.php");
             <hr/>
             <div class="text-center">
                 <p>
-                    <button name="save-changes" type="submit" class="btn btn-primary">
+                    <button name="save-changes" value="1" type="submit" class="btn btn-primary">
                         <span class="glyphicon glyphicon-forward"></span> Save Changes
                     </button>
                 </p>

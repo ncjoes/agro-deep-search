@@ -11,6 +11,7 @@
  **/
 
 require_once("header.php");
+$fields = $data['fields'];
 ?>
 <div class="row">
     <div class="col-md-10 col-md-offset-1 main">
@@ -32,13 +33,13 @@ require_once("header.php");
             </div>
             <div class="form-group form-group-sm" id="url-input">
                 <div class="row">
-                    <div class="col-sm-2 col-md-1"><label for="url">URL</label></div>
+                    <div class="col-sm-2 col-md-1"><label for="setURL">URL</label></div>
                     <div class="col-sm-6 col-md-8">
-                        <input name="url" id="url" type="url" class="form-control" value="<?= isset($fields['url']) ? $fields['url'] : ''; ?>" placeholder="http://www.site.com/"/>
+                        <input name="var[setURL]" id="setURL" type="url" class="form-control" value="<?= isset($fields['var']['setURL']) ? $fields['var']['setURL'] : ''; ?>" placeholder="http://www.site.com/"/>
                     </div>
-                    <div class="col-sm-2 col-md-1"><label for="port">Port</label></div>
+                    <div class="col-sm-2 col-md-1"><label for="setPort">Port</label></div>
                     <div class="col-sm-2">
-                        <input name="port" id="port" type="number" class="form-control" value="<?= isset($fields['port']) ? $fields['port'] : ''; ?>" placeholder="8080"/>
+                        <input name="var[setPort]" id="setPort" type="number" class="form-control" value="<?= isset($fields['var']['setPort']) ? $fields['var']['setPort'] : ''; ?>" placeholder="8080"/>
                     </div>
                 </div>
             </div>

@@ -48,6 +48,7 @@ class CrawlSetting extends A_DomainObject
     public function setVarName($var_name)
     {
         $this->var_name = $var_name;
+        $this->markDirty();
         return $this;
     }
 
@@ -66,6 +67,7 @@ class CrawlSetting extends A_DomainObject
     public function setCurrentValue($current_value)
     {
         $this->current_value = $current_value;
+        $this->markDirty();
         return $this;
     }
 
@@ -84,6 +86,7 @@ class CrawlSetting extends A_DomainObject
     public function setDefaultValue($default_value)
     {
         $this->default_value = $default_value;
+        $this->markDirty();
         return $this;
     }
 }

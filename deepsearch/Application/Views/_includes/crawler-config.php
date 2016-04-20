@@ -20,10 +20,10 @@
                 </div>
                 <div class="col-xs-7">
                     <select name="val[setFollowMode]" id="setFollowMode" class="form-control">
-                        <option value="0">0 - Follow every link</option>
-                        <option value="1">1 - Stay in domain</option>
-                        <option value="2">2 - Stay in host</option>
-                        <option value="3">3 - Stay in path</option>
+                        <option value="0" <?= selected($fields['val']['setFollowMode'], 0) ?>>0 - Follow every link</option>
+                        <option value="1" <?= selected($fields['val']['setFollowMode'], 1) ?>>1 - Stay in domain</option>
+                        <option value="2" <?= selected($fields['val']['setFollowMode'], 2) ?>>2 - Stay in host</option>
+                        <option value="3" <?= selected($fields['val']['setFollowMode'], 3) ?>>3 - Stay in path</option>
                     </select>
                 </div>
             </div>
@@ -39,8 +39,8 @@
                 </div>
                 <div class="col-xs-6">
                     <select name="val[setFollowRedirects]" id="setFollowRedirects" class="form-control">
-                        <option value="0" >No</option>
-                        <option value="1">Yes</option>
+                        <option value="0" <?= selected($fields['val']['setFollowRedirects'], 0) ?>>No</option>
+                        <option value="1" <?= selected($fields['val']['setFollowRedirects'], 1) ?>>Yes</option>
                     </select>
                 </div>
             </div>
@@ -49,12 +49,12 @@
         <div class="form-group form-group-sm">
             <div class="row">
                 <div class="col-xs-6">
-                    <label for="setCookieHandling">Enable Cookie Handling</label>
+                    <label for="enableCookieHandling">Enable Cookie Handling</label>
                 </div>
                 <div class="col-xs-6">
-                    <select name="val[setCookieHandling]" id="setCookieHandling" class="form-control">
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>
+                    <select name="val[enableCookieHandling]" id="enableCookieHandling" class="form-control">
+                        <option value="0" <?= selected($fields['val']['enableCookieHandling'], 0) ?>>No</option>
+                        <option value="1" <?= selected($fields['val']['enableCookieHandling'], 1) ?>>Yes</option>
                     </select>
                 </div>
             </div>
@@ -63,12 +63,12 @@
         <div class="form-group form-group-sm">
             <div class="row">
                 <div class="col-xs-6">
-                    <label for="setAggressiveLinkExtraction">Aggressive Link Extraction</label>
+                    <label for="enableAggressiveLinkSearch">Aggressive Link Extraction</label>
                 </div>
                 <div class="col-xs-6">
-                    <select name="val[setAggressiveLinkExtraction]" id="setAggressiveLinkExtraction" class="form-control">
-                        <option value="0" >No</option>
-                        <option value="1">Yes</option>
+                    <select name="val[enableAggressiveLinkSearch]" id="enableAggressiveLinkSearch" class="form-control">
+                        <option value="0" <?= selected($fields['val']['enableAggressiveLinkSearch'], 0) ?>>No</option>
+                        <option value="1" <?= selected($fields['val']['enableAggressiveLinkSearch'], 1) ?>>Yes</option>
                     </select>
                 </div>
             </div>
@@ -81,8 +81,22 @@
                 </div>
                 <div class="col-xs-6">
                     <select name="val[obeyRobotsTxt]" id="obeyRobotsTxt" class="form-control">
-                        <option value="0" >No</option>
-                        <option value="1">Yes</option>
+                        <option value="0" <?= selected($fields['val']['obeyRobotsTxt'], 0) ?>>No</option>
+                        <option value="1" <?= selected($fields['val']['obeyRobotsTxt'], 1) ?>>Yes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+            <div class="row">
+                <div class="col-xs-6">
+                    <label for="obeyNoFollowTags">Obey NoFollow Tags</label>
+                </div>
+                <div class="col-xs-6">
+                    <select name="val[obeyNoFollowTags]" id="obeyNoFollowTags" class="form-control">
+                        <option value="0" <?= selected($fields['val']['obeyNoFollowTags'], 0) ?>>No</option>
+                        <option value="1" <?= selected($fields['val']['obeyNoFollowTags'], 1) ?>>Yes</option>
                     </select>
                 </div>
             </div>
@@ -95,10 +109,10 @@
             <div class="form-group form-group-sm">
                 <div class="row">
                     <div class="col-xs-6">
-                        <label for="setPageLimit">Page/File limit</label>
+                        <label for="setRequestLimit">Page/File limit</label>
                     </div>
                     <div class="col-xs-6">
-                        <input name="val[setPageLimit]" id="setPageLimit" type="number" class="form-control" value="<?= isset($fields['val']['setPageLimit']) ? $fields['val']['setPageLimit'] : ''; ?>" placeholder="1000"/>
+                        <input name="val[setRequestLimit]" id="setRequestLimit" type="number" class="form-control" value="<?= isset($fields['val']['setRequestLimit']) ? $fields['val']['setRequestLimit'] : ''; ?>" placeholder="1000"/>
                     </div>
                 </div>
             </div>
@@ -154,25 +168,25 @@
 
     <div class="col-md-4">
         <div class="form-group form-group-sm">
-            <label for="addReceiveContentType">Content-types to receive</label>
+            <label for="addContentTypeReceiveRule">Content-types to receive</label>
             <span class="help-block">Separate multiple regex entries with new-line</span>
-            <textarea name="val[addReceiveContentType]" id="addReceiveContentType" class="form-control height-10vh"><?= isset($fields['val']['addReceiveContentType']) ? $fields['val']['addReceiveContentType'] : ''; ?></textarea>
+            <textarea name="val[addContentTypeReceiveRule]" id="addContentTypeReceiveRule" class="form-control height-10vh"><?= isset($fields['val']['addContentTypeReceiveRule']) ? $fields['val']['addContentTypeReceiveRule'] : ''; ?></textarea>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="form-group form-group-sm">
-            <label for="addFollowMatch">Follow matches</label>
+            <label for="addURLFollowRule">Link Follow Rules</label>
             <span class="help-block">Separate multiple regex entries with new-line</span>
-            <textarea name="val[addFollowMatch]" id="addFollowMatch" class="form-control height-10vh"><?= isset($fields['val']['addFollowMatch']) ? $fields['val']['addFollowMatch'] : ''; ?></textarea>
+            <textarea name="val[addURLFollowRule]" id="addURLFollowRule" class="form-control height-10vh"><?= isset($fields['val']['addURLFollowRule']) ? $fields['val']['addURLFollowRule'] : ''; ?></textarea>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="form-group form-group-sm">
-            <label for="addNonFollowMatch">Non follow matches</label>
+            <label for="addURLFilterRule">Link Filter Rules</label>
             <span class="help-block">Separate multiple regex entries with new-line</span>
-            <textarea name="val[addNonFollowMatch]" id="addNonFollowMatch" class="form-control height-10vh"><?= isset($fields['val']['addNonFollowMatch']) ? $fields['val']['addNonFollowMatch'] : ''; ?></textarea>
+            <textarea name="val[addURLFilterRule]" id="addURLFilterRule" class="form-control height-10vh"><?= isset($fields['val']['addURLFilterRule']) ? $fields['val']['addURLFilterRule'] : ''; ?></textarea>
         </div>
     </div>
     
