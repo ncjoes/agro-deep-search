@@ -11,7 +11,7 @@ use System\Utilities\DateTime;
  * Class AccessManager
  * @package Application\Utilities
  */
-class AccessManager
+class AccessManager extends A_Utility
 {
     private static $instance;
     private $message = null;
@@ -37,16 +37,6 @@ class AccessManager
             self::$instance = new self();
         }
         return self::$instance;
-    }
-
-    /**
-     * @param $string
-     * @return string $hash
-     */
-    public static function hashString($string)
-    {
-        $hashed_string = md5($string);
-        return $hashed_string;
     }
 
     /**
