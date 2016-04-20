@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2016 at 07:52 PM
+-- Generation Time: Apr 20, 2016 at 08:08 PM
 -- Server version: 10.0.17-MariaDB
 -- PHP Version: 5.5.30
 
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `app_crawls` (
   `id` int(16) NOT NULL,
   `crawler_id` varchar(100) NOT NULL,
-  `num_links_followed` int(5) NOT NULL,
-  `num_documents_received` int(5) NOT NULL,
-  `num_byte_received` int(16) NOT NULL,
-  `process_run_time` double NOT NULL,
+  `num_links_followed` int(5) DEFAULT NULL,
+  `num_documents_received` int(5) DEFAULT NULL,
+  `num_byte_received` int(16) DEFAULT NULL,
+  `process_run_time` double DEFAULT NULL,
   `start_time` int(20) NOT NULL,
   `end_time` int(20) DEFAULT NULL,
   `status` int(1) NOT NULL
@@ -72,7 +72,8 @@ INSERT INTO `app_crawls` (`id`, `crawler_id`, `num_links_followed`, `num_documen
 (27, '71441461172585', 0, 0, 0, 0, 1461172585, 1461172586, 1),
 (28, '71441461172629', 0, 0, 0, 0, 1461172629, 1461172633, 1),
 (29, '71441461172936', 0, 0, 0, 0, 1461172936, 1461173028, 1),
-(30, '71441461173206', 0, 0, 0, 0, 1461173206, 1461173290, 1);
+(30, '71441461173206', 0, 0, 0, 0, 1461173206, 1461173290, 1),
+(31, '71441461175669', 9, 8, 63885, 1.1703288555145, 1461175669, 1461175671, 1);
 
 -- --------------------------------------------------------
 
@@ -260,7 +261,7 @@ INSERT INTO `bb_sessions` (`id`, `user_id`, `privilege`, `start_time`, `user_age
 (8, 1, 1, 1461022831, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461022852, 0),
 (9, 1, 1, 1461026768, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461026768, 0),
 (10, 1, 1, 1461028677, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461034155, 0),
-(11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461166713, 1);
+(11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461175479, 1);
 
 -- --------------------------------------------------------
 
@@ -449,7 +450,7 @@ ALTER TABLE `bb_users_privileges`
 -- AUTO_INCREMENT for table `app_crawls`
 --
 ALTER TABLE `app_crawls`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 --
 -- AUTO_INCREMENT for table `app_crawl_settings`
 --

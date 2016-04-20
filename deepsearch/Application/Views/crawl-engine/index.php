@@ -51,10 +51,10 @@ $fields = $data['fields'];
 
             <div class="form-group form-group-sm">
                 <div class="row">
-                    <div class="col-xs-6 col-sm-3 col-sm-offset-3 text-right">
+                    <div class="col-xs-5 col-xs-offset-1 col-sm-3 col-sm-offset-3 text-right">
                         <label for="max-run-time">Maximum Run Time (in minutes)</label>
                     </div>
-                    <div class="col-xs-6 col-sm-3">
+                    <div class="col-xs-5 col-sm-2">
                         <input name="max-run-time" id="max-run-time" type="number" class="form-control" value="<?= isset($fields['max-run-time']) ? $fields['max-run-time'] : '10'; ?>" placeholder="10"/>
                     </div>
                 </div>

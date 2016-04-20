@@ -45,7 +45,7 @@ class CrawlEngine_Controller extends A_Controller
         $requestContext->setView('crawl-engine/index.php');
     }
 
-    protected function CrawlSettings(RequestContext $requestContext)
+    protected function DefaultCrawlSettings(RequestContext $requestContext)
     {
         $data = array();
         $fields = array();
