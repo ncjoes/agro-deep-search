@@ -69,4 +69,9 @@ class FrontierManager extends A_Utility
             $this->crawl_line[] = $link_object->getUrl();
         }
     }
+
+    public function __destruct()
+    {
+        // TODO: Implement __destruct() method.
+    }
 }

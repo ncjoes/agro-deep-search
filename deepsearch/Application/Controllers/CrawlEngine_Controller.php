@@ -19,9 +19,8 @@ use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
 use Application\Models\Crawl;
 use Application\Models\CrawlSetting;
 use Application\Utilities\FrontierManager;
-use System\Models\DomainObjectWatcher;
 use System\Request\RequestContext;
-use Application\Utilities\DeepCrawler;
+use Application\Utilities\DS_PHPCrawler;
 use System\Utilities\DateTime;
 
 class CrawlEngine_Controller extends A_Controller
@@ -92,12 +91,13 @@ class CrawlEngine_Controller extends A_Controller
 
     protected function RunCrawl(RequestContext $requestContext)
     {
-        if($requestContext->fieldIsSet('run-craw', INPUT_POST))
+        $requestContext->setView('_includes/_empty.php');
+        if($requestContext->fieldIsSet('crawl-process-starter', INPUT_POST))
         {
             $fields = $requestContext->getAllFields(INPUT_POST);
 
             //Instantiate and setup Crawler Object
-            $crawler = new DeepCrawler();
+            $crawler = new DS_PHPCrawler();
             foreach ($fields['val'] as $method => $value)
             {
                 if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
@@ -119,8 +119,7 @@ class CrawlEngine_Controller extends A_Controller
             $crawl->setSessionId($requestContext->getSession()->getId());
             $crawl->setStartTime(new DateTime());
             $crawl->setStatus(Crawl::STATUS_ONGOING);
-
-            DomainObjectWatcher::instance()->performOperations();
+            $crawl->mapper()->insert($crawl);
 
             //Bind Crawler and Craw enable live feedback for Crawl Process Monitor
             $crawler->setCrawlRecord($crawl);
@@ -153,12 +152,12 @@ class CrawlEngine_Controller extends A_Controller
             echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
             echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
             echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
-
-            $requestContext->setView('_includes/_empty.php');
+        }else{
+            echo "Internal Error";
         }
     }
 
-    protected function GetCrawlProgressInfo(RequestContext $requestContext)
+    protected function CrawlProgressInfo(RequestContext $requestContext)
     {
         $data = array();
         $data['status'] = -1;
@@ -166,17 +165,19 @@ class CrawlEngine_Controller extends A_Controller
 
         $sid = $requestContext->fieldIsSet('sid', INPUT_GET) ? $requestContext->getField('sid', INPUT_GET) : null;
         $cid = $requestContext->fieldIsSet('cid', INPUT_GET) ? $requestContext->getField('cid', INPUT_GET) : null;
-        $crawl = is_object(Crawl::getMapper('Crawl')->find( $cid )) ?
-            Crawl::getMapper('Crawl')->find( $cid ) :
-            is_object(Crawl::getMapper('Crawl')->findLiveCrawls( $sid )) ?
-                Crawl::getMapper('Crawl')->findLiveCrawls( $sid )->current() :
-                null;
+
+        $crawl = null;
+        $_by_cid = Crawl::getMapper('Crawl')->find( $cid );
+        $_by_sid = Crawl::getMapper('Crawl')->findBySessionId( $sid );
+        $crawl = is_object($_by_sid) ? $_by_sid->current() : $crawl;
+        $crawl = is_object($_by_cid) ? $_by_cid : $crawl;
 
         if(is_object($crawl))
         {
+            //if($cid != null) echo "yes";
             $data['current-crawl'] = $crawl;
             $data['cid'] = $crawl->getId();
-            $data['status'] = $data['current-crawl']->getStatus();
+            $data['status'] = $crawl->getStatus();
         }
 
         $requestContext->setResponseData($data);

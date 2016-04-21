@@ -20,15 +20,17 @@ $sid = $data['sid'];
 
     function refreshMonitorStatus()
     {
-        intervalHandle = setInterval(function ()
-        {
-            var cid = document.getElementById('crawler-id').getAttribute('value');
-            htmlGetRequest("<?= home_url('/crawl-engine/get-crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText );
-        }, 2000 );
-
         setTimeout(function () {
-            showNode('crawler-monitor');
-        }, 4000);
+            intervalHandle = setInterval(function ()
+            {
+                var cid = document.getElementById('crawler-id').getAttribute('value');
+                htmlGetRequest("<?= home_url('/crawl-engine/crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText );
+            }, 1000 );
+
+            setTimeout(function () {
+                showNode('crawler-monitor');
+            }, 1000);
+        }, 2000)
     }
 
     function refreshStatusText( html )
@@ -38,11 +40,13 @@ $sid = $data['sid'];
         {
             clearInterval(intervalHandle);
             document.getElementById('monitor-display-toggle').removeAttribute('disabled');
+            document.getElementById('crawl-process-starter').removeAttribute('disabled');
             document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
         }
         else
         {
             document.getElementById('crawl-progress-info').innerHTML = html;
+            document.getElementById('crawl-process-starter').setAttribute('disabled', 'disabled');
         }
     }
 </script>
@@ -96,7 +100,7 @@ $sid = $data['sid'];
             </div>
 
             <div class="text-center">
-                <button name="run-craw" type="submit" class="btn btn-primary btn-lg">
+                <button name="crawl-process-starter" id="crawl-process-starter" type="submit" class="btn btn-primary btn-lg">
                     <span class="glyphicon glyphicon-forward"></span> Run Crawl
                 </button>
             </div>

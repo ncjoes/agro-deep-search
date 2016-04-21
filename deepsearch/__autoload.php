@@ -30,17 +30,17 @@ foreach($__autoload as $file)
 
 function __autoload( $path )
 {
-    if( preg_match( '/\\\\/', $path ) )
-    {
-        $path = str_replace('\\', DIRECTORY_SEPARATOR, $path );
-    }
-    if( preg_match('#PHPCrawl#', $path))
+    if( preg_match("/_Libraries\\\\PHPCrawl/i", $path))
     {
         $path .= ".class.php";
     }
     else
     {
         $path .= ".php";
+    }
+    if( preg_match( '/\\\\/', $path ) )
+    {
+        $path = str_replace('\\', DIRECTORY_SEPARATOR, $path );
     }
 
     if(!is_file($path))
