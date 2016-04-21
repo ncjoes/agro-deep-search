@@ -26,7 +26,7 @@ $sid = $data['sid'];
 
         setTimeout(function () {
             showNode('crawler-monitor');
-        }, 3);
+        }, 4000);
     }
 
     function refreshStatusText( html )
@@ -108,15 +108,13 @@ $sid = $data['sid'];
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
                 <h2 class="page-header text-center">Crawler Process Monitor</h2>
                 <div id="crawl-progress-info">
-                    <?php
-                    echo file_get_contents(home_url('/crawl-engine/get-crawl-progress-info/?sid='.$sid, false));
-                    ?>
+                    <input name="crawl-status-code" id="crawl-status-code" type="hidden" value="-1">
                 </div>
                 <hr/>
                 <iframe frameborder="0" id="crawled-links-view" align="middle" allowtransparency="1" name="crawled-links-view" scrolling="auto"></iframe>
                 <hr/>
                 <div class="text-center">
-                    <button id="monitor-display-toggle" class="btn btn-primary" onclick="hideNode('crawler-monitor')" disabled="disabled">
+                    <button id="monitor-display-toggle" class="btn btn-primary" onclick="window.location = document.URL;" disabled="disabled">
                         <span class="glyphicon glyphicon-modal-window"></span> Close Monitor
                     </button>
                 </div>

@@ -16,6 +16,7 @@ namespace Application\Utilities;
 
 use _Libraries\PHPCrawl\PHPCrawler;
 use _Libraries\PHPCrawl\PHPCrawlerDocumentInfo;
+use Application\Models\Crawl;
 
 // Extend the class and override the handleDocumentInfo()-method
 /**
@@ -25,32 +26,52 @@ use _Libraries\PHPCrawl\PHPCrawlerDocumentInfo;
 class DeepCrawler extends PHPCrawler
 {
     /**
+     * @var Crawl
+     */
+    protected $crawl_record;
+
+    /**
+     * @return Crawl
+     */
+    public function getCrawlRecord()
+    {
+        return $this->crawl_record;
+    }
+
+    /**
+     * @param Crawl $crawl_record
+     * @return DeepCrawler
+     */
+    public function setCrawlRecord(Crawl $crawl_record)
+    {
+        $this->crawl_record = $crawl_record;
+        return $this;
+    }
+
+    /**
      * @param \_Libraries\PHPCrawl\PHPCrawlerDocumentInfo $DocInfo
      * @return null
      */
     public function handleDocumentInfo(PHPCrawlerDocumentInfo $DocInfo)
     {
-        // Just detect linebreak for output ("\n" in CLI-mode, otherwise "<br>").
-        if (PHP_SAPI == "cli") $lb = "\n";
-        else $lb = "<br />";
-
-        // Print the URL and the HTTP-status-Code
+        if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
         echo "Page requested: ".$DocInfo->url." (".$DocInfo->http_status_code.")".$lb;
-
-        // Print the refering URL
-        echo "Referer-page: ".$DocInfo->referer_url.$lb;
-
-        // Print if the content of the document was be recieved or not
-        if ($DocInfo->received == true)
-            echo "Content received: ".$DocInfo->bytes_received." bytes".$lb;
-        else
-            echo "Content not received".$lb;
+        echo "Referrer-page: ".$DocInfo->referer_url.$lb;
+        if ($DocInfo->received == true){ echo "Content received: ".$DocInfo->bytes_received." bytes".$lb; }
+        else{ echo "Content not received".$lb; }
+        echo "<hr/>";
+        flush();
 
         // Now you should do something with the content of the actual
         // received page or file ($DocInfo->source), we skip it in this example
 
-        echo "<hr/>";
-
-        flush();
+        //Update Crawl Record
+        $crawl = $this->crawl_record;
+        //$report = $this->getProcessReport();
+        $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
+        $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
+        $crawl->setNumByteReceived($crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received : 0));
+        $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
+        $crawl->mapper()->update($crawl);
     }
 }

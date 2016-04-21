@@ -25,7 +25,7 @@ class Crawl_Mapper extends A_Mapper
         $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE id=?");
         $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_crawls");
         $this->selectByCrawlerIdStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE crawler_id=?");
-        $this->selectBySessionIdStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE session_id=? ORDER BY id DESC LIMIT 1");
+        $this->selectBySessionIdStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE session_id=? ORDER BY id DESC");
         $this->updateStmt = self::$PDO->prepare("UPDATE app_crawls SET crawler_id=?, session_id=?, num_links_followed=?, num_documents_received=?, num_bytes_received=?, process_run_time=?, start_time=?, end_time=?, status=? WHERE id=?");
         $this->insertStmt = self::$PDO->prepare("INSERT INTO app_crawls (crawler_id,session_id,num_links_followed,num_documents_received,num_bytes_received,process_run_time,start_time,end_time,status)VALUES(?,?,?,?,?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_crawls WHERE id=?");

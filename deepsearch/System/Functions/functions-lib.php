@@ -151,10 +151,10 @@ function get_file_size_unit($file_size)
             return intval($file_size ) ." Bytes" ;
             break;
         case ($file_size/1024 >= 1 && $file_size/(1024*1024) < 1)  :
-            return intval($file_size/1024) ." KB" ;
+            return round($file_size/1024, 2) ." KB" ;
             break;
         default:
-            return intval($file_size/(1024*1024)) ." MB" ;
+            return round($file_size/(1024*1024), 3) ." MB" ;
     }
 }
 
@@ -178,27 +178,27 @@ function seconds_to_str($period_sec)
 
     if($period_sec < 60)
     {
-        $return_value = intval($period_sec).' secs.';
+        $return_value = intval($period_sec).'s';
     }
     elseif($period_sec < 3600)
     {
-        $return_value = (intval($period_sec/60)).' mins.';
+        $return_value = (intval($period_sec/60)).'m ';
+        $return_value .= ($period_sec%60)."s";
     }
     elseif($period_sec >= 3600 and $period_sec < (3600 * 24) )
     {
         $hrs = intval($period_sec/3600);
-        $return_value = ($hrs>0)? (($hrs>1) ? $hrs.' hrs ': $hrs.' hr ') : '';
-
-        $min = intval(($period_sec%3600)/60);
-        $return_value .= $min>0 ? $min.' min.' : '';
+        $return_value = ($hrs>0)? (($hrs>1) ? $hrs.'hs ': $hrs.'h ') : '';
+        $return_value .= intval(($period_sec%3600)/60).'m ';
+        $return_value .= (($period_sec%3600)%60)."s";
     }
     elseif($period_sec > (3600 * 24))
     {
         $days = intval($period_sec/(3600*24));
-        $return_value .= ($days>0) ? (($days>1) ? $days.' days ': $days.' day ') : '';
+        $return_value .= ($days>0) ? (($days>1) ? $days.'days ': $days.'day ') : '';
 
         $hrs = ( intval( ($period_sec%(3600*24) ) /3600) );
-        $return_value .= ($hrs>0)? (($hrs>1) ? $hrs.' hrs ': $hrs.' hr') : '';
+        $return_value .= $hrs>1 ? $hrs.'hs ': $hrs.'hr ';
 
         $min = intval(($period_sec%3600)/60);
         $return_value .= $min>0 ? $min.' min.' : '';

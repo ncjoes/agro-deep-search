@@ -123,6 +123,9 @@ class CrawlEngine_Controller extends A_Controller
 
             DomainObjectWatcher::instance()->performOperations();
 
+            //Bind Crawler and Craw enable live feedback for Crawl Process Monitor
+            $crawler->setCrawlRecord($crawl);
+
             //Run Crawler
             set_time_limit($fields['max-run-time'] * 60);
             echo "Crawl Started ...";
