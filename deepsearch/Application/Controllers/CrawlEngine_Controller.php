@@ -40,6 +40,7 @@ class CrawlEngine_Controller extends A_Controller
         }
 
         $data['fields'] = $fields;
+        $data['sid'] = $requestContext->getSession()->getId();
         $data['page-title'] = "Run Web Crawl";
         $requestContext->setResponseData($data);
         $requestContext->setView('crawl-engine/index.php');
@@ -68,6 +69,8 @@ class CrawlEngine_Controller extends A_Controller
                 $setting->setVarName($var_name)->setCurrentValue($value);
                 if(! strlen($setting->getDefaultValue())) $setting->setDefaultValue($value);
             }
+            $requestContext->setFlashData("Default Crawler Configurations Saved Successfully");
+            $data['status'] = true;
         }
 
         if($requestContext->fieldIsSet('reset-all', INPUT_POST))
@@ -77,6 +80,8 @@ class CrawlEngine_Controller extends A_Controller
                 $crawl_setting_object->setCurrentValue($crawl_setting_object->getDefaultValue());
                 $fields['val'][$crawl_setting_object->getVarName()] = $crawl_setting_object->getCurrentValue();
             }
+            $requestContext->setFlashData("All Crawler Configurations Reset to Factory Defaults");
+            $data['status'] = true;
         }
 
         $data['fields'] = $fields;
@@ -90,8 +95,6 @@ class CrawlEngine_Controller extends A_Controller
         if($requestContext->fieldIsSet('run-craw', INPUT_POST))
         {
             $fields = $requestContext->getAllFields(INPUT_POST);
-
-            set_time_limit($fields['max-run-time'] * 60);
 
             //Instantiate and setup Crawler Object
             $crawler = new DeepCrawler();
@@ -108,18 +111,23 @@ class CrawlEngine_Controller extends A_Controller
             if((int)$fields['url-option'] == 1){ $crawler->setURL(FrontierManager::instance()->getMostRelevantLink()); }
             $crawler->setUserAgentString(site_info('name',false)." [".home_url('',false)."]");
             $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
-            $crawler->setCrawlingDepthLimit(10);
+            $crawler->setRequestDelay(1);
             $crawler->enableResumption();
 
             //Instantiate and setup Crawl object to record crawl-history
             $crawl = new Crawl();
             $crawl->setCrawlerId($crawler->getCrawlerId());
+            $crawl->setSessionId($requestContext->getSession()->getId());
             $crawl->setStartTime(new DateTime());
             $crawl->setStatus(Crawl::STATUS_ONGOING);
 
             DomainObjectWatcher::instance()->performOperations();
 
             //Run Crawler
+            set_time_limit($fields['max-run-time'] * 60);
+            echo "Crawl Started ...";
+            echo "Crawler-ID: ".$crawler->getCrawlerId();
+            echo "<hr/>";
             $crawler->go();
             $report = $crawler->getProcessReport();
 
@@ -138,15 +146,36 @@ class CrawlEngine_Controller extends A_Controller
             }
 
             //Crawl Process Summary
-            print_r("<hr/>");
+            echo "<hr/>";
             if (PHP_SAPI == "cli") $lb = "\n";
             else $lb = "<br />";
             echo "Summary:".$lb;
             echo "Links followed: ".$report->links_followed.$lb;
             echo "Documents received: ".$report->files_received.$lb;
-            echo "Bytes received: ".$report->bytes_received." bytes".$lb;
-            echo "Process runtime: ".$report->process_runtime." sec".$lb;
-            echo "Reason for Termination: ".$report->abort_reason." ".$lb;
+            echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
+            echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
+            echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
+
+            $requestContext->setView('_includes/_empty.php');
         }
+    }
+
+    protected function GetCrawlProgressInfo(RequestContext $requestContext)
+    {
+        $data = array();
+        $data['status'] = -1;
+        $data['current-crawl'] = null;
+
+        $sid = $requestContext->fieldIsSet('sid', INPUT_GET) ? $requestContext->getField('sid', INPUT_GET) : null;
+        $crawls = Crawl::getMapper('Crawl')->findLiveCrawls( $sid );
+
+        if(is_object($crawls) and is_object($crawls->current()))
+        {
+            $data['current-crawl'] = $crawls->current();
+            $data['status'] = $data['current-crawl']->getStatus();
+        }
+
+        $requestContext->setResponseData($data);
+        $requestContext->setView('crawl-engine/_active-crawls-progress-info.php');
     }
 }

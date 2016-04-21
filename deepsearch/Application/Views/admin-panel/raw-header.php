@@ -27,10 +27,9 @@ $page_title = isset($data['page-title']) ? $data['page-title'] : site_info('name
     <!-- Bootstrap core CSS -->
     <link href="<?php home_url('/Assets/css/style.css'); ?>" type="text/css" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="<?php stylesheet_url(); ?>" rel="stylesheet"/>
-
     <!-- Custom styles for this template -->
     <link href="<?php home_url('/Assets/css/dashboard.css'); ?>" type="text/css" rel="stylesheet">
 
+    <!-- Additional Headers -->
+    <?= isset($extra_headers) ? $extra_headers : ''; ?>
 </head>

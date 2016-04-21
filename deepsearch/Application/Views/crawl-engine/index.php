@@ -10,13 +10,45 @@
  * Time:    10:09 AM
  **/
 
+$extra_headers = "<link href=\"".home_url('/Assets/css/crawl-engine.css',false)."\" type=\"text/css\" rel=\"stylesheet\">";
 require_once("header.php");
 $fields = $data['fields'];
+$sid = $data['sid'];
 ?>
+<script type="text/javascript">
+    var intervalHandle;
+    function refreshMonitorStatus()
+    {
+        intervalHandle = setInterval(function ()
+        {
+            htmlGetRequest("<?= home_url('/crawl-engine/get-crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>", refreshStatusText );
+        }, 2000 );
+
+        setTimeout(function () {
+            showNode('crawler-monitor');
+        }, 3);
+    }
+
+    function refreshStatusText( html )
+    {
+        var crawler_status_code = document.getElementById('crawl-status-code').getAttribute('value');
+        if (crawler_status_code == 1)
+        {
+            clearInterval(intervalHandle);
+            document.getElementById('monitor-display-toggle').removeAttribute('disabled');
+        }
+        else
+        {
+            document.getElementById('crawl-progress-info').innerHTML = html;
+        }
+    }
+</script>
+
 <div class="row">
     <div class="col-md-10 col-md-offset-1 main">
         <h3 class="page-header">Run Web Crawl</h3>
-        <form method="post" enctype="multipart/form-data" action="<?php home_url('/crawl-engine/run-crawl/'); ?>">
+        <form method="post" enctype="multipart/form-data" action="<?php home_url('/crawl-engine/run-crawl/'); ?>" target="crawled-links-view"
+              onsubmit="refreshMonitorStatus('monitor-display-toggle');">
 
             <div class="form-group form-group-sm">
                 <div class="row">
@@ -39,7 +71,7 @@ $fields = $data['fields'];
                     </div>
                     <div class="col-sm-2 col-md-1"><label for="setPort">Port</label></div>
                     <div class="col-sm-2">
-                        <input name="val[setPort]" id="setPort" type="number" class="form-control" value="<?= isset($fields['val']['setPort']) ? $fields['val']['setPort'] : ''; ?>" placeholder="8080"/>
+                        <input name="val[setPort]" id="setPort" type="number" class="form-control" value="<?= isset($fields['val']['setPort']) ? $fields['val']['setPort'] : '8080'; ?>" placeholder="8080"/>
                     </div>
                 </div>
             </div>
@@ -55,7 +87,7 @@ $fields = $data['fields'];
                         <label for="max-run-time">Maximum Run Time (in minutes)</label>
                     </div>
                     <div class="col-xs-5 col-sm-2">
-                        <input name="max-run-time" id="max-run-time" type="number" class="form-control" value="<?= isset($fields['max-run-time']) ? $fields['max-run-time'] : '10'; ?>" placeholder="10"/>
+                        <input name="max-run-time" id="max-run-time" type="number" class="form-control" value="<?= isset($fields['max-run-time']) ? $fields['max-run-time'] : '30'; ?>" placeholder="30"/>
                     </div>
                 </div>
             </div>
@@ -68,6 +100,32 @@ $fields = $data['fields'];
         </form>
     </div>
 </div>
+</div><!--/container-fluid-->
+
+<div id="crawler-monitor" style="display: none;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+                <h2 class="page-header text-center">Crawler Process Monitor</h2>
+                <div id="crawl-progress-info">
+                    <?php
+                    echo file_get_contents(home_url('/crawl-engine/get-crawl-progress-info/?sid='.$sid, false));
+                    ?>
+                </div>
+                <hr/>
+                <iframe frameborder="0" id="crawled-links-view" align="middle" allowtransparency="1" name="crawled-links-view" scrolling="auto"></iframe>
+                <hr/>
+                <div class="text-center">
+                    <button id="monitor-display-toggle" class="btn btn-primary" onclick="hideNode('crawler-monitor')" disabled="disabled">
+                        <span class="glyphicon glyphicon-modal-window"></span> Close Monitor
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
 <?php
 require_once("footer.php");
 ?>

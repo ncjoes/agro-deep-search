@@ -40,6 +40,9 @@ li.active a, li.active a:focus{
     background-color: #eeeeee !important;
     border: none;
 }
+.footer-nav{
+    margin-bottom: 0;
+}
 
 .dropdown-toggle{
     color: inherit !important;

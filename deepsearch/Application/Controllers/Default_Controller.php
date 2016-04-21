@@ -23,7 +23,7 @@ class Default_Controller extends A_Controller
      */
     protected function doExecute(RequestContext $requestContext)
     {
-        $data = array('page-title'=>"Nwuban Farms");
+        $data = array('page-title'=>"Search");
 
         $requestContext->setResponseData($data);
         $requestContext->setView('index.php');

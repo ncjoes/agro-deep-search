@@ -15,6 +15,7 @@ namespace Application\Utilities;
 
 
 use _Libraries\PHPCrawl\PHPCrawler;
+use _Libraries\PHPCrawl\PHPCrawlerDocumentInfo;
 
 // Extend the class and override the handleDocumentInfo()-method
 /**
@@ -27,7 +28,7 @@ class DeepCrawler extends PHPCrawler
      * @param \_Libraries\PHPCrawl\PHPCrawlerDocumentInfo $DocInfo
      * @return null
      */
-    public function handleDocumentInfo($DocInfo)
+    public function handleDocumentInfo(PHPCrawlerDocumentInfo $DocInfo)
     {
         // Just detect linebreak for output ("\n" in CLI-mode, otherwise "<br>").
         if (PHP_SAPI == "cli") $lb = "\n";

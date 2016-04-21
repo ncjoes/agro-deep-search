@@ -17,6 +17,9 @@ $fields = $data['fields'];
     <div class="col-md-10 col-md-offset-1 main">
         <h3 class="page-header">Default Crawler Settings</h3>
         <form method="post" enctype="multipart/form-data" action="">
+            <div class="text-center full-margin-bottom <?= (isset($data['status']) and $data['status']) ? 'text-success bg-success' : 'text-danger bg-danger';?>">
+                <?= $rc->getFlashData(); ?>
+            </div>
             <?php
             require_once("Application/Views/_includes/crawler-config.php");
             ?>

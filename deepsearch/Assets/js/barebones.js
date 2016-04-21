@@ -67,3 +67,54 @@ function toggleNodeDisplay(node_selector)
     else
         node.setAttribute('style', 'display:block');
 }
+
+function showNode(nodeId) {
+    document.getElementById(nodeId).setAttribute('style','display:block;')
+}
+function hideNode(nodeId) {
+    document.getElementById(nodeId).setAttribute('style','display:none;')
+}
+
+
+function makeHttpRequest()
+{
+    try {return new XMLHttpRequest();}
+    catch (e) {}
+    try {return new ActiveXObject("Msxml2.XMLHTTP");}
+    catch (e) {}
+    try {return new ActiveXObject("Microsoft.XMLHTTP");}
+    catch (e) {}
+}
+
+function httpRequestResponse(code)
+{
+    var rs = '';
+    switch(code)
+    {
+        case 404: rs = ' 404 : Page Not Found.'; break;
+        case 414: rs = ': Request URL too long for the server.'; break;
+        case 0: rs = ': Can not establish http connection.'; break;
+        default : rs = ': Unknown Type.'; break;
+    }
+    return rs;
+}
+function htmlGetRequest(url, params, actions)
+{
+    var requestObject = makeHttpRequest();
+    requestObject.open('GET', url + '?' + params, true);
+    requestObject.send(null);
+    requestObject.onreadystatechange = function()
+    {
+        if(requestObject.readyState == 4)
+        {
+            if (requestObject.status == 200)
+            {
+                var response = requestObject.responseText;
+                if(actions != null){return actions(response);}
+                else{alert(response);}
+            }else{
+                alert('Error '+httpRequestResponse(requestObject.status));
+            }
+        }
+    }
+}

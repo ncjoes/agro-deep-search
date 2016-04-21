@@ -15,10 +15,10 @@
     <div class="col-md-4">
         <div class="form-group form-group-sm">
             <div class="row">
-                <div class="col-xs-5">
+                <div class="col-xs-6">
                     <label for="setFollowMode">Follow mode</label>
                 </div>
-                <div class="col-xs-7">
+                <div class="col-xs-6">
                     <select name="val[setFollowMode]" id="setFollowMode" class="form-control">
                         <option value="0" <?= selected($fields['val']['setFollowMode'], 0) ?>>0 - Follow every link</option>
                         <option value="1" <?= selected($fields['val']['setFollowMode'], 1) ?>>1 - Stay in domain</option>
@@ -35,7 +35,7 @@
                     <label for="setCrawlingDepthLimit">Max. Crawling Depth</label>
                 </div>
                 <div class="col-xs-6">
-                    <input name="val[setCrawlingDepthLimit]" id="setCrawlingDepthLimit" type="number" class="form-control" value="<?= isset($fields['val']['setCrawlingDepthLimit']) ? $fields['val']['setCrawlingDepthLimit'] : ''; ?>" placeholder="30"/>
+                    <input name="val[setCrawlingDepthLimit]" id="setCrawlingDepthLimit" type="number" class="form-control" value="<?= isset($fields['val']['setCrawlingDepthLimit']) ? $fields['val']['setCrawlingDepthLimit'] : '5'; ?>" placeholder="10" max="10" min="1"/>
                 </div>
             </div>
         </div>

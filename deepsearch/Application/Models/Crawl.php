@@ -23,6 +23,7 @@ use System\Utilities\DateTime;
 class Crawl extends A_StatefulObject
 {
     private $crawler_id;
+    private $session_id;
     private $num_links_followed;
     private $num_documents_received;
     private $num_byte_received;
@@ -49,6 +50,25 @@ class Crawl extends A_StatefulObject
     public function getCrawlerId()
     {
         return $this->crawler_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionId()
+    {
+        return $this->session_id;
+    }
+
+    /**
+     * @param mixed $session_id
+     * @return Crawl
+     */
+    public function setSessionId($session_id)
+    {
+        $this->session_id = $session_id;
+        $this->markDirty();
+        return $this;
     }
 
     /**

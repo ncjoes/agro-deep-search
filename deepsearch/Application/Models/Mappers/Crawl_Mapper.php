@@ -25,8 +25,9 @@ class Crawl_Mapper extends A_Mapper
         $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE id=?");
         $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_crawls");
         $this->selectByCrawlerIdStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE crawler_id=?");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_crawls SET crawler_id=?, num_links_followed=?, num_documents_received=?, num_byte_received=?, process_run_time=?, start_time=?, end_time=?, status=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_crawls (crawler_id,num_links_followed,num_documents_received,num_byte_received,process_run_time,start_time,end_time,status)VALUES(?,?,?,?,?,?,?,?)");
+        $this->selectBySessionIdStmt = self::$PDO->prepare("SELECT * FROM app_crawls WHERE session_id=? ORDER BY id DESC LIMIT 1");
+        $this->updateStmt = self::$PDO->prepare("UPDATE app_crawls SET crawler_id=?, session_id=?, num_links_followed=?, num_documents_received=?, num_bytes_received=?, process_run_time=?, start_time=?, end_time=?, status=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_crawls (crawler_id,session_id,num_links_followed,num_documents_received,num_bytes_received,process_run_time,start_time,end_time,status)VALUES(?,?,?,?,?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_crawls WHERE id=?");
     }
 
@@ -37,6 +38,13 @@ class Crawl_Mapper extends A_Mapper
     public function findByCrawlerId($crawler_id)
     {
         return $this->findHelper($crawler_id, $this->selectByCrawlerIdStmt);
+    }
+
+    public function findLiveCrawls($session_id)
+    {
+        $this->selectBySessionIdStmt->execute( array($session_id) );
+        $raw_data = $this->selectBySessionIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection( $raw_data );
     }
 
     /**
@@ -75,6 +83,7 @@ class Crawl_Mapper extends A_Mapper
     {
         $values = array(
             $object->getCrawlerId(),
+            $object->getSessionId(),
             $object->getNumLinksFollowed(),
             $object->getNumDocumentsReceived(),
             $object->getNumByteReceived(),
@@ -96,6 +105,7 @@ class Crawl_Mapper extends A_Mapper
     {
         $values = array(
             $object->getCrawlerId(),
+            $object->getSessionId(),
             $object->getNumLinksFollowed(),
             $object->getNumDocumentsReceived(),
             $object->getNumByteReceived(),

@@ -60,8 +60,8 @@ function sub_words($string, $start, $length)
 
 function validate_email($email)
 {
-    $regexp = "^([_a-z0-9-]+)(.[_a-z0-9-]+)*@([a-z0-9-]+)(.[a-z0-9-]+)*(.[a-z]{2,6})$";
-    if(eregi($regexp,$email))
+    $regexp = "/([_a-z0-9-]+)(.[_a-z0-9-]+)*@([a-z0-9-]+)(.[a-z0-9-]+)*(.[a-z]{2,6})/i";
+    if(preg_match($regexp,$email))
     {
         return true;
     }
@@ -84,12 +84,14 @@ function validate_phone($phone)
     $etisalat = array('0809','0807','0819','0817','0818','0808','0708','0900','0909');
     $glo = array('0805','0815','0705');
     $others = array('0802','0812','0810','0701');
-    $prefixes = array_merge($mtn,$etisalat,$glo,$others);
+    $prefixes = array_merge($mtn,$etisalat);
+    $prefixes = array_merge($prefixes, $glo);
+    $prefixes = array_merge($prefixes, $others);
 
     foreach($prefixes as $prefix)
     {
-        $regexp = "^(".$prefix.")([0-9]{7})$";
-        if(eregi($regexp,$phone)){return true;}
+        $regexp = "/(".$prefix.")([0-9]{7})/";
+        if(preg_match($regexp,$phone)){return true;}
     }
     return false;
 }
@@ -166,38 +168,43 @@ function preProcessTimeArr(array &$time)
 function getTimeDifference($start,$current=null)
 {
     $current = is_null($current) ? mktime() : $current;
-    $return_value = NULL;
     $period_sec = abs($current - $start);
+    return seconds_to_str($period_sec);
+}
+
+function seconds_to_str($period_sec)
+{
+    $return_value = NULL;
+
     if($period_sec < 60)
     {
-        $return_value = $period_sec.' seconds';
+        $return_value = intval($period_sec).' secs.';
     }
     elseif($period_sec < 3600)
     {
-        $return_value = ((int)($period_sec/60)).' minutes';
+        $return_value = (intval($period_sec/60)).' mins.';
     }
     elseif($period_sec >= 3600 and $period_sec < (3600 * 24) )
     {
-        $hrs = (int)($period_sec/3600);
+        $hrs = intval($period_sec/3600);
         $return_value = ($hrs>0)? (($hrs>1) ? $hrs.' hrs ': $hrs.' hr ') : '';
 
-        $min = (int)(($period_sec%3600)/60);
+        $min = intval(($period_sec%3600)/60);
         $return_value .= $min>0 ? $min.' min.' : '';
     }
     elseif($period_sec > (3600 * 24))
     {
-        $days = (int)($period_sec/(3600*24));
+        $days = intval($period_sec/(3600*24));
         $return_value .= ($days>0) ? (($days>1) ? $days.' days ': $days.' day ') : '';
 
-        $hrs = ( (int)( ($period_sec%(3600*24) ) /3600) );
+        $hrs = ( intval( ($period_sec%(3600*24) ) /3600) );
         $return_value .= ($hrs>0)? (($hrs>1) ? $hrs.' hrs ': $hrs.' hr') : '';
 
-        $min = (int)(($period_sec%3600)/60);
+        $min = intval(($period_sec%3600)/60);
         $return_value .= $min>0 ? $min.' min.' : '';
     }
     return $return_value;
 }
-
 function getYearsDifference($start,$current=null)
 {
     $current = is_null($current) ? mktime() : $current;
