@@ -60,3 +60,4 @@ switch ($data['status'])
 }
 ?>
 <input name="crawl-status-code" id="crawl-status-code" type="hidden" value="<?= $data['status']; ?>">
+<input name="crawler-id" id="crawler-id" type="hidden" value="<?= $data['cid']; ?>">

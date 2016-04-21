@@ -111,7 +111,6 @@ class CrawlEngine_Controller extends A_Controller
             if((int)$fields['url-option'] == 1){ $crawler->setURL(FrontierManager::instance()->getMostRelevantLink()); }
             $crawler->setUserAgentString(site_info('name',false)." [".home_url('',false)."]");
             $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
-            $crawler->setRequestDelay(1);
             $crawler->enableResumption();
 
             //Instantiate and setup Crawl object to record crawl-history
@@ -135,10 +134,6 @@ class CrawlEngine_Controller extends A_Controller
             $report = $crawler->getProcessReport();
 
             //Update Crawl Record
-            $crawl->setNumLinksFollowed($report->links_followed);
-            $crawl->setNumDocumentsReceived($report->files_received);
-            $crawl->setNumByteReceived($report->bytes_received);
-            $crawl->setProcessRunTime($report->process_runtime);
             $crawl->setEndTime(new DateTime());
             switch ($report->abort_reason)
             {
@@ -170,11 +165,17 @@ class CrawlEngine_Controller extends A_Controller
         $data['current-crawl'] = null;
 
         $sid = $requestContext->fieldIsSet('sid', INPUT_GET) ? $requestContext->getField('sid', INPUT_GET) : null;
-        $crawls = Crawl::getMapper('Crawl')->findLiveCrawls( $sid );
+        $cid = $requestContext->fieldIsSet('cid', INPUT_GET) ? $requestContext->getField('cid', INPUT_GET) : null;
+        $crawl = is_object(Crawl::getMapper('Crawl')->find( $cid )) ?
+            Crawl::getMapper('Crawl')->find( $cid ) :
+            is_object(Crawl::getMapper('Crawl')->findLiveCrawls( $sid )) ?
+                Crawl::getMapper('Crawl')->findLiveCrawls( $sid )->current() :
+                null;
 
-        if(is_object($crawls) and is_object($crawls->current()))
+        if(is_object($crawl))
         {
-            $data['current-crawl'] = $crawls->current();
+            $data['current-crawl'] = $crawl;
+            $data['cid'] = $crawl->getId();
             $data['status'] = $data['current-crawl']->getStatus();
         }
 

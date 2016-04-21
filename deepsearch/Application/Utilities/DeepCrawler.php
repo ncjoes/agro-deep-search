@@ -54,24 +54,33 @@ class DeepCrawler extends PHPCrawler
      */
     public function handleDocumentInfo(PHPCrawlerDocumentInfo $DocInfo)
     {
+        //Bring Crawl-Record into scope
+        $crawl = $this->crawl_record;
+
+        //send progress report to browser
         if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
-        echo "Page requested: ".$DocInfo->url." (".$DocInfo->http_status_code.")".$lb;
-        echo "Referrer-page: ".$DocInfo->referer_url.$lb;
-        if ($DocInfo->received == true){ echo "Content received: ".$DocInfo->bytes_received." bytes".$lb; }
-        else{ echo "Content not received".$lb; }
-        echo "<hr/>";
+        $line = $DocInfo->http_status_code." - ".$DocInfo->url." [";
+        if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
+        $line .= "]"; echo $line.$lb;
         flush();
 
-        // Now you should do something with the content of the actual
-        // received page or file ($DocInfo->source), we skip it in this example
-
-        //Update Crawl Record
-        $crawl = $this->crawl_record;
-        //$report = $this->getProcessReport();
+        //Update Crawl Process Record
         $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
         $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
-        $crawl->setNumByteReceived($crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received : 0));
+        $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received : 0));
         $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
         $crawl->mapper()->update($crawl);
+
+        //handle received document
+        if($DocInfo->received and $DocInfo->received_completely)
+        {
+            //TODO
+            //Classify Document
+            // if need be {
+            //1. Load $DocInfo->source into HTMLParser
+            //2. Extract all links
+            //3. Extract all forms
+            // }
+        }
     }
 }

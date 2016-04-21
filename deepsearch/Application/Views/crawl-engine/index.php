@@ -17,11 +17,13 @@ $sid = $data['sid'];
 ?>
 <script type="text/javascript">
     var intervalHandle;
+
     function refreshMonitorStatus()
     {
         intervalHandle = setInterval(function ()
         {
-            htmlGetRequest("<?= home_url('/crawl-engine/get-crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>", refreshStatusText );
+            var cid = document.getElementById('crawler-id').getAttribute('value');
+            htmlGetRequest("<?= home_url('/crawl-engine/get-crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText );
         }, 2000 );
 
         setTimeout(function () {
@@ -36,6 +38,7 @@ $sid = $data['sid'];
         {
             clearInterval(intervalHandle);
             document.getElementById('monitor-display-toggle').removeAttribute('disabled');
+            document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
         }
         else
         {
@@ -109,14 +112,22 @@ $sid = $data['sid'];
                 <h2 class="page-header text-center">Crawler Process Monitor</h2>
                 <div id="crawl-progress-info">
                     <input name="crawl-status-code" id="crawl-status-code" type="hidden" value="-1">
+                    <input name="crawler-id" id="crawler-id" type="hidden" value="-1">
                 </div>
                 <hr/>
                 <iframe frameborder="0" id="crawled-links-view" align="middle" allowtransparency="1" name="crawled-links-view" scrolling="auto"></iframe>
                 <hr/>
                 <div class="text-center">
-                    <button id="monitor-display-toggle" class="btn btn-primary" onclick="window.location = document.URL;" disabled="disabled">
-                        <span class="glyphicon glyphicon-modal-window"></span> Close Monitor
-                    </button>
+                    <p>
+                        <button id="monitor-display-toggle" class="btn btn-primary" onclick="window.location = document.URL;" disabled="disabled">
+                            <span class="glyphicon glyphicon-modal-window"></span> Close Monitor
+                        </button>
+                    </p>
+                    <p>
+                        <button id="process-stopper" class="btn btn-sm btn-danger" onclick="window.location = document.URL;">
+                            <span class="glyphicon glyphicon-off"></span> Stop Crawl
+                        </button>
+                    </p>
                 </div>
             </div>
         </div>
