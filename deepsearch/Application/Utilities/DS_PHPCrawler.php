@@ -64,13 +64,6 @@ class DS_PHPCrawler extends PHPCrawler
         $line .= "]";
         echo $line.$lb."- - - ".$lb;
 
-        //Update Crawl Process Record
-        $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
-        $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
-        $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received + $DocInfo->header_bytes_received : 0));
-        $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
-        $crawl->mapper()->update($crawl);
-
         //handle received document
         if($DocInfo->received_completely)
         {
@@ -82,8 +75,62 @@ class DS_PHPCrawler extends PHPCrawler
             //2. Extract all links
             //3. Extract all forms
             // }
+            if($this->classifyPage() >= 0.5) //page belongs to our domain of interest
+            {
+                $document = $this->prepareContent($DocInfo);
+                $num_links_extracted = $this->extractContainedLinks($document);
+                $num_forms_extracted = $this->extractContainedForms($document);
+                $crawl->setNumLinksExtracted($crawl->getNumLinksExtracted() + $num_links_extracted);
+                $crawl->setNumFormsExtracted($crawl->getNumFormsExtracted() + $num_forms_extracted);
+            }
         }
 
+        //Update Crawl Process Record
+        $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
+        $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
+        $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received + $DocInfo->header_bytes_received : 0));
+        $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
+        $crawl->mapper()->update($crawl);
+
         flush();
+    }
+
+    /**
+     * @return float
+     */
+    public function classifyPage()
+    {
+        $p = 0.5;
+        return $p;
+    }
+
+    /**
+     * @param $documentInfo
+     * @return \DOMDocument
+     */
+    public function prepareContent(PHPCrawlerDocumentInfo $documentInfo)
+    {
+        $document = new \DOMDocument();
+        return $document;//->loadHTML($documentInfo->content);
+    }
+
+    /**
+     * @param $document
+     * @return int
+     */
+    public function extractContainedLinks(\DOMDocument $document)
+    {
+        $num_links = 0;
+        return $num_links;
+    }
+
+    /**
+     * @param $document
+     * @return int
+     */
+    public function extractContainedForms(\DOMDocument $document)
+    {
+        $num_forms = 0;
+        return $num_forms;
     }
 }
