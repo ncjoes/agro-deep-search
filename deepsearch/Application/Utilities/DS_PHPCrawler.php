@@ -48,11 +48,14 @@ class DS_PHPCrawler extends PHPCrawler
             {
                 if($this->classifyPage() >= 0.5) //page belongs to our domain of interest
                 {
+                    libxml_use_internal_errors(true);
                     $document = $this->prepareContent($DocInfo);
                     $num_links_extracted = $this->extractContainedLinks($document);
                     $num_forms_extracted = $this->extractContainedForms($document);
                     $crawl->setNumLinksExtracted($crawl->getNumLinksExtracted() + $num_links_extracted);
                     $crawl->setNumFormsExtracted($crawl->getNumFormsExtracted() + $num_forms_extracted);
+                    libxml_clear_errors();
+                    unset($document);
                 }
             }
 
@@ -90,7 +93,7 @@ class DS_PHPCrawler extends PHPCrawler
         $document->validateOnParse = false;
         $document->strictErrorChecking = false;
 
-        if(1)//$document->loadHTML($documentInfo->source))
+        if( $document->loadHTML($documentInfo->source, LIBXML_NOERROR ) )
         {
             return $document;
         }else{
@@ -104,7 +107,8 @@ class DS_PHPCrawler extends PHPCrawler
      */
     public function extractContainedLinks(\DOMDocument $document)
     {
-        $num_links = 0;
+        $linkNodes = $document->getElementsByTagName("a");
+        $num_links = $linkNodes->length;
         return $num_links;
     }
 
@@ -114,7 +118,8 @@ class DS_PHPCrawler extends PHPCrawler
      */
     public function extractContainedForms(\DOMDocument $document)
     {
-        $num_forms = 0;
+        $formNodes = $document->getElementsByTagName("form");
+        $num_forms = $formNodes->length;
         return $num_forms;
     }
 }

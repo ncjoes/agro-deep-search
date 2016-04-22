@@ -25,14 +25,13 @@ $sid = $data['sid'];
             {
                 var cid = document.getElementById('crawler-id').getAttribute('value');
                 htmlGetRequest("<?= home_url('/crawl-engine/crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText, false );
-                var $contents = $('#crawled-links-view').contents();
-                $contents.scrollTop($contents.height());
+                var $contents = $('#crawled-links-view').contents(); $contents.scrollTop($contents.height());
             }, 1000 );
 
             setTimeout(function () {
                 showNode('crawler-monitor');
             }, 2000);
-        }, 1000);
+        }, 300);
 
         setTimeout(function () {
             document.getElementById('crawl-process-starter').setAttribute('disabled', 'disabled');
@@ -156,6 +155,9 @@ $sid = $data['sid'];
                     <p>
                         <button id="process-stopper" class="btn btn-sm btn-danger" onclick="stopCrawl()">
                             <span class="glyphicon glyphicon-off"></span> Stop Crawl
+                        </button>
+                        <button class="btn btn-sm btn-default" onclick="window.location = document.URL">
+                            <span class="glyphicon glyphicon-refresh"></span> Reload Page
                         </button>
                     </p>
                 </div>
