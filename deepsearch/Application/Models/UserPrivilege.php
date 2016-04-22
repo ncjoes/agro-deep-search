@@ -22,6 +22,9 @@ class UserPrivilege extends A_DomainObject implements I_StatefulObject
     const UT_ADMIN = 1;
     const UT_EDITOR = 2;
 
+    const STATUS_ON = 1;
+    const STATUS_OFF = 0;
+
     /**
      * UserPrivilege constructor.
      * @param $id=null

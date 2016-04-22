@@ -21,18 +21,21 @@ use System\Utilities\DateTime;
  */
 class Link extends A_StatefulObject
 {
-    private $crawl;
     private $url;
     private $url_hash = null;
     private $anchor;
     private $around_text = array('before'=>"", 'after'=>"");
     private $page_title = "";
     private $parent_link;
+    private $last_crawl;
     private $last_crawl_time;
     private $target_distance;
     private $expected_reward;
 
     const AROUND_TEXT_SEPARATOR = "\n----\n";
+
+    const STATUS_VISITED = 1;
+    const STATUS_UNVISITED = 0;
 
     /**
      * Link constructor.
@@ -43,31 +46,6 @@ class Link extends A_StatefulObject
         parent::__construct($id);
     }
 
-    /**
-     * @return Crawl
-     */
-    public function getCrawl()
-    {
-        if(! is_object($this->crawl))
-        {
-            $this->crawl = Crawl::getMapper('Crawl')->find($this->crawl);
-        }
-        return $this->crawl;
-    }
-
-    /**
-     * @param mixed $crawl
-     * @return mixed
-     */
-    public function setCrawl($crawl)
-    {
-        $this->parent_link = $crawl;
-        $this->markDirty();
-        return $this;
-    }
-    /**
-     * @return mixed
-     */
     public function getUrl()
     {
         return $this->url;
@@ -79,7 +57,7 @@ class Link extends A_StatefulObject
      */
     public function setUrl($url)
     {
-        $this->url = $url;
+        $this->url = trim($url);
         $this->markDirty();
         return $this;
     }
@@ -98,6 +76,7 @@ class Link extends A_StatefulObject
      */
     public function getAnchor()
     {
+        if(!strlen($this->anchor)) $this->anchor = $this->url;
         return $this->anchor;
     }
 
@@ -136,9 +115,15 @@ class Link extends A_StatefulObject
         return $this->around_text['before'];
     }
 
+    /**
+     * @param $text
+     * @return Link
+     */
     public function setTextBefore($text)
     {
         $this->around_text['before'] = $text;
+        $this->markDirty();
+        return $this;
     }
 
     /**
@@ -149,9 +134,15 @@ class Link extends A_StatefulObject
         return $this->around_text['after'];
     }
 
+    /**
+     * @param $text
+     * @return Link
+     */
     public function setTextAfter($text)
     {
         $this->around_text['after'] = $text;
+        $this->markDirty();
+        return $this;
     }
 
     /**
@@ -205,6 +196,29 @@ class Link extends A_StatefulObject
     public function setParentLink($parent_link)
     {
         $this->parent_link = $parent_link;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return Crawl
+     */
+    public function getLastCrawl()
+    {
+        if(! is_object($this->last_crawl))
+        {
+            $this->last_crawl = Crawl::getMapper('Crawl')->find($this->last_crawl);
+        }
+        return $this->last_crawl;
+    }
+
+    /**
+     * @param mixed $last_crawl
+     * @return mixed
+     */
+    public function setLastCrawl($last_crawl)
+    {
+        $this->parent_link = $last_crawl;
         $this->markDirty();
         return $this;
     }

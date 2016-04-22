@@ -45,8 +45,7 @@ function __autoload( $path )
 
     if(!is_file($path))
     {
-        echo "File not found: ".$path."<br/>";
-        exit;
+        throw new \Exception("File not found: ".$path);
     }
     require_once($path);
 }

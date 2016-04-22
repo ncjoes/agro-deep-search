@@ -24,6 +24,7 @@ class Crawl extends A_StatefulObject
 {
     private $crawler_id;
     private $session_id;
+    private $start_url;
     private $num_links_followed = 0;
     private $num_documents_received = 0;
     private $num_links_extracted = 0;
@@ -81,6 +82,27 @@ class Crawl extends A_StatefulObject
     public function setCrawlerId($crawler_id)
     {
         $this->crawler_id = $crawler_id;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartUrl()
+    {
+        if(!is_object($this->start_url))
+            $this->start_url = Link::getMapper('Link')->findByUrlHash(md5($this->start_url));
+        return $this->start_url;
+    }
+
+    /**
+     * @param mixed $start_url
+     * @return Crawl
+     */
+    public function setStartUrl($start_url)
+    {
+        $this->start_url = $start_url;
         $this->markDirty();
         return $this;
     }

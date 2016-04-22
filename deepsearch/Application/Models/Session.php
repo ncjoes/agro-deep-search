@@ -14,6 +14,9 @@ class Session extends A_DomainObject implements I_StatefulObject
     private $last_activity_time;
     private $status;
 
+    const STATUS_ON = 1;
+    const STATUS_OFF = 0;
+
     /**
      * Session constructor.
      * @param null $id

@@ -1,23 +1,59 @@
 <?php
 /**
- * Phoenix Laboratories NG.
- * Author: J. C. Nwobodo (phoenixlabs.ng@gmail.com)
- * Project: BareBones PHP Framework
- * Date:    11/4/2015
- * Time:    11:24 PM
+ * @param Exception $e
  */
+function getExceptionTraceString(\Exception $e)
+{
+    $summary = "";
+    $arr = $e->getTrace();
+    foreach ($arr as $trace_point)
+    {
+        if(is_array($trace_point))
+        {
+            foreach ($trace_point as $key => $value)
+            {
+                $summary .= $key.": ".recursive_implode("<br/>", $value)."<br/>";
+            }
+        }else{
+            $summary .= print_r($trace_point, true);
+        }
+        $summary .= "<hr/>";
+    }
+}
 
-//STRING PROCESSING
+/**
+ * @param $glue
+ * @param $pieces
+ * @return string
+ */
 function recursive_implode($glue, $pieces)
 {
     $build = array();
+    $pieces = is_array($pieces) ? $pieces : array($pieces);
     foreach($pieces as $piece)
     {
-        $build[] = is_array($piece) ? recursive_implode($glue, $piece) : ( is_object($piece) ? print_r($piece,true) : $piece);
+        $build[] = is_array($piece) ? recursive_implode($glue, $piece) : ( is_object($piece) ? get_object_summary($piece) : $piece);
     }
     return implode($glue, $build);
 }
 
+/**
+ * @param $object
+ * @return string
+ */
+function get_object_summary($object)
+{
+    $summary = "";
+    if(is_object($object)){
+        $summary .= "Object: ".get_class($object);
+    }
+    return $summary;
+}
+
+/**
+ * @param $raw_text
+ * @return string
+ */
 function format_text($raw_text)
 {
     $all_paragraphs = explode("\n", $raw_text);
@@ -28,6 +64,10 @@ function format_text($raw_text)
     return $formatted_text;
 }
 
+/**
+ * @param $formatted_text
+ * @return mixed
+ */
 function remove_text_formatting($formatted_text)
 {
     $raw_text = str_replace("</p><p>","\n", $formatted_text);
@@ -35,6 +75,10 @@ function remove_text_formatting($formatted_text)
     return $raw_text;
 }
 
+/**
+ * @param $string
+ * @return int
+ */
 function num_words($string)
 {
     $raw_words = explode(" ", $string);
@@ -43,6 +87,12 @@ function num_words($string)
     return sizeof($processed_words);
 }
 
+/**
+ * @param $string
+ * @param $start
+ * @param $length
+ * @return string
+ */
 function sub_words($string, $start, $length)
 {
     $words = explode(' ', $string);
@@ -58,6 +108,10 @@ function sub_words($string, $start, $length)
     return implode(' ', $return);
 }
 
+/**
+ * @param $email
+ * @return bool
+ */
 function validate_email($email)
 {
     $regexp = "/([_a-z0-9-]+)(.[_a-z0-9-]+)*@([a-z0-9-]+)(.[a-z0-9-]+)*(.[a-z]{2,6})/i";
@@ -68,6 +122,10 @@ function validate_email($email)
     return false;
 }
 
+/**
+ * @param $address
+ * @return bool
+ */
 function validate_webAddress($address)
 {
     $regexp = "^([a-z]{3,4})://([a-z]+).(\.[_a-z0-9-]+).([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,6})$";
@@ -78,6 +136,10 @@ function validate_webAddress($address)
     return false;
 }
 
+/**
+ * @param $phone
+ * @return bool
+ */
 function validate_phone($phone)
 {
     $mtn = array('0803','0806','0813','0816','0811','0814','0703','0706','0903');
@@ -97,6 +159,10 @@ function validate_phone($phone)
 }
 
 //FILE FUNCTIONS
+/**
+ * @param $directory
+ * @return int
+ */
 function directory_size($directory)
 {
     $directorySize=0;
@@ -121,6 +187,9 @@ function directory_size($directory)
     return $directorySize;
 }
 
+/**
+ * @param $dir
+ */
 function remove_dir($dir)
 {
     if ($dh = @opendir($dir))
@@ -144,6 +213,10 @@ function remove_dir($dir)
     } #endIF
 } #end delete_directory()
 
+/**
+ * @param $file_size
+ * @return string
+ */
 function get_file_size_unit($file_size)
 {
     switch (true) {
@@ -159,19 +232,31 @@ function get_file_size_unit($file_size)
 }
 
 //TIME MANIPULATION
+/**
+ * @param array $time
+ */
 function preProcessTimeArr(array &$time)
 {
     $time['hour'] = (strtolower($time['am_pm'])=='pm' and $time['hour']!=12)? ($time['hour']+12) : $time['hour'];
     $time['hour'] = (strtolower($time['am_pm'])=='am' and $time['hour']==12)? 0 : $time['hour'];
 }
 
-function getTimeDifference($start,$current=null)
+/**
+ * @param $start
+ * @param null $current
+ * @return null|string
+ */
+function getTimeDifference($start, $current=null)
 {
     $current = is_null($current) ? mktime() : $current;
     $period_sec = abs($current - $start);
     return seconds_to_str($period_sec);
 }
 
+/**
+ * @param $period_sec
+ * @return null|string
+ */
 function seconds_to_str($period_sec)
 {
     $return_value = NULL;
@@ -205,7 +290,13 @@ function seconds_to_str($period_sec)
     }
     return $return_value;
 }
-function getYearsDifference($start,$current=null)
+
+/**
+ * @param $start
+ * @param null $current
+ * @return float
+ */
+function getYearsDifference($start, $current=null)
 {
     $current = is_null($current) ? mktime() : $current;
     $period_sec = $current - $start;

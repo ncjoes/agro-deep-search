@@ -47,7 +47,7 @@ try
 catch (Exceptions\CommandNotFoundException $exception)
 {
     $response = $exception->getMessage();
-    if(site_info('development-mode',false)==true){$response .= "<br/>".recursive_implode("<br/>", $exception->getTrace());}
+    if(site_info('development-mode',false)==true) $response .= "<br/>".getExceptionTraceString($exception);
 
     $data = array('page-title'=>'404: Not Found', 'message'=>$response);
     $requestContext->setResponseData($data);
@@ -57,7 +57,7 @@ catch (Exceptions\FormFieldNotFoundException $exception){}
 catch (\PDOException $exception)
 {
     $response = $exception->getMessage();
-    if(site_info('development-mode',false)==true){$response .= "<br/>".recursive_implode("<br/>", $exception->getTrace());}
+    if(site_info('development-mode',false)==true) $response .= "<br/>".getExceptionTraceString($exception);
 
     $data = array('page-title'=>'Database Error', 'message'=>$response);
     $requestContext->setResponseData($data);
@@ -66,7 +66,7 @@ catch (\PDOException $exception)
 catch (\Exception $exception)
 {
     $response = $exception->getMessage();
-    if(site_info('development-mode',false)==true){$response .= "<br/>".recursive_implode("<br/>", $exception->getTrace());}
+    if(site_info('development-mode',false)==true) $response .= "<br/>".getExceptionTraceString($exception);
 
     $data = array('page-title'=>'Internal Error', 'message'=>$response);
     $requestContext->setResponseData($data);

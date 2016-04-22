@@ -18,7 +18,9 @@ use _Libraries\PHPCrawl\Enums\PHPCrawlerAbortReasons;
 use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
 use Application\Models\Crawl;
 use Application\Models\CrawlSetting;
+use Application\Models\Link;
 use Application\Utilities\FrontierManager;
+use System\Models\DomainObjectWatcher;
 use System\Request\RequestContext;
 use Application\Utilities\DS_PHPCrawler;
 use System\Utilities\DateTime;
@@ -92,100 +94,138 @@ class CrawlEngine_Controller extends A_Controller
     protected function RunCrawl(RequestContext $requestContext)
     {
         $requestContext->setView('_includes/_empty.php');
-        if($requestContext->fieldIsSet('crawl-process-starter', INPUT_POST))
-        {
-            $fields = $requestContext->getAllFields(INPUT_POST);
+        echo "<html>";
+        echo "<header>";
+        echo "<style type='text/css'>";
+        echo "body{font-size:10px; font-family:Gadugi;}";
+        echo "</style>";
+        echo "</header>";
+        echo "<body>";
 
-            //Instantiate and setup Crawler Object
-            $crawler = new DS_PHPCrawler();
-            foreach ($fields['val'] as $method => $value)
+        try
+        {
+            if($requestContext->fieldIsSet('crawl-process-starter', INPUT_POST))
             {
-                if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
+                $fields = $requestContext->getAllFields(INPUT_POST);
+
+                //Instantiate and setup Crawler Object
+                $crawler = new DS_PHPCrawler();
+                foreach ($fields['val'] as $method => $value)
                 {
-                    $crawler->$method(trim($value));
-                }else{
-                    throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
+                    if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
+                    {
+                        $crawler->$method(trim($value));
+                    }else{
+                        throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
+                    }
+                }
+                $start_url = $fields['val']['setURL'];
+                if((int)$fields['url-option'] == 1)
+                {
+                    $MRL = trim(FrontierManager::instance()->getMostRelevantLink());
+                    if($MRL !="" and strlen($MRL)) $start_url = $MRL;
+                }
+                $crawler->setURL($start_url);
+                $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
+                $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
+                $crawler->enableResumption();
+
+                //Check records for url
+                $link = Link::getMapper("Link")->findByUrlHash(md5($start_url));
+                $link = is_object($link) ? $link : new Link();
+                $link->setUrl($start_url);
+                $link->setStatus(Link::STATUS_UNVISITED);
+                $link->getId() != -1 ? $link->mapper()->update($link) : $link->mapper()->insert($link); //where -1 is default DO-Id
+
+                //Instantiate and setup Crawl object to record crawl-history
+                $crawl = new Crawl();
+                $crawl->setCrawlerId($crawler->getCrawlerId());
+                $crawl->setSessionId($requestContext->getSession()->getId());
+                $crawl->setStartUrl($link);
+                $crawl->setStartTime(new DateTime());
+                $crawl->setStatus(Crawl::STATUS_ONGOING);
+                $crawl->mapper()->insert($crawl);
+
+                //Bind Crawler and Craw enable live feedback for Crawl Process Monitor
+                $crawler->setCrawlRecord($crawl);
+
+                //Run Crawler
+                set_time_limit($fields['max-run-time'] * 60);
+                $lb = "<br />";
+                echo "<p>";
+                echo "<b>Crawl Started ...</b>".$lb;
+                echo "URL: ".$start_url.$lb;
+                echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
+                echo "Start Time: ".date("F d, Y / g:i:s A");
+                echo "</p>";
+                echo "<hr/>";
+                $crawler->go();
+
+                //Obtain process report
+                $report = $crawler->getProcessReport();
+
+                //Update Crawl Record
+                $crawl->setEndTime(new DateTime());
+                switch ($report->abort_reason)
+                {
+                    case PHPCrawlerAbortReasons::ABORTREASON_PASSEDTHROUGH : $crawl->setStatus(Crawl::STATUS_COMPLETE); break;
+                    case PHPCrawlerAbortReasons::ABORTREASON_USERABORT :
+                    case PHPCrawlerAbortReasons::ABORTREASON_TRAFFICLIMIT_REACHED :
+                    case PHPCrawlerAbortReasons::ABORTREASON_FILELIMIT_REACHED : $crawl->setStatus(Crawl::STATUS_TERMINATED); break;
+                }
+
+                //Crawl Process Summary
+                echo "<hr/>";
+                echo "<p>";
+                echo "<b>Summary</b>".$lb;
+                echo "Links followed: ".$report->links_followed.$lb;
+                echo "Documents received: ".$report->files_received.$lb;
+                echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
+                echo "Stop Time: ".date("F d, Y / g:i:s A");
+                echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
+                echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
+                echo "</p>";
+
+                //wrap-up process
+                DomainObjectWatcher::instance()->performOperations();
+                flush();
+            }
+            else
+            {
+                throw new \Exception("Invalid Request");
+            }
+        }
+        catch (\Exception $e)
+        {
+            $sid = $requestContext->getSession()->getId();
+            $possibly_terminated_crawls = Crawl::getMapper('Crawl')->findBySessionId( $sid, Crawl::STATUS_ONGOING );
+
+            if(is_object($possibly_terminated_crawls))
+            {
+                foreach ($possibly_terminated_crawls as $terminated_crawl)
+                {
+                    $terminated_crawl->setEndTime(new DateTime());
+                    $terminated_crawl->setStatus(Crawl::STATUS_TERMINATED);
+                    $terminated_crawl->mapper()->update($terminated_crawl);
                 }
             }
-            $start_url = $fields['val']['setURL'];
-            if((int)$fields['url-option'] == 1)
-            {
-                $MRL = trim(FrontierManager::instance()->getMostRelevantLink());
-                if($MRL !="" and strlen($MRL)) $start_url = $MRL;
-            }
-            $crawler->setURL($start_url);
-            $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
-            $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
-            $crawler->enableResumption();
 
-            //Instantiate and setup Crawl object to record crawl-history
-            $crawl = new Crawl();
-            $crawl->setCrawlerId($crawler->getCrawlerId());
-            $crawl->setSessionId($requestContext->getSession()->getId());
-            $crawl->setStartTime(new DateTime());
-            $crawl->setStatus(Crawl::STATUS_ONGOING);
-            $crawl->mapper()->insert($crawl);
-
-            //Bind Crawler and Craw enable live feedback for Crawl Process Monitor
-            $crawler->setCrawlRecord($crawl);
-
-            //Run Crawler
-            set_time_limit($fields['max-run-time'] * 60);
-            $lb = "<br />";
-            echo "<html>";
-            echo "<header>";
-            echo "<style type='text/css'>";
-            echo "body{font-size:10px; font-family:Gadugi;}";
-            echo "</style>";
-            echo "</header>";
-            echo "<body>";
-            echo "<p>";
-            echo "<b>Crawl Started ...</b>".$lb;
-            echo "URL: ".$start_url.$lb;
-            echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
-            echo "Start Time: ".date("F d, Y / g:i:s A");
-            echo "</p>";
-            echo "<hr/>";
-            $crawler->go();
-
-            //Obtain process report
-            $report = $crawler->getProcessReport();
-
-            //Update Crawl Record
-            $crawl->setEndTime(new DateTime());
-            switch ($report->abort_reason)
-            {
-                case PHPCrawlerAbortReasons::ABORTREASON_PASSEDTHROUGH : $crawl->setStatus(Crawl::STATUS_COMPLETE); break;
-                case PHPCrawlerAbortReasons::ABORTREASON_USERABORT :
-                case PHPCrawlerAbortReasons::ABORTREASON_TRAFFICLIMIT_REACHED :
-                case PHPCrawlerAbortReasons::ABORTREASON_FILELIMIT_REACHED : $crawl->setStatus(Crawl::STATUS_TERMINATED); break;
-            }
-
-            //Crawl Process Summary
-            echo "<hr/>";
-            echo "<p>";
-            echo "<b>Summary</b>".$lb;
-            echo "Links followed: ".$report->links_followed.$lb;
-            echo "Documents received: ".$report->files_received.$lb;
-            echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
-            echo "Stop Time: ".date("F d, Y / g:i:s A");
-            echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
-            echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
-            echo "</p>";
-            echo "</body>";
-            echo "</html>";
-        }else{
-            echo "Internal Error";
+            echo $e->getMessage()."<hr/>";
+            if(site_info('development-mode',false)==true) echo getExceptionTraceString($e);
+            exit;
         }
+
+        echo "</body>";
+        echo "</html>";
     }
 
     protected function CrawlProgressInfo(RequestContext $requestContext)
     {
-        try{
-            $data = array();
-            $data['status'] = -1;
-            $data['current-crawl'] = null;
+        $data = array();
+        $data['status'] = -1;
+        $data['current-crawl'] = null;
 
+        try{
             $sid = $requestContext->fieldIsSet('sid', INPUT_GET) ? $requestContext->getField('sid', INPUT_GET) : null;
             $cid = $requestContext->fieldIsSet('cid', INPUT_GET) ? $requestContext->getField('cid', INPUT_GET) : null;
 
@@ -202,11 +242,13 @@ class CrawlEngine_Controller extends A_Controller
                 $data['cid'] = $crawl->getId();
                 $data['status'] = $crawl->getStatus();
             }
-
-            $requestContext->setResponseData($data);
-            $requestContext->setView('crawl-engine/_active-crawls-progress-info.php');
         }catch (\Exception $e){
-            print_r($e->getMessage());
+            $data['status'] = 0;
+            $data['cid'] = -1;
+            $requestContext->setFlashData($e->getMessage());
         }
+
+        $requestContext->setResponseData($data);
+        $requestContext->setView('crawl-engine/_active-crawls-progress-info.php');
     }
 }

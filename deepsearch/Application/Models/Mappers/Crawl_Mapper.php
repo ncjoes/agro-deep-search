@@ -31,6 +31,7 @@ class Crawl_Mapper extends A_Mapper
             "UPDATE app_crawls SET 
                                   crawler_id=?, 
                                   session_id=?, 
+                                  start_url=?,
                                   num_links_followed=?, 
                                   num_documents_received=?, 
                                   num_links_extracted=?,
@@ -43,8 +44,8 @@ class Crawl_Mapper extends A_Mapper
                     WHERE id=?");
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO app_crawls 
-                        (crawler_id,session_id,num_links_followed,num_documents_received,num_links_extracted,num_forms_extracted,num_bytes_received,process_run_time,start_time,end_time,status)
-                        VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+                        (crawler_id,session_id,start_url,num_links_followed,num_documents_received,num_links_extracted,num_forms_extracted,num_bytes_received,process_run_time,start_time,end_time,status)
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_crawls WHERE id=?");
     }
 
@@ -81,6 +82,8 @@ class Crawl_Mapper extends A_Mapper
         $class = $this->targetClass();
         $object = new $class($array['id']);
         $object->setCrawlerId($array['crawler_id']);
+        $object->setSessionId($array['session_id']);
+        $object->setStartUrl($array['start_url']);
         $object->setNumLinksFollowed($array['num_links_followed']);
         $object->setNumDocumentsReceived($array['num_documents_received']);
         $object->setNumLinksExtracted($array['num_links_extracted']);
@@ -103,10 +106,11 @@ class Crawl_Mapper extends A_Mapper
         $values = array(
             $object->getCrawlerId(),
             $object->getSessionId(),
+            is_object($object->getStartUrl()) ? $object->getStartUrl()->getId() : NULL,
             $object->getNumLinksFollowed(),
             $object->getNumDocumentsReceived(),
             $object->getNumLinksExtracted(),
-            $object->getNumDocumentsReceived(),
+            $object->getNumFormsExtracted(),
             $object->getNumByteReceived(),
             $object->getProcessRunTime(),
             $object->getStartTime()->getDateTimeInt(),
@@ -127,10 +131,11 @@ class Crawl_Mapper extends A_Mapper
         $values = array(
             $object->getCrawlerId(),
             $object->getSessionId(),
+            is_object($object->getStartUrl()) ? $object->getStartUrl()->getId() : NULL,
             $object->getNumLinksFollowed(),
             $object->getNumDocumentsReceived(),
             $object->getNumLinksExtracted(),
-            $object->getNumDocumentsReceived(),
+            $object->getNumFormsExtracted(),
             $object->getNumByteReceived(),
             $object->getProcessRunTime(),
             $object->getStartTime()->getDateTimeInt(),

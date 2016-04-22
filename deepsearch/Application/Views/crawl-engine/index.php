@@ -38,17 +38,37 @@ $sid = $data['sid'];
     function refreshStatusText( html )
     {
         var crawler_status_code = document.getElementById('crawl-status-code').getAttribute('value');
-        if (crawler_status_code == 1)
+        if (crawler_status_code == 1 || crawler_status_code == 0)
         {
-            clearInterval(intervalHandle);
-            document.getElementById('monitor-display-toggle').removeAttribute('disabled');
-            document.getElementById('crawl-process-starter').removeAttribute('disabled');
             document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
+            clearInterval(intervalHandle);
+            document.getElementById('crawl-process-starter').removeAttribute('disabled');
+            document.getElementById('monitor-display-toggle').removeAttribute('disabled');
         }
         else
         {
             document.getElementById('crawl-progress-info').innerHTML = html;
             document.getElementById('crawl-process-starter').setAttribute('disabled', 'disabled');
+        }
+    }
+
+    function stopCrawl()
+    {
+        if(confirm("Proceed?")){
+            var cid = document.getElementById('crawler-id').getAttribute('value');
+            htmlGetRequest("<?= home_url('/crawl-engine/stop-crawl-progress/', false) ?>", "cid="+cid, doStopCrawl );
+        }
+    }
+
+    function doStopCrawl( status )
+    {
+        if(status == '1') {
+            clearInterval(intervalHandle);
+            setTimeout(function () {
+                window.location = document.URL;
+            }, 3000);
+        } else {
+            alert("Error: Can not stop crawl");
         }
     }
 </script>
@@ -130,7 +150,7 @@ $sid = $data['sid'];
                         </button>
                     </p>
                     <p>
-                        <button id="process-stopper" class="btn btn-sm btn-danger" onclick="clearInterval(intervalHandle); window.location = document.URL;">
+                        <button id="process-stopper" class="btn btn-sm btn-danger" onclick="stopCrawl()">
                             <span class="glyphicon glyphicon-off"></span> Stop Crawl
                         </button>
                     </p>
