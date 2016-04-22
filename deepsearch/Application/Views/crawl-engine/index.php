@@ -25,6 +25,8 @@ $sid = $data['sid'];
             {
                 var cid = document.getElementById('crawler-id').getAttribute('value');
                 htmlGetRequest("<?= home_url('/crawl-engine/crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText );
+                var $contents = $('#crawled-links-view').contents();
+                $contents.scrollTop($contents.height());
             }, 2000 );
 
             setTimeout(function () {
