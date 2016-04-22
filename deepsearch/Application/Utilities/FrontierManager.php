@@ -62,7 +62,7 @@ class FrontierManager extends A_Utility
     public function reloadCrawLine($MODE=1)
     {
         //TODO ...
-        $link_objects = Link::getMapper('PageLink')->findRange();
+        $link_objects = Link::getMapper('Link')->findRange();
 
         foreach ($link_objects as $link_object)
         {

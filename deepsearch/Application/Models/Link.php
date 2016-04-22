@@ -16,7 +16,7 @@ use System\Utilities\DateTime;
 
 
 /**
- * Class PageLink
+ * Class Link
  * @package Application\Models
  */
 class Link extends A_StatefulObject
@@ -35,7 +35,7 @@ class Link extends A_StatefulObject
     const AROUND_TEXT_SEPARATOR = "\n----\n";
 
     /**
-     * PageLink constructor.
+     * Link constructor.
      * @param null $id
      */
     public function __construct($id=null)

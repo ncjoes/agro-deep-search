@@ -99,7 +99,7 @@ class Link_Mapper extends A_Mapper
         $object->setAnchor($array['anchor']);
         $object->setAroundText($array['around_text']);
         $object->setPageTitle($array['page_title']);
-        $object->setParentPageLink($array['parent_link']);
+        $object->setParentLink($array['parent_link']);
         if(is_int($array['last_crawl_time']))$object->setLastCrawlTime(new DateTime($array['last_crawl_time']));
         $object->setTargetDistance($array['target_distance']);
         $object->setExpectedReward($array['ext_reward']);

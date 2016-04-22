@@ -116,7 +116,7 @@ CREATE TABLE `app_features` (
 
 CREATE TABLE `app_forms` (
   `id` int(16) NOT NULL,
-  `page_link` int(16) NOT NULL,
+  `link` int(16) NOT NULL,
   `markup` text NOT NULL,
   `relevance` int(2) NOT NULL,
   `hash` int(32) NOT NULL
@@ -360,7 +360,7 @@ ALTER TABLE `app_features`
 ALTER TABLE `app_forms`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `hash` (`hash`),
-  ADD KEY `link_id` (`page_link`);
+  ADD KEY `link_id` (`link`);
 
 --
 -- Indexes for table `app_links`
@@ -508,7 +508,7 @@ ALTER TABLE `bb_users_privileges`
 -- Constraints for table `app_forms`
 --
 ALTER TABLE `app_forms`
-  ADD CONSTRAINT `app_forms_ibfk_1` FOREIGN KEY (`page_link`) REFERENCES `app_links` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `app_forms_ibfk_1` FOREIGN KEY (`link`) REFERENCES `app_links` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `bb_events_log`

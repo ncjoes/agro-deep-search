@@ -30,7 +30,7 @@ class Form_Mapper extends A_Mapper
         parent::__construct();
         $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE id=?");
         $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_forms");
-        $this->selectByPageLinkStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE link=?");
+        $this->selectByLinkStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE link=?");
         $this->selectByHashStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE hash=?");
         $this->updateStmt = self::$PDO->prepare("UPDATE app_forms SET link=?, markup=?, relevance=?, hash=? WHERE id=?");
         $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (link,markup,relevance,hash)VALUES(?,?,?,?)");
@@ -41,10 +41,10 @@ class Form_Mapper extends A_Mapper
      * @param $page_link
      * @return \System\Models\Collections\Collection
      */
-    public function findByPageLink($page_link)
+    public function findByLink($page_link)
     {
-        $this->selectByPageLinkStmt->execute( array($page_link) );
-        $raw_data = $this->selectByPageLinkStmt->fetchAll(\PDO::FETCH_ASSOC);
+        $this->selectByLinkStmt->execute( array($page_link) );
+        $raw_data = $this->selectByLinkStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection( $raw_data );
     }
 
@@ -73,7 +73,7 @@ class Form_Mapper extends A_Mapper
     {
         $class = $this->targetClass();
         $object = new $class($array['id']);
-        $object->setPageLink(Models\Link::getMapper("Link")->find($array['link']));
+        $object->setLink(Models\Link::getMapper("Link")->find($array['link']));
         $object->setFormMarkup($array['markup']);
         $object->setRelevance($array['relevance']);
 

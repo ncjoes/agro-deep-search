@@ -20,7 +20,7 @@ namespace Application\Models;
  */
 class Form extends A_DomainObject
 {
-    private $page_link;
+    private $link;
     private $form_markup;
     private $relevance;
     private $hash = null;
@@ -41,18 +41,18 @@ class Form extends A_DomainObject
     /**
      * @return Link
      */
-    public function getPageLink()
+    public function getLink()
     {
-        return $this->page_link;
+        return $this->link;
     }
 
     /**
-     * @param Link $page_link
+     * @param Link $link
      * @return Form
      */
-    public function setPageLink(Link $page_link)
+    public function setLink(Link $link)
     {
-        $this->page_link = $page_link;
+        $this->link = $link;
         $this->markDirty();
         return $this;
     }

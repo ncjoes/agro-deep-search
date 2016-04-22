@@ -43,10 +43,10 @@ class AdminPanel_Controller extends A_AdministrativeCommands_Controller
         $requestContext->setView('admin-panel/dashboard.php');
     }
 
-    protected function AddPageLink(RequestContext $requestContext)
+    protected function AddLink(RequestContext $requestContext)
     {}
 
-    protected function ManagePageLinks(RequestContext $requestContext)
+    protected function ManageLinks(RequestContext $requestContext)
     {}
 
     protected function AddForm(RequestContext $requestContext)
