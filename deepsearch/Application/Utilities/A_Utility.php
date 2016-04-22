@@ -26,4 +26,20 @@ abstract class A_Utility
         return $hashed_string;
     }
 
+    public static function trimUrl($url)
+    {
+        return strtolower( trim($url, " /\t\n\r\v\\") );
+    }
+
+    public static function trimFormMarkup($markup)
+    {
+        return trim($markup, " /\t\n\r\v\\");
+    }
+
+    public static function getDOMNodeHTML(\DOMNode $DOMNode)
+    {
+        $html = new \DOMDocument();
+        $html->appendChild($html->importNode($DOMNode, true));
+        return A_Utility::trimFormMarkup($html->saveHTML());
+    }
 }

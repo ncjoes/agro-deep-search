@@ -12,6 +12,7 @@
 
 
 namespace Application\Models;
+use Application\Utilities\A_Utility;
 
 
 /**
@@ -22,7 +23,7 @@ class Form extends A_DomainObject
 {
     private $link;
     private $form_markup;
-    private $relevance;
+    private $relevance = null;
     private $hash = null;
 
     const REL_NEGATIVE = -1;
@@ -71,7 +72,7 @@ class Form extends A_DomainObject
      */
     public function setFormMarkup($form_markup)
     {
-        $this->form_markup = $form_markup;
+        $this->form_markup = A_Utility::trimFormMarkup($form_markup);
         $this->markDirty();
         return $this;
     }

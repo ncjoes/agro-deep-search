@@ -12,8 +12,10 @@
 
 
 namespace Application\Models;
-use System\Utilities\DateTime;
 
+
+use Application\Utilities\A_Utility;
+use System\Utilities\DateTime;
 
 /**
  * Class Link
@@ -57,7 +59,7 @@ class Link extends A_StatefulObject
      */
     public function setUrl($url)
     {
-        $this->url = trim($url);
+        $this->url = A_Utility::trimUrl($url);
         $this->markDirty();
         return $this;
     }
@@ -86,7 +88,7 @@ class Link extends A_StatefulObject
      */
     public function setAnchor($anchor)
     {
-        $this->anchor = $anchor;
+        $this->anchor = strip_tags($anchor);
         $this->markDirty();
         return $this;
     }
@@ -218,7 +220,7 @@ class Link extends A_StatefulObject
      */
     public function setLastCrawl($last_crawl)
     {
-        $this->parent_link = $last_crawl;
+        $this->last_crawl = $last_crawl;
         $this->markDirty();
         return $this;
     }
