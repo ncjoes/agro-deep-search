@@ -102,14 +102,19 @@ class CrawlEngine_Controller extends A_Controller
             {
                 if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
                 {
-                    $crawler->$method($value);
+                    $crawler->$method(trim($value));
                 }else{
                     throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
                 }
             }
-            $crawler->setURL($fields['val']['setURL']);
-            if((int)$fields['url-option'] == 1){ $crawler->setURL(FrontierManager::instance()->getMostRelevantLink()); }
-            $crawler->setUserAgentString(site_info('name',false)." [".home_url('',false)."]");
+            $start_url = $fields['val']['setURL'];
+            if((int)$fields['url-option'] == 1)
+            {
+                $MRL = trim(FrontierManager::instance()->getMostRelevantLink());
+                if($MRL !="" and strlen($MRL)) $start_url = $MRL;
+            }
+            $crawler->setURL($start_url);
+            $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
             $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
             $crawler->enableResumption();
 
@@ -126,10 +131,24 @@ class CrawlEngine_Controller extends A_Controller
 
             //Run Crawler
             set_time_limit($fields['max-run-time'] * 60);
-            echo "Crawl Started ...";
-            echo "Crawler-ID: ".$crawler->getCrawlerId();
+            $lb = "<br />";
+            echo "<html>";
+            echo "<header>";
+            echo "<style type='text/css'>";
+            echo "body{font-size:10px; font-family:Gadugi;}";
+            echo "</style>";
+            echo "</header>";
+            echo "<body>";
+            echo "<p>";
+            echo "<b>Crawl Started ...</b>".$lb;
+            echo "URL: ".$start_url.$lb;
+            echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
+            echo "Start Time: ".date("F d, Y / g:i:s A");
+            echo "</p>";
             echo "<hr/>";
             $crawler->go();
+
+            //Obtain process report
             $report = $crawler->getProcessReport();
 
             //Update Crawl Record
@@ -144,14 +163,17 @@ class CrawlEngine_Controller extends A_Controller
 
             //Crawl Process Summary
             echo "<hr/>";
-            if (PHP_SAPI == "cli") $lb = "\n";
-            else $lb = "<br />";
-            echo "Summary:".$lb;
+            echo "<p>";
+            echo "<b>Summary</b>".$lb;
             echo "Links followed: ".$report->links_followed.$lb;
             echo "Documents received: ".$report->files_received.$lb;
             echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
+            echo "Stop Time: ".date("F d, Y / g:i:s A");
             echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
             echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
+            echo "</p>";
+            echo "</body>";
+            echo "</html>";
         }else{
             echo "Internal Error";
         }
@@ -159,28 +181,32 @@ class CrawlEngine_Controller extends A_Controller
 
     protected function CrawlProgressInfo(RequestContext $requestContext)
     {
-        $data = array();
-        $data['status'] = -1;
-        $data['current-crawl'] = null;
+        try{
+            $data = array();
+            $data['status'] = -1;
+            $data['current-crawl'] = null;
 
-        $sid = $requestContext->fieldIsSet('sid', INPUT_GET) ? $requestContext->getField('sid', INPUT_GET) : null;
-        $cid = $requestContext->fieldIsSet('cid', INPUT_GET) ? $requestContext->getField('cid', INPUT_GET) : null;
+            $sid = $requestContext->fieldIsSet('sid', INPUT_GET) ? $requestContext->getField('sid', INPUT_GET) : null;
+            $cid = $requestContext->fieldIsSet('cid', INPUT_GET) ? $requestContext->getField('cid', INPUT_GET) : null;
 
-        $crawl = null;
-        $_by_cid = Crawl::getMapper('Crawl')->find( $cid );
-        $_by_sid = Crawl::getMapper('Crawl')->findBySessionId( $sid );
-        $crawl = is_object($_by_sid) ? $_by_sid->current() : $crawl;
-        $crawl = is_object($_by_cid) ? $_by_cid : $crawl;
+            $crawl = null;
+            $_by_cid = Crawl::getMapper('Crawl')->find( $cid );
+            $_by_sid = Crawl::getMapper('Crawl')->findBySessionId( $sid );
+            $crawl = is_object($_by_sid) ? $_by_sid->current() : $crawl;
+            $crawl = is_object($_by_cid) ? $_by_cid : $crawl;
 
-        if(is_object($crawl))
-        {
-            //if($cid != null) echo "yes";
-            $data['current-crawl'] = $crawl;
-            $data['cid'] = $crawl->getId();
-            $data['status'] = $crawl->getStatus();
+            if(is_object($crawl))
+            {
+                //if($cid != null) echo "yes";
+                $data['current-crawl'] = $crawl;
+                $data['cid'] = $crawl->getId();
+                $data['status'] = $crawl->getStatus();
+            }
+
+            $requestContext->setResponseData($data);
+            $requestContext->setView('crawl-engine/_active-crawls-progress-info.php');
+        }catch (\Exception $e){
+            print_r($e->getMessage());
         }
-
-        $requestContext->setResponseData($data);
-        $requestContext->setView('crawl-engine/_active-crawls-progress-info.php');
     }
 }
