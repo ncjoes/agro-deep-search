@@ -25,12 +25,12 @@ $sid = $data['sid'];
             {
                 var cid = document.getElementById('crawler-id').getAttribute('value');
                 htmlGetRequest("<?= home_url('/crawl-engine/crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText );
-            }, 1000 );
+            }, 2000 );
 
             setTimeout(function () {
                 showNode('crawler-monitor');
-            }, 1000);
-        }, 2000)
+            }, 3000);
+        }, 1000)
     }
 
     function refreshStatusText( html )
@@ -128,7 +128,7 @@ $sid = $data['sid'];
                         </button>
                     </p>
                     <p>
-                        <button id="process-stopper" class="btn btn-sm btn-danger" onclick="window.location = document.URL;">
+                        <button id="process-stopper" class="btn btn-sm btn-danger" onclick="clearInterval(intervalHandle); window.location = document.URL;">
                             <span class="glyphicon glyphicon-off"></span> Stop Crawl
                         </button>
                     </p>

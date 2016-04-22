@@ -45,7 +45,7 @@ function __autoload( $path )
 
     if(!is_file($path))
     {
-        echo "File not found"."<br/>".$path;
+        echo "File not found: ".$path."<br/>";
         exit;
     }
     require_once($path);
