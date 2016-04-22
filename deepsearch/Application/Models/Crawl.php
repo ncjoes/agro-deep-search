@@ -92,7 +92,7 @@ class Crawl extends A_StatefulObject
     public function getStartUrl()
     {
         if(!is_object($this->start_url))
-            $this->start_url = Link::getMapper('Link')->findByUrlHash(md5($this->start_url));
+            $this->start_url = Link::getMapper('Link')->find($this->start_url);
         return $this->start_url;
     }
 

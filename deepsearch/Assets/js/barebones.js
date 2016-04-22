@@ -98,7 +98,7 @@ function httpRequestResponse(code)
     }
     return rs;
 }
-function htmlGetRequest(url, params, actions)
+function htmlGetRequest(url, params, actions, enable_notifications)
 {
     var requestObject = makeHttpRequest();
     requestObject.open('GET', url + '?' + params, true);
@@ -113,7 +113,7 @@ function htmlGetRequest(url, params, actions)
                 if(actions != null){return actions(response);}
                 else{alert(response);}
             }else{
-                alert('Error '+httpRequestResponse(requestObject.status));
+                if(enable_notifications == true) alert('Error '+httpRequestResponse(requestObject.status));
             }
         }
     }

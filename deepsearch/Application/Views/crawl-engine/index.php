@@ -24,15 +24,15 @@ $sid = $data['sid'];
             intervalHandle = setInterval(function ()
             {
                 var cid = document.getElementById('crawler-id').getAttribute('value');
-                htmlGetRequest("<?= home_url('/crawl-engine/crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText );
+                htmlGetRequest("<?= home_url('/crawl-engine/crawl-progress-info/', false) ?>", "<?= 'sid='.$sid; ?>&cid="+cid, refreshStatusText, false );
                 var $contents = $('#crawled-links-view').contents();
                 $contents.scrollTop($contents.height());
-            }, 2000 );
+            }, 1000 );
 
             setTimeout(function () {
                 showNode('crawler-monitor');
             }, 2000);
-        }, 2000);
+        }, 1000);
 
         setTimeout(function () {
             document.getElementById('crawl-process-starter').setAttribute('disabled', 'disabled');
@@ -59,7 +59,7 @@ $sid = $data['sid'];
     {
         if(confirm("Proceed?")){
             var cid = document.getElementById('crawler-id').getAttribute('value');
-            htmlGetRequest("<?= home_url('/crawl-engine/stop-crawl-progress/', false) ?>", "cid="+cid, doStopCrawl );
+            htmlGetRequest("<?= home_url('/crawl-engine/stop-crawl-progress/', false) ?>", "cid="+cid, doStopCrawl, false );
         }
     }
 
@@ -70,7 +70,7 @@ $sid = $data['sid'];
             setTimeout(function () {
                 clearInterval(intervalHandle);
                 document.getElementById('monitor-display-toggle').removeAttribute('disabled');
-            }, 3000);
+            }, 2000);
         } else {
             alert("Error: Can not stop crawl");
         }

@@ -46,7 +46,7 @@ class DomainObjectWatcher
      */
     public function globalKey(DomainObject $obj )
     {
-        $key = get_class( $obj ).".".$obj->getId();
+        $key = get_class($obj).".".$obj->getId();
         return $key;
     }
 
@@ -67,7 +67,7 @@ class DomainObjectWatcher
     public static function exists($class_name, $id )
     {
         $inst = self::instance();
-        $key = "$class_name.".".$id";
+        $key = $class_name.".".$id;
         if ( isset( $inst->all[$key] ) )
         {
             return $inst->all[$key];
@@ -114,7 +114,7 @@ class DomainObjectWatcher
         $self = self::instance();
         unset( $self->delete[$self->globalKey( $obj )] );
         unset( $self->dirty[$self->globalKey( $obj )] );
-        $self->new = array_filter( $self->new, function( $a ) use ( $obj ) { return !( $a === $obj ); });
+        $self->new = array_filter( $self->new, function( $a ) use ( $obj ) { return ( spl_object_hash($a) != spl_object_hash($obj) ); });
     }
 
     public static function unwatch(DomainObject $obj)
@@ -123,6 +123,19 @@ class DomainObjectWatcher
         $self->addClean($obj);
         $key = $self->globalKey($obj);
         if(isset($self->all[ $key ])) unset($self->all[ $key ]);
+    }
+
+    public function reloadObject(DomainObject $obj)
+    {
+        $id = $obj->getId();
+        $mapper = $obj->mapper();
+
+        $obj->mapper()->update($obj);
+        $this->unwatch($obj);
+        unset($obj);
+
+        $new_obj = $mapper->find($id);
+        return $new_obj;
     }
 
     /**

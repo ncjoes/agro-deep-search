@@ -15,6 +15,7 @@ namespace Application\Controllers;
 
 
 use _Libraries\PHPCrawl\Enums\PHPCrawlerAbortReasons;
+use _Libraries\PHPCrawl\Enums\PHPCrawlerLinkSearchDocumentSections;
 use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
 use Application\Models\Crawl;
 use Application\Models\CrawlSetting;
@@ -97,7 +98,7 @@ class CrawlEngine_Controller extends A_Controller
         echo "<html>";
         echo "<header>";
         echo "<style type='text/css'>";
-        echo "body{font-size:10px; font-family:Gadugi;}";
+        echo "body{font-size:10px; font-family:Gadugi; background-color:black; color:white;}";
         echo "</style>";
         echo "</header>";
         echo "<body>";
@@ -114,7 +115,33 @@ class CrawlEngine_Controller extends A_Controller
                 {
                     if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
                     {
-                        $crawler->$method(trim($value));
+                        switch ($method)
+                        {
+                            case 'addContentTypeReceiveRule' :
+                            {
+                                if(!is_array($value) or !sizeof($value))
+                                    $value = array("#text/html#", "#text/css#", "#text/javascript#", "#image/gif#", "#image/png#", "#image/jpeg#");
+                                foreach ($value as $rule) { $crawler->addContentTypeReceiveRule($rule); }
+                            } break;
+                            case 'addURLFollowRule' :
+                            {
+                                if(!is_array($value) or !sizeof($value))
+                                    $value = array('html', 'htm', 'php', 'php3', 'php4', 'php5', 'asp', 'aspx', 'jsp');
+                                $crawler->addURLFollowRule("#(".implode("|", $value).")$# i");
+                            } break;
+                            case 'addURLFilterRule' :
+                            {
+                                if(!is_array($value) or !sizeof($value))
+                                    $value = array('jpg', 'png', 'gif', 'css', 'js', 'pdf', 'exe', 'apk', 'm4a', 'mp4');
+                                $crawler->addURLFilterRule("#\.(".implode('|', $value).")$# i");
+                            } break;
+                            case 'setLinkExtractionTags' :
+                            {
+                                if (!is_array($value) or sizeof($value)) $value = array('href');
+                                $crawler->setLinkExtractionTags($value);
+                            } break;
+                            default : $crawler->$method(trim($value));
+                        }
                     }else{
                         throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
                     }
@@ -125,9 +152,14 @@ class CrawlEngine_Controller extends A_Controller
                     $MRL = trim(FrontierManager::instance()->getMostRelevantLink());
                     if($MRL !="" and strlen($MRL)) $start_url = $MRL;
                 }
+                $start_url = trim($start_url, " \t\n\r\v\\");
                 $crawler->setURL($start_url);
                 $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
                 $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
+                $crawler->setRequestDelay(0.2);
+                $crawler->excludeLinkSearchDocumentSections(
+                    PHPCrawlerLinkSearchDocumentSections::SCRIPT_SECTIONS |
+                    PHPCrawlerLinkSearchDocumentSections::HTML_COMMENT_SECTIONS);
                 $crawler->enableResumption();
 
                 //Check records for url
@@ -135,7 +167,7 @@ class CrawlEngine_Controller extends A_Controller
                 $link = is_object($link) ? $link : new Link();
                 $link->setUrl($start_url);
                 $link->setStatus(Link::STATUS_UNVISITED);
-                $link->getId() != -1 ? $link->mapper()->update($link) : $link->mapper()->insert($link); //where -1 is default DO-Id
+                ($link->getId() == Link::DEFAULT_ID) ? $link->mapper()->insert($link) : $link->mapper()->update($link); //where -1 is default DO-Id
 
                 //Instantiate and setup Crawl object to record crawl-history
                 $crawl = new Crawl();
@@ -145,9 +177,6 @@ class CrawlEngine_Controller extends A_Controller
                 $crawl->setStartTime(new DateTime());
                 $crawl->setStatus(Crawl::STATUS_ONGOING);
                 $crawl->mapper()->insert($crawl);
-
-                //Bind Crawler and Craw enable live feedback for Crawl Process Monitor
-                $crawler->setCrawlRecord($crawl);
 
                 //Run Crawler
                 set_time_limit($fields['max-run-time'] * 60);
@@ -181,7 +210,7 @@ class CrawlEngine_Controller extends A_Controller
                 echo "Links followed: ".$report->links_followed.$lb;
                 echo "Documents received: ".$report->files_received.$lb;
                 echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
-                echo "Stop Time: ".date("F d, Y / g:i:s A");
+                echo "Stop Time: ".date("F d, Y / g:i:s A").$lb;
                 echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
                 echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
                 echo "</p>";
@@ -239,6 +268,7 @@ class CrawlEngine_Controller extends A_Controller
             {
                 //if($cid != null) echo "yes";
                 $data['current-crawl'] = $crawl;
+                $crawl->getStartUrl()->getId();
                 $data['cid'] = $crawl->getId();
                 $data['status'] = $crawl->getStatus();
             }

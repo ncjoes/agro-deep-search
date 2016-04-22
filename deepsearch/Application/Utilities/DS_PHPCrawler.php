@@ -17,6 +17,7 @@ namespace Application\Utilities;
 use _Libraries\PHPCrawl\PHPCrawler;
 use _Libraries\PHPCrawl\PHPCrawlerDocumentInfo;
 use Application\Models\Crawl;
+use System\Models\DomainObjectWatcher;
 
 // Extend the class and override the handleDocumentInfo()-method
 /**
@@ -26,36 +27,12 @@ use Application\Models\Crawl;
 class DS_PHPCrawler extends PHPCrawler
 {
     /**
-     * @var Crawl
-     */
-    protected $crawl_record;
-
-    /**
-     * @return Crawl
-     */
-    public function getCrawlRecord()
-    {
-        return $this->crawl_record;
-    }
-
-    /**
-     * @param Crawl $crawl_record
-     * @return DS_PHPCrawler
-     */
-    public function setCrawlRecord(Crawl $crawl_record)
-    {
-        $this->crawl_record = $crawl_record;
-        return $this;
-    }
-
-    /**
      * @param \_Libraries\PHPCrawl\PHPCrawlerDocumentInfo $DocInfo
      * @return int
      */
     public function handleDocumentInfo(PHPCrawlerDocumentInfo $DocInfo)
     {
-        //Bring Crawl-Record into scope
-        $crawl = $this->crawl_record->reload();
+        $crawl = Crawl::getMapper("Crawl")->findByCrawlerId($this->crawler_uniqid);
 
         if($crawl->getStatus() == Crawl::STATUS_ONGOING)
         {
@@ -90,7 +67,7 @@ class DS_PHPCrawler extends PHPCrawler
 
             return 1;
         }
-        return 0;
+        return -1;
     }
 
     /**
@@ -105,11 +82,20 @@ class DS_PHPCrawler extends PHPCrawler
     /**
      * @param $documentInfo
      * @return \DOMDocument
+     * @throws \Exception
      */
     public function prepareContent(PHPCrawlerDocumentInfo $documentInfo)
     {
         $document = new \DOMDocument();
-        return $document;//->loadHTML($documentInfo->content);
+        $document->validateOnParse = false;
+        $document->strictErrorChecking = false;
+
+        if(1)//$document->loadHTML($documentInfo->source))
+        {
+            return $document;
+        }else{
+            throw new \Exception("DOMDocument Error");
+        }
     }
 
     /**

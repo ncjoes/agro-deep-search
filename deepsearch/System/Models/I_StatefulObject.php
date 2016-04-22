@@ -15,16 +15,11 @@ interface I_StatefulObject
     /*
     const STATUS_PENDING = 2;
     const STATUS_APPROVED = 1;
-    const STATUS_DELETED = 0;
 
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 2;
 
     const STATUS_STAMPED = 1;
     const STATUS_UNSTAMPED = 2;
 
-    const STATUS_PUBLISHED = 1;
-    const STATUS_DRAFT = 2;
 
     const STATUS_VALID = 1;
     const STATUS_CANCELED = 0;

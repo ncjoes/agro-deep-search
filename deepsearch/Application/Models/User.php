@@ -21,8 +21,10 @@ use System\Models\I_StatefulObject;
 class User extends A_Person implements I_StatefulObject
 {
     private $privileges;
-    private $office;
     private $status;
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
 
     /**
      * User constructor.
@@ -31,30 +33,6 @@ class User extends A_Person implements I_StatefulObject
     public function __construct($id=null)
     {
         parent::__construct($id);
-    }
-
-    /**
-     * @return Office
-     */
-    public function getOffice()
-    {
-        if(! is_object($this->office))
-        {
-            $staff_composite = BoardStaff::getMapper('BoardStaff')->findByUser($this->getId());
-            $this->office = is_object($staff_composite) ? $staff_composite->getOffice() : null;
-        }
-        return $this->office;
-    }
-
-    /**
-     * @param Office $office
-     * @return User
-     */
-    public function setOffice(Office $office)
-    {
-        $this->office = $office;
-        $this->markDirty();
-        return $this;
     }
 
     /**

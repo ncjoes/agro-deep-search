@@ -40,7 +40,7 @@ switch ($data['status'])
     case 2 :
     {
         ?>
-        <div class="text-center full-margin-bottom text-info bg-info">Running Crawl <?= $current_crawl->getCrawlerId(); ?> / <?= $current_crawl->getStartUrl()?></div>
+        <div class="text-center full-margin-bottom text-info bg-info">Running Crawl <?= $current_crawl->getCrawlerId(); ?> / <?= $current_crawl->getStartUrl()->getUrl(); ?></div>
         <?php
     } break;
 }

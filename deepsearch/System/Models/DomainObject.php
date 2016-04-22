@@ -89,29 +89,35 @@ abstract class DomainObject
         return MapperRegistry::getMapper($class_name);
     }
 
+    /**
+     *
+     */
     public function markNew()
     {
         DomainObjectWatcher::addNew($this);
     }
 
+    /**
+     *
+     */
     public function markClean()
     {
         DomainObjectWatcher::addClean($this);
     }
 
+    /**
+     *
+     */
     public function markDirty()
     {
         DomainObjectWatcher::addDirty($this);
     }
 
+    /**
+     *
+     */
     public function markDelete()
     {
         DomainObjectWatcher::addDelete($this);
-    }
-
-    public function reload()
-    {
-        DomainObjectWatcher::unwatch($this);
-        return $this->mapper()->find($this->getId());
     }
 }

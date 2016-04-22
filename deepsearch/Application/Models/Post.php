@@ -34,6 +34,10 @@ class Post extends A_StatefulObject
     const TYPE_ABOUT = 2;
     const TYPE_OTHER = 4;
 
+    const STATUS_DELETED = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_DRAFT = 2;
+
     /**
      * Post constructor.
      * @param null $id
