@@ -20,6 +20,7 @@ use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
 use Application\Models\Crawl;
 use Application\Models\CrawlSetting;
 use Application\Models\Link;
+use Application\Utilities\A_Utility;
 use Application\Utilities\FrontierManager;
 use System\Models\DomainObjectWatcher;
 use System\Request\RequestContext;
@@ -152,7 +153,7 @@ class CrawlEngine_Controller extends A_Controller
                     $MRL = trim(FrontierManager::instance()->getMostRelevantLink());
                     if($MRL !="" and strlen($MRL)) $start_url = $MRL;
                 }
-                $start_url = trim($start_url, " \t\n\r\v\\");
+                $start_url = A_Utility::trimUrl($start_url);
                 $crawler->setURL($start_url);
                 $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
                 $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
@@ -163,8 +164,7 @@ class CrawlEngine_Controller extends A_Controller
                 $crawler->enableResumption();
 
                 //Check records for url
-                $link = Link::getMapper("Link")->findByUrlHash(md5($start_url));
-                $link = is_object($link) ? $link : new Link();
+                $link = $crawler->findLinkObj($start_url);
                 $link->setUrl($start_url);
                 $link->setStatus(Link::STATUS_UNVISITED);
                 ($link->getId() == Link::DEFAULT_ID) ? $link->mapper()->insert($link) : $link->mapper()->update($link); //where -1 is default DO-Id

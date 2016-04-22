@@ -58,11 +58,11 @@ if($data['status'] == 0 or $data['status'] == 1 or $data['status'] == 2)
             <h3><?= $current_crawl->getNumDocumentsReceived(); ?></h3>
         </div>
         <div class="col-sm-2 col-sm-offset-0 col-xs-5 col-xs-offset-1">
-            <small>Links Extracted</small>
+            <small>New Links Extracted</small>
             <h3><?= $current_crawl->getNumLinksExtracted(); ?></h3>
         </div>
         <div class="col-sm-2 col-sm-offset-0 col-xs-5 col-xs-offset-0">
-            <small>Forms Extracted</small>
+            <small>New Forms Extracted</small>
             <h3><?= $current_crawl->getNumFormsExtracted(); ?></h3>
         </div>
         <div class="col-sm-2 col-sm-offset-0 col-xs-5 col-xs-offset-1">

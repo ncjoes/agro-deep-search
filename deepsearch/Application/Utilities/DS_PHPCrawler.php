@@ -17,7 +17,10 @@ namespace Application\Utilities;
 use _Libraries\PHPCrawl\PHPCrawler;
 use _Libraries\PHPCrawl\PHPCrawlerDocumentInfo;
 use Application\Models\Crawl;
+use Application\Models\Link;
+use Application\Models\Form;
 use System\Models\DomainObjectWatcher;
+use System\Utilities\DateTime;
 
 // Extend the class and override the handleDocumentInfo()-method
 /**
@@ -32,44 +35,72 @@ class DS_PHPCrawler extends PHPCrawler
      */
     public function handleDocumentInfo(PHPCrawlerDocumentInfo $DocInfo)
     {
-        $crawl = Crawl::getMapper("Crawl")->findByCrawlerId($this->crawler_uniqid);
-
-        if($crawl->getStatus() == Crawl::STATUS_ONGOING)
-        {
-            //handle received document
-            if($DocInfo->received_completely)
+            $crawl = Crawl::getMapper("Crawl")->findByCrawlerId($this->crawler_uniqid);
+            if($crawl->getStatus() == Crawl::STATUS_ONGOING)
             {
-                if($this->classifyPage() >= 0.5) //page belongs to our domain of interest
+                if(strlen($DocInfo->referer_url))
                 {
-                    libxml_use_internal_errors(true);
-                    $document = $this->prepareContent($DocInfo);
-                    $num_links_extracted = $this->extractContainedLinks($document);
-                    $num_forms_extracted = $this->extractContainedForms($document);
-                    $crawl->setNumLinksExtracted($crawl->getNumLinksExtracted() + $num_links_extracted);
-                    $crawl->setNumFormsExtracted($crawl->getNumFormsExtracted() + $num_forms_extracted);
-                    libxml_clear_errors();
-                    unset($document);
+                    $plink = $this->findLinkObj($DocInfo->referer_url);
+                    $plink->setUrl($DocInfo->referer_url);
+                    $plink->setAnchor($DocInfo->refering_linktext);
                 }
+
+                $link = $this->findLinkObj($DocInfo->url);
+                $link->setUrl($DocInfo->url);
+                if(isset($plink) and is_object($plink)) $link->setParentLink($plink);
+                $link->setLastCrawl($crawl);
+                $link->setLastCrawlTime(new DateTime());
+                $link->setStatus(Link::STATUS_VISITED);
+
+                //handle received document
+                if($DocInfo->received_completely)
+                {
+                    if($this->classifyPage() >= 0.5) //page belongs to our domain of interest
+                    {
+                        libxml_use_internal_errors(true);
+                        $document = $this->prepareContent($DocInfo);
+
+                        $page_title = $document->getElementsByTagName('title');
+                        if(is_object($page_title->item(0))) $link->setPageTitle($page_title->item(0)->textContent);
+                        $num_links_extracted = $this->extractContainedLinks($DocInfo, $link);
+                        $num_forms_extracted = $this->extractContainedForms($document, $link);
+                        $crawl->setNumLinksExtracted($crawl->getNumLinksExtracted() + $num_links_extracted);
+                        $crawl->setNumFormsExtracted($crawl->getNumFormsExtracted() + $num_forms_extracted);
+                        libxml_clear_errors();
+                        unset($document);
+                    }
+                }
+
+                //Update Crawl Process Record
+                $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
+                $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
+                $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received + $DocInfo->header_bytes_received : 0));
+                $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
+                $crawl->mapper()->update($crawl);
+
+                //send progress report to browser
+                if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
+                $line = ($crawl->getNumLinksFollowed()+1)." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
+                if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
+                $line .= "]";
+                echo $line.$lb."- - - ".$lb;
+
+                try
+                {
+                    //Wrap-up process
+                    DomainObjectWatcher::instance()->performOperations();
+                }
+                catch (\Exception $e)
+                {
+                    echo "<hr/>".$e->getMessage()."<br/>";
+                    if(site_info('development-mode',false)==true) echo getExceptionTraceString($e);
+                    echo "<hr/>";
+                }
+
+                flush();
+                return +10;
             }
-
-            //Update Crawl Process Record
-            $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
-            $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
-            $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received + $DocInfo->header_bytes_received : 0));
-            $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
-            $crawl->mapper()->update($crawl);
-
-            //send progress report to browser
-            if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
-            $line = ($crawl->getNumLinksFollowed()+1)." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
-            if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
-            $line .= "]";
-            echo $line.$lb."- - - ".$lb;
-            flush();
-
-            return +10;
-        }
-        return -10;
+            return -10;
     }
 
     /**
@@ -91,30 +122,76 @@ class DS_PHPCrawler extends PHPCrawler
         $document = new \DOMDocument();
         $document->validateOnParse = false;
         $document->strictErrorChecking = false;
+        $document->preserveWhiteSpace = false;
         $document->loadHTML($documentInfo->source, LIBXML_NOERROR );
 
         return $document;
     }
 
     /**
-     * @param $document
+     * @param $documentInfo PHPCrawlerDocumentInfo
+     * @param $plink Link
      * @return int
      */
-    public function extractContainedLinks(\DOMDocument $document)
+    public function extractContainedLinks(PHPCrawlerDocumentInfo $documentInfo, Link $plink)
     {
-        $linkNodes = $document->getElementsByTagName("a");
-        $num_links = $linkNodes->length;
-        return $num_links;
+        $num_links_extracted = 0;
+        $linkNodes = $documentInfo->links_found;
+        $num_links_contained = sizeof($linkNodes);
+        for($i = 0; $i < $num_links_contained; ++$i)
+        {
+            $linkNode = $linkNodes[$i];
+            $link = $this->findLinkObj($linkNode['url_rebuild']);
+            $link->setUrl($linkNode['url_rebuild']);
+            $link->setAnchor($linkNode['linktext']);
+            $link->setParentLink($plink);
+            if(is_null($link->getStatus())) $link->setStatus(Link::STATUS_UNVISITED);
+            if($link->getId() == $link::DEFAULT_ID) $num_links_extracted++;
+        }
+        return $num_links_extracted;
     }
 
     /**
-     * @param $document
+     * @param \DOMDocument $document
+     * @param $link Link
      * @return int
      */
-    public function extractContainedForms(\DOMDocument $document)
+    public function extractContainedForms(\DOMDocument $document, Link $link)
     {
+        $num_forms_extracted = 0;
         $formNodes = $document->getElementsByTagName("form");
-        $num_forms = $formNodes->length;
-        return $num_forms;
+        $num_forms_contained = $formNodes->length;
+        for($i = 0; $i < $num_forms_contained; ++$i)
+        {
+            $markup = A_Utility::getDOMNodeHTML($formNodes->item($i));
+            $form = $this->findFormObj($markup);
+            $form->setLink($link);
+            $form->setFormMarkup($markup);
+            if(is_null($form->getRelevance())) $form->setRelevance(Form::REL_UNKNOWN);
+            if($form->getId() == $form::DEFAULT_ID) $num_forms_extracted++;
+        }
+        return $num_forms_extracted;
+    }
+
+    /**
+     * @param $url
+     * @return Link
+     */
+    public function findLinkObj($url)
+    {
+        $link = Link::getMapper("Link")->findByUrlHash(md5(A_Utility::trimUrl($url)));
+        $link = is_object($link) ? $link : new Link();
+        return $link;
+    }
+
+    /**
+     * @param $markup
+     * @return Form
+     */
+    public function findFormObj($markup)
+    {
+        $form = Form::getMapper("Form")->findByHash(md5(A_Utility::trimFormMarkup($markup)));
+        $form = is_object($form) ? $form : new Form();
+        return $form;
     }
 }
