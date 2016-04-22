@@ -284,7 +284,6 @@ class CrawlEngine_Controller extends A_Controller
 
     protected function StopCrawlProgress(RequestContext $requestContext)
     {
-        $requestContext->setView('_includes/_empty.php');
         try {
             $cid = $requestContext->fieldIsSet('cid', INPUT_GET) ? $requestContext->getField('cid', INPUT_GET) : null;
             $crawl = Crawl::getMapper('Crawl')->find( $cid );
@@ -293,10 +292,14 @@ class CrawlEngine_Controller extends A_Controller
             {
                 $crawl->SetStatus(Crawl::STATUS_TERMINATED);
                 $crawl->mapper()->update($crawl);
-                echo 1;
+                unset($crawl);
+                echo '+';
+                exit;
             }
+            echo '-';
+            exit;
         } catch (\Exception $e) {
-            echo 0;
+            echo '-';
             exit;
         }
     }

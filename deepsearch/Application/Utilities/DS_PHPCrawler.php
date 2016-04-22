@@ -36,13 +36,6 @@ class DS_PHPCrawler extends PHPCrawler
 
         if($crawl->getStatus() == Crawl::STATUS_ONGOING)
         {
-            //send progress report to browser
-            if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
-            $line = ($crawl->getNumLinksFollowed()+1)." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
-            if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
-            $line .= "]";
-            echo $line.$lb."- - - ".$lb;
-
             //handle received document
             if($DocInfo->received_completely)
             {
@@ -66,11 +59,17 @@ class DS_PHPCrawler extends PHPCrawler
             $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
             $crawl->mapper()->update($crawl);
 
+            //send progress report to browser
+            if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
+            $line = ($crawl->getNumLinksFollowed()+1)." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
+            if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
+            $line .= "]";
+            echo $line.$lb."- - - ".$lb;
             flush();
 
-            return 1;
+            return +10;
         }
-        return -1;
+        return -10;
     }
 
     /**
@@ -92,13 +91,9 @@ class DS_PHPCrawler extends PHPCrawler
         $document = new \DOMDocument();
         $document->validateOnParse = false;
         $document->strictErrorChecking = false;
+        $document->loadHTML($documentInfo->source, LIBXML_NOERROR );
 
-        if( $document->loadHTML($documentInfo->source, LIBXML_NOERROR ) )
-        {
-            return $document;
-        }else{
-            throw new \Exception("DOMDocument Error");
-        }
+        return $document;
     }
 
     /**

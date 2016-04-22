@@ -64,13 +64,16 @@ $sid = $data['sid'];
 
     function doStopCrawl( status )
     {
-        if(status == 1) {
+        if(status == '+')
+        {
             document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
             setTimeout(function () {
-                clearInterval(intervalHandle);
-                document.getElementById('monitor-display-toggle').removeAttribute('disabled');
-            }, 2000);
-        } else {
+                //clearInterval(intervalHandle);
+                //document.getElementById('monitor-display-toggle').removeAttribute('disabled');
+            }, 500);
+        }
+        else
+        {
             alert("Error: Can not stop crawl");
         }
     }
@@ -99,7 +102,9 @@ $sid = $data['sid'];
                 <div class="row">
                     <div class="col-sm-2 col-md-1"><label for="setURL">URL</label></div>
                     <div class="col-sm-6 col-md-8">
-                        <input name="val[setURL]" id="setURL" type="url" class="form-control" value="<?= isset($fields['val']['setURL']) ? $fields['val']['setURL'] : home_url(null, false); ?>" placeholder="http://www.site.com/"/>
+                        <input name="val[setURL]" id="setURL" type="url" class="form-control"
+                               value="<?= isset($fields['val']['setURL']) ? $fields['val']['setURL'] : home_url(null, false); ?>"
+                               placeholder="http://www.site.com/" min="0"/>
                     </div>
                     <div class="col-sm-2 col-md-1"><label for="setPort">Port</label></div>
                     <div class="col-sm-2">
@@ -119,7 +124,9 @@ $sid = $data['sid'];
                         <label for="max-run-time">Maximum Run Time (in minutes)</label>
                     </div>
                     <div class="col-xs-5 col-sm-2">
-                        <input name="max-run-time" id="max-run-time" type="number" class="form-control" value="<?= isset($fields['max-run-time']) ? $fields['max-run-time'] : '30'; ?>" placeholder="30"/>
+                        <input name="max-run-time" id="max-run-time" type="number" class="form-control"
+                               value="<?= isset($fields['max-run-time']) ? $fields['max-run-time'] : '30'; ?>"
+                               placeholder="30" max="60" min="5"/>
                     </div>
                 </div>
             </div>
@@ -156,7 +163,7 @@ $sid = $data['sid'];
                         <button id="process-stopper" class="btn btn-sm btn-danger" onclick="stopCrawl()">
                             <span class="glyphicon glyphicon-off"></span> Stop Crawl
                         </button>
-                        <button class="btn btn-sm btn-default" onclick="window.location = document.URL">
+                        <button class="btn btn-sm btn-default" onclick="window.location = '<?php home_url('/crawl-engine'); ?>'">
                             <span class="glyphicon glyphicon-refresh"></span> Reload Page
                         </button>
                     </p>
