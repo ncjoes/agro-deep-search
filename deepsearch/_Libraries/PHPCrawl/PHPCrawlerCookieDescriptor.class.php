@@ -84,7 +84,6 @@ class PHPCrawlerCookieDescriptor
    * @param string $expires    Expire-string, e.g. "Sat, 08-Aug-2020 23:59:08 GMT"
    * @param string $path       Cookie-path
    * @param string $domain     Cookie-domain
-   * @internal
    */
   public function __construct($source_url, $name, $value, $expires = null, $path = null, $domain = null)
   {

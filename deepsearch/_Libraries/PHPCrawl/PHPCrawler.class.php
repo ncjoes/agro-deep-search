@@ -12,14 +12,11 @@ namespace _Libraries\PHPCrawl;
 
 
 use _Libraries\PHPCrawl\Utils\PHPCrawlerUtils;
-use _Libraries\PHPCrawl\Utils\PHPCrawlerEncodingUtils;
 use _Libraries\PHPCrawl\UrlCache\PHPCrawlerMemoryURLCache;
 use _Libraries\PHPCrawl\UrlCache\PHPCrawlerSQLiteURLCache;
-use _Libraries\PHPCrawl\CookieCache\PHPCrawlerCookieCacheBase;
 use _Libraries\PHPCrawl\CookieCache\PHPCrawlerSQLiteCookieCache;
 use _Libraries\PHPCrawl\CookieCache\PHPCrawlerMemoryCookieCache;
 use _Libraries\PHPCrawl\Enums\PHPCrawlerAbortReasons;
-use _Libraries\PHPCrawl\Enums\PHPCrawlerRequestErrors;
 use _Libraries\PHPCrawl\Enums\PHPCrawlerUrlCacheTypes;
 use _Libraries\PHPCrawl\Enums\PHPCrawlerMultiProcessModes;
 use _Libraries\PHPCrawl\ProcessCommunication\PHPCrawlerProcessHandler;
@@ -1057,7 +1054,7 @@ class PHPCrawler
   public function handleDocumentInfo(PHPCrawlerDocumentInfo $PageInfo){}
   
   /**
-   * Sets the URL of the first page the crawler should crawl (root-page).
+   * Sets the URL of the first page the crawler should last_crawl (root-page).
    *
    * The given url may contain the protocol (http://www.foo.com or https://www.foo.com), the port (http://www.foo.com:4500/index.php)
    * and/or basic-authentication-data (http://loginname:passwd@www.foo.com)
@@ -1193,7 +1190,7 @@ class PHPCrawler
    *
    * <b>0 - The crawler will follow EVERY link, even if the link leads to a different host or domain.</b>
    * If you choose this mode, you really should set a limit to the crawling-process (see limit-options),
-   * otherwise the crawler maybe will crawl the whole WWW!
+   * otherwise the crawler maybe will last_crawl the whole WWW!
    *
    * <b>1 - The crawler only follow links that lead to the same domain like the one in the root-url.</b>
    * E.g. if the root-url (setURL()) is "http://www.foo.com", the crawler will follow links to "http://www.foo.com/..."
@@ -1595,6 +1592,7 @@ class PHPCrawler
    * Note: Reducing the number of tags in this list will improve the crawling-performance (a little).
    *
    * @param array $tag_array Numeric array containing the tags.
+   * @return bool
    * @section 6 Linkfinding settings
    */
   public function setLinkExtractionTags($tag_array)
@@ -1647,6 +1645,7 @@ class PHPCrawler
    * Sets the "User-Agent" identification-string that will be send with HTTP-requests.
    *
    * @param string $user_agent The user-agent-string. The default-value is "PHPCrawl".
+   * @return bool
    * @section 10 Other settings
    */
   public function setUserAgentString($user_agent)
@@ -1932,20 +1931,22 @@ class PHPCrawler
    * </code>
    *
    * @param int $crawler_id The crawler-ID of the crawling-process that should be resumed.
+   *
+   * @throws \Exception
    *                        (see {@link getCrawlerId()})
    * @section 9 Process resumption
    */
   public function resume($crawler_id)
   {
     if ($this->resumtion_enabled == false)
-      throw new Exception("Resumption was not enalbled, call enableResumption() before calling the resume()-method!");
+      throw new \Exception("Resumption was not enalbled, call enableResumption() before calling the resume()-method!");
     
     // Adobt crawler-id
     $this->crawler_uniqid = $crawler_id;
     
     if (!file_exists($this->working_base_directory."phpcrawl_tmp_".$this->crawler_uniqid.DIRECTORY_SEPARATOR))
     {
-      throw new Exception("Couldn't find any previous aborted crawling-process with crawler-id '".$this->crawler_uniqid."'");
+      throw new \Exception("Couldn't find any previous aborted crawling-process with crawler-id '".$this->crawler_uniqid."'");
     }
     
     $this->createWorkingDirectory();
@@ -2086,6 +2087,7 @@ class PHPCrawler
    * of the crawling-process, but won't follow any further links found in underlying documents.
    *
    * @param int $depth The maximum link-depth the crawler should follow
+   * @return bool
    * @section 5 Limit-settings
    */
   public function setCrawlingDepthLimit($depth)

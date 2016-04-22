@@ -121,6 +121,7 @@ class PHPCrawlerSQLiteCookieCache extends PHPCrawlerCookieCacheBase
    * Creates the sqlite-db-file and opens connection to it.
    *
    * @param bool $create_tables Defines whether all necessary tables should be created
+    * @throws \Exception
    */
   protected function openConnection($create_tables = false)
   {
@@ -131,9 +132,9 @@ class PHPCrawlerSQLiteCookieCache extends PHPCrawlerCookieCacheBase
     {
       $this->PDO = new \PDO("sqlite:".$this->sqlite_db_file);
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
-      throw new Exception("Error creating SQLite-cache-file, ".$e->getMessage().", try installing sqlite3-extension for PHP.");
+      throw new \Exception("Error creating SQLite-cache-file, ".$e->getMessage().", try installing sqlite3-extension for PHP.");
     }
     
     $this->PDO->exec("PRAGMA journal_mode = OFF");
