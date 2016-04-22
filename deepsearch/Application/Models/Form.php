@@ -18,15 +18,12 @@ namespace Application\Models;
  * Class Form
  * @package Application\Models
  */
-/**
- * Class Form
- * @package Application\Models
- */
 class Form extends A_DomainObject
 {
     private $page_link;
     private $form_markup;
     private $relevance;
+    private $hash = null;
 
     const REL_NEGATIVE = -1;
     const REL_UNKNOWN = 0;
@@ -42,7 +39,7 @@ class Form extends A_DomainObject
     }
 
     /**
-     * @return PageLink
+     * @return Link
      */
     public function getPageLink()
     {
@@ -50,10 +47,10 @@ class Form extends A_DomainObject
     }
 
     /**
-     * @param PageLink $page_link
+     * @param Link $page_link
      * @return Form
      */
-    public function setPageLink(PageLink $page_link)
+    public function setPageLink(Link $page_link)
     {
         $this->page_link = $page_link;
         $this->markDirty();
@@ -96,5 +93,14 @@ class Form extends A_DomainObject
         $this->relevance = $relevance;
         $this->markDirty();
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHash()
+    {
+        if(is_null($this->hash)) $this->hash = md5($this->form_markup);
+        return $this->hash;
     }
 }

@@ -30,9 +30,10 @@ class Form_Mapper extends A_Mapper
         parent::__construct();
         $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE id=?");
         $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_forms");
-        $this->selectByPageLinkStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE page_link=?");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_forms SET page_link=?, markup=?, relevance=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (page_link,markup,relevance)VALUES(?,?,?)");
+        $this->selectByPageLinkStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE link=?");
+        $this->selectByHashStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE hash=?");
+        $this->updateStmt = self::$PDO->prepare("UPDATE app_forms SET link=?, markup=?, relevance=?, hash=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (link,markup,relevance,hash)VALUES(?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_forms WHERE id=?");
     }
 
@@ -45,6 +46,15 @@ class Form_Mapper extends A_Mapper
         $this->selectByPageLinkStmt->execute( array($page_link) );
         $raw_data = $this->selectByPageLinkStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection( $raw_data );
+    }
+
+    /**
+     * @param string $hash
+     * @return Models\A_DomainObject
+     */
+    public function findByHash($hash)
+    {
+        return $this->findHelper($hash, $this->selectByHashStmt, 'hash');
     }
 
     /**
@@ -63,7 +73,7 @@ class Form_Mapper extends A_Mapper
     {
         $class = $this->targetClass();
         $object = new $class($array['id']);
-        $object->setPageLink(Models\PageLink::getMapper("PageLink")->find($array['page_link']));
+        $object->setPageLink(Models\Link::getMapper("Link")->find($array['link']));
         $object->setFormMarkup($array['markup']);
         $object->setRelevance($array['relevance']);
 
@@ -77,9 +87,10 @@ class Form_Mapper extends A_Mapper
     protected function doInsert(Models\A_DomainObject $object )
     {
         $values = array(
-            $object->getPageLink()->getId(),
+            $object->getLink()->getId(),
             $object->getFormMarkup(),
-            $object->getRelevance()
+            $object->getRelevance(),
+            $object->getHash()
         );
         $this->insertStmt->execute( $values );
         $id = self::$PDO->lastInsertId();
@@ -93,9 +104,10 @@ class Form_Mapper extends A_Mapper
     protected function doUpdate(Models\A_DomainObject $object )
     {
         $values = array(
-            $object->getPageLink()->getId(),
+            $object->getLink()->getId(),
             $object->getFormMarkup(),
             $object->getRelevance(),
+            $object->getHash(),
             $object->getId()
         );
         $this->updateStmt->execute( $values );

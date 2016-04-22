@@ -24,10 +24,12 @@ class Crawl extends A_StatefulObject
 {
     private $crawler_id;
     private $session_id;
-    private $num_links_followed;
-    private $num_documents_received;
-    private $num_byte_received;
-    private $process_run_time;
+    private $num_links_followed = 0;
+    private $num_documents_received = 0;
+    private $num_links_extracted = 0;
+    private $num_forms_extracted = 0;
+    private $num_byte_received = 0.0;
+    private $process_run_time = 0.0;
     private $start_time;
     private $end_time;
 
@@ -42,6 +44,7 @@ class Crawl extends A_StatefulObject
     public function __construct($id=null)
     {
         parent::__construct($id);
+        $this->start_time = new DateTime();
     }
 
     /**
@@ -116,6 +119,44 @@ class Crawl extends A_StatefulObject
     public function setNumDocumentsReceived($num_documents_received)
     {
         $this->num_documents_received = $num_documents_received;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumLinksExtracted()
+    {
+        return $this->num_links_extracted;
+    }
+
+    /**
+     * @param mixed $num_links_extracted
+     * @return Crawl
+     */
+    public function setNumLinksExtracted($num_links_extracted)
+    {
+        $this->num_links_extracted = $num_links_extracted;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumFormsExtracted()
+    {
+        return $this->num_forms_extracted;
+    }
+
+    /**
+     * @param mixed $num_forms_extracted
+     * @return Crawl
+     */
+    public function setNumFormsExtracted($num_forms_extracted)
+    {
+        $this->num_forms_extracted = $num_forms_extracted;
         $this->markDirty();
         return $this;
     }

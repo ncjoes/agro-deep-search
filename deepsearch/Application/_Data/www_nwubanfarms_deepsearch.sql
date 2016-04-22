@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.0.2
+-- version 4.6.0
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2016 at 08:08 PM
--- Server version: 10.0.17-MariaDB
--- PHP Version: 5.5.30
+-- Generation Time: Apr 22, 2016 at 05:07 AM
+-- Server version: 10.1.10-MariaDB
+-- PHP Version: 7.0.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -29,9 +29,12 @@ SET time_zone = "+00:00";
 CREATE TABLE `app_crawls` (
   `id` int(16) NOT NULL,
   `crawler_id` varchar(100) NOT NULL,
-  `num_links_followed` int(5) DEFAULT NULL,
-  `num_documents_received` int(5) DEFAULT NULL,
-  `num_byte_received` int(16) DEFAULT NULL,
+  `session_id` int(16) NOT NULL,
+  `num_links_followed` int(11) NOT NULL DEFAULT '0',
+  `num_documents_received` int(11) NOT NULL DEFAULT '0',
+  `num_links_extracted` int(13) NOT NULL DEFAULT '0',
+  `num_forms_extracted` int(13) NOT NULL DEFAULT '0',
+  `num_bytes_received` int(16) DEFAULT NULL,
   `process_run_time` double DEFAULT NULL,
   `start_time` int(20) NOT NULL,
   `end_time` int(20) DEFAULT NULL,
@@ -42,38 +45,21 @@ CREATE TABLE `app_crawls` (
 -- Dumping data for table `app_crawls`
 --
 
-INSERT INTO `app_crawls` (`id`, `crawler_id`, `num_links_followed`, `num_documents_received`, `num_byte_received`, `process_run_time`, `start_time`, `end_time`, `status`) VALUES
-(1, '71441461167223', 0, 0, 0, 0, 1461167223, NULL, 2),
-(2, '71441461168124', 0, 0, 0, 0, 1461168124, 1461168126, 1),
-(3, '71441461168385', 0, 0, 0, 0, 1461168385, 1461168388, 1),
-(4, '71441461168612', 0, 0, 0, 0, 1461168612, 1461168615, 1),
-(5, '71441461168778', 0, 0, 0, 0, 1461168778, 1461168781, 1),
-(6, '71441461168908', 0, 0, 0, 0, 1461168908, 1461168911, 1),
-(7, '71441461168947', 0, 0, 0, 0, 1461168947, 1461168949, 1),
-(8, '71441461169140', 0, 0, 0, 0, 1461169140, 1461169141, 1),
-(9, '71441461169159', 0, 0, 0, 0, 1461169159, 1461169160, 1),
-(10, '71441461169271', 0, 0, 0, 0, 1461169271, 1461169272, 1),
-(11, '71441461169322', 0, 0, 0, 0, 1461169322, 1461169347, 1),
-(12, '71441461169539', 0, 0, 0, 0, 1461169539, 1461169550, 1),
-(13, '71441461169562', 0, 0, 0, 0, 1461169562, 1461169563, 1),
-(14, '71441461169587', 0, 0, 0, 0, 1461169587, 1461169588, 1),
-(15, '71441461169595', 0, 0, 0, 0, 1461169595, 1461169596, 1),
-(16, '71441461170011', 0, 0, 0, 0, 1461170011, 1461170012, 1),
-(17, '71441461170017', 0, 0, 0, 0, 1461170017, 1461170018, 1),
-(18, '71441461170183', 0, 0, 0, 0, 1461170183, 1461170184, 1),
-(19, '71441461170365', 0, 0, 0, 0, 1461170365, 1461170366, 1),
-(20, '71441461170613', 0, 0, 0, 0, 1461170613, 1461170614, 1),
-(21, '71441461170627', 0, 0, 0, 0, 1461170627, 1461170627, 1),
-(22, '71441461170648', 0, 0, 0, 0, 1461170648, 1461170651, 1),
-(23, '71441461172012', 0, 0, 0, 0, 1461172012, 1461172016, 1),
-(24, '71441461172027', 0, 0, 0, 0, 1461172027, 1461172028, 1),
-(25, '71441461172109', 0, 0, 0, 0, 1461172109, 1461172109, 1),
-(26, '71441461172124', 0, 0, 0, 0, 1461172124, 1461172125, 1),
-(27, '71441461172585', 0, 0, 0, 0, 1461172585, 1461172586, 1),
-(28, '71441461172629', 0, 0, 0, 0, 1461172629, 1461172633, 1),
-(29, '71441461172936', 0, 0, 0, 0, 1461172936, 1461173028, 1),
-(30, '71441461173206', 0, 0, 0, 0, 1461173206, 1461173290, 1),
-(31, '71441461175669', 9, 8, 63885, 1.1703288555145, 1461175669, 1461175671, 1);
+INSERT INTO `app_crawls` (`id`, `crawler_id`, `session_id`, `num_links_followed`, `num_documents_received`, `num_links_extracted`, `num_forms_extracted`, `num_bytes_received`, `process_run_time`, `start_time`, `end_time`, `status`) VALUES
+(132, '31761461249938', 13, 9, 8, 0, 0, 64311, 3, 1461249938, 1461249942, 1),
+(133, '31761461249953', 13, 9, 8, 0, 0, 64311, 3, 1461249953, 1461249957, 1),
+(134, '31761461250185', 13, 9, 8, 0, 0, 64311, 3, 1461250185, 1461250189, 1),
+(135, '31761461250235', 13, 9, 8, 0, 0, 64311, 4, 1461250235, 1461250240, 1),
+(136, '31761461250303', 13, 9, 8, 0, 0, 64311, 3, 1461250303, 1461250307, 1),
+(137, '31761461250527', 13, 210, 178, 0, 0, 1706657, 66, 1461250527, NULL, 2),
+(138, '31761461250581', 13, 9, 8, 0, 0, 64311, 7, 1461250581, 1461250588, 1),
+(139, '31761461250729', 13, 38, 19, 0, 0, 1031016, 568, 1461250729, 1461251297, 0),
+(140, '31761461250879', 13, 9, 8, 0, 0, 64311, 4, 1461250879, 1461250883, 1),
+(141, '31761461254439', 13, 1, 0, 0, 0, 0, 1, 1461254439, NULL, 2),
+(142, '31761461254537', 13, 9, 8, 0, 0, 64311, 4, 1461254537, 1461254541, 1),
+(143, '31761461254582', 13, 234, 117, 0, 0, 7376326, 940, 1461254582, NULL, 2),
+(144, '31761461256678', 13, 9, 8, 0, 0, 64311, 4, 1461256678, 1461256683, 1),
+(145, '56481461290307', 13, 9, 8, 0, 0, 64311, 5, 1461290307, 1461290312, 1);
 
 -- --------------------------------------------------------
 
@@ -106,7 +92,8 @@ INSERT INTO `app_crawl_settings` (`id`, `var_name`, `current_value`, `default_va
 (11, 'setStreamTimeout', '30', '30'),
 (12, 'addContentTypeReceiveRule', '#text/html#', '#text/html#'),
 (13, 'addURLFollowRule', '', ''),
-(14, 'addURLFilterRule', '#\\.(jpg|png|gif|css|js)#', '#\\.(jpg|png|gif|css|js)#');
+(14, 'addURLFilterRule', '#\\.(jpg|png|gif|css|js)#', '#\\.(jpg|png|gif|css|js)#'),
+(15, 'setCrawlingDepthLimit', '5', '5');
 
 -- --------------------------------------------------------
 
@@ -131,17 +118,19 @@ CREATE TABLE `app_forms` (
   `id` int(16) NOT NULL,
   `page_link` int(16) NOT NULL,
   `markup` text NOT NULL,
-  `relevance` int(2) NOT NULL
+  `relevance` int(2) NOT NULL,
+  `hash` int(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `app_page_links`
+-- Table structure for table `app_links`
 --
 
-CREATE TABLE `app_page_links` (
+CREATE TABLE `app_links` (
   `id` int(16) NOT NULL,
+  `crawl_id` int(16) DEFAULT NULL,
   `url` varchar(2000) NOT NULL,
   `url_hash` varchar(32) NOT NULL,
   `anchor` varchar(1000) NOT NULL,
@@ -213,7 +202,7 @@ CREATE TABLE `bb_posts` (
 
 INSERT INTO `bb_posts` (`id`, `post_type`, `guid`, `title`, `content`, `excerpt`, `featured_image`, `category`, `author`, `date_created`, `last_update`, `cardinality`, `status`) VALUES
 (1, '4', 'privacy-policy', 'Privacy Policy', '<p>nothing much</p>', '<p>nothing</p>', NULL, NULL, 1, 1460915520, 1460915865, 1, 1),
-(2, '4', 'terms-of-use', 'Terms of Use', '<h1 style="text-align: center;">Enjoy ! It''s Inexpensive</h1>\r\n<p class="lead" style="text-align: center;">Developed forÂ <strong>official use only</strong>Â for the Post Primary School Management Board, Enugu State.</p>', '<p><span style="font-family: ''Agency FB''; font-size: 15px;">Use freely</span></p>', NULL, NULL, 1, 1460915820, 1460972371, 2, 1);
+(2, '4', 'terms-of-use', 'Terms of Use', '<h1 style="text-align: center;">Enjoy ! It\'s Inexpensive</h1>\r\n<p class="lead" style="text-align: center;">Developed forÂ <strong>official use only</strong>Â for the Post Primary School Management Board, Enugu State.</p>', '<p><span style="font-family: \'Agency FB\'; font-size: 15px;">Use freely</span></p>', NULL, NULL, 1, 1460915820, 1460972371, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -261,7 +250,10 @@ INSERT INTO `bb_sessions` (`id`, `user_id`, `privilege`, `start_time`, `user_age
 (8, 1, 1, 1461022831, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461022852, 0),
 (9, 1, 1, 1461026768, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461026768, 0),
 (10, 1, 1, 1461028677, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461034155, 0),
-(11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461175479, 1);
+(11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461197580, 0),
+(12, 1, 1, 1461198220, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461198220, 0),
+(13, 1, 1, 1461198231, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461290307, 1),
+(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461292295, 1);
 
 -- --------------------------------------------------------
 
@@ -367,15 +359,17 @@ ALTER TABLE `app_features`
 --
 ALTER TABLE `app_forms`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `hash` (`hash`),
   ADD KEY `link_id` (`page_link`);
 
 --
--- Indexes for table `app_page_links`
+-- Indexes for table `app_links`
 --
-ALTER TABLE `app_page_links`
+ALTER TABLE `app_links`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `url_hash` (`url_hash`),
-  ADD KEY `ref_page_link` (`parent_page_link`);
+  ADD KEY `ref_page_link` (`parent_page_link`),
+  ADD KEY `crawl_id` (`crawl_id`);
 
 --
 -- Indexes for table `bb_comments`
@@ -450,12 +444,12 @@ ALTER TABLE `bb_users_privileges`
 -- AUTO_INCREMENT for table `app_crawls`
 --
 ALTER TABLE `app_crawls`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
 --
 -- AUTO_INCREMENT for table `app_crawl_settings`
 --
 ALTER TABLE `app_crawl_settings`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `app_features`
 --
@@ -467,9 +461,9 @@ ALTER TABLE `app_features`
 ALTER TABLE `app_forms`
   MODIFY `id` int(16) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `app_page_links`
+-- AUTO_INCREMENT for table `app_links`
 --
-ALTER TABLE `app_page_links`
+ALTER TABLE `app_links`
   MODIFY `id` int(16) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `bb_comments`
@@ -495,7 +489,7 @@ ALTER TABLE `bb_post_categories`
 -- AUTO_INCREMENT for table `bb_sessions`
 --
 ALTER TABLE `bb_sessions`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `bb_users`
 --
@@ -514,7 +508,7 @@ ALTER TABLE `bb_users_privileges`
 -- Constraints for table `app_forms`
 --
 ALTER TABLE `app_forms`
-  ADD CONSTRAINT `app_forms_ibfk_1` FOREIGN KEY (`page_link`) REFERENCES `app_page_links` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `app_forms_ibfk_1` FOREIGN KEY (`page_link`) REFERENCES `app_links` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `bb_events_log`

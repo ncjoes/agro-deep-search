@@ -17,19 +17,31 @@ namespace Application\Models\Mappers;
 use Application\Models;
 use System\Utilities\DateTime;
 
-class PageLink_Mapper extends A_Mapper
+class Link_Mapper extends A_Mapper
 {
     public function __construct()
     {
         parent::__construct();
-        $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_page_links WHERE id=?");
-        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_page_links ORDER BY ext_reward DESC");
-        $this->selectRangeStmt = self::$PDO->prepare("SELECT * FROM app_page_links ORDER BY ext_reward DESC LIMIT :num_rows OFFSET :offset");
-        $this->selectByUrlHashStmt = self::$PDO->prepare("SELECT * FROM app_page_links WHERE url_hash=?");
-        $this->selectByParentPageLinkStmt = self::$PDO->prepare("SELECT * FROM app_page_links WHERE parent_page_link=?");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_page_links SET url=?, url_hash=?, anchor=?, around_text=?, page_title=?, parent_page_link=?, last_crawl_time=?, target_distance=?, ext_reward=?, status=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_page_links (url,url_hash,anchor,around_text,page_title,parent_page_link,last_crawl_time,target_distance,ext_reward,status)VALUES(?,?,?,?,?,?,?,?,?,?)");
-        $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_page_links WHERE id=?");
+        $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_links WHERE id=?");
+        $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_links ORDER BY ext_reward DESC");
+        $this->selectByCrawlIdStmt = self::$PDO->prepare("SELECT * FROM app_links WHERE crawl_id=?");
+        $this->selectRangeStmt = self::$PDO->prepare("SELECT * FROM app_links ORDER BY ext_reward DESC LIMIT :num_rows OFFSET :offset");
+        $this->selectByUrlHashStmt = self::$PDO->prepare("SELECT * FROM app_links WHERE url_hash=?");
+        $this->selectByParentLinkStmt = self::$PDO->prepare("SELECT * FROM app_links WHERE parent_link=?");
+        $this->updateStmt = self::$PDO->prepare("UPDATE app_links SET url=?, url_hash=?, anchor=?, around_text=?, page_title=?, parent_link=?, last_crawl_time=?, target_distance=?, ext_reward=?, status=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_links (url,url_hash,anchor,around_text,page_title,parent_link,last_crawl_time,target_distance,ext_reward,status)VALUES(?,?,?,?,?,?,?,?,?,?)");
+        $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_links WHERE id=?");
+    }
+
+    /**
+     * @param $crawl_id
+     * @return \System\Models\Collections\Collection
+     */
+    public function findByCrawl($crawl_id)
+    {
+        $this->selectByCrawlIdStmt->execute( array($crawl_id) );
+        $raw_data = $this->selectByCrawlIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection( $raw_data );
     }
 
     /**
@@ -56,13 +68,13 @@ class PageLink_Mapper extends A_Mapper
     }
 
     /**
-     * @param $parent_page_link
+     * @param $parent_link
      * @return \System\Models\Collections\Collection
      */
-    public function findByParentPageLink($parent_page_link)
+    public function findByParentLink($parent_link)
     {
-        $this->selectByParentPageLinkStmt->execute( array($parent_page_link) );
-        $raw_data = $this->selectByParentPageLinkStmt->fetchAll(\PDO::FETCH_ASSOC);
+        $this->selectByParentLinkStmt->execute( array($parent_link) );
+        $raw_data = $this->selectByParentLinkStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection( $raw_data );
     }
 
@@ -71,7 +83,7 @@ class PageLink_Mapper extends A_Mapper
      */
     public function targetClass()
     {
-        return "Application\\Models\\PageLink";
+        return "Application\\Models\\Link";
     }
 
     /**
@@ -82,11 +94,12 @@ class PageLink_Mapper extends A_Mapper
     {
         $class = $this->targetClass();
         $object = new $class($array['id']);
+        $object->setCrawl($array['crawl']);
         $object->setUrl($array['url']);
         $object->setAnchor($array['anchor']);
         $object->setAroundText($array['around_text']);
         $object->setPageTitle($array['page_title']);
-        $object->setParentPageLink($array['parent_page_link']);
+        $object->setParentPageLink($array['parent_link']);
         if(is_int($array['last_crawl_time']))$object->setLastCrawlTime(new DateTime($array['last_crawl_time']));
         $object->setTargetDistance($array['target_distance']);
         $object->setExpectedReward($array['ext_reward']);
@@ -102,12 +115,13 @@ class PageLink_Mapper extends A_Mapper
     protected function doInsert(Models\A_DomainObject $object )
     {
         $values = array(
+            is_object($object->getCrawl()) ? $object->getCrawl()->getId() : $object->getCrawl(),
             $object->getUrl(),
             $object->getUrlHash(),
             $object->getAnchor(),
             $object->getAroundTextStr(),
             $object->getPageTitle(),
-            is_object($object->getParentPageLink()) ? $object->getParentPageLink()->getId() : $object->getParentPageLink(),
+            is_object($object->getParentLink()) ? $object->getParentLink()->getId() : $object->getParentLink(),
             is_object($object->getLastCrawlTime()) ? $object->getLastCrawlTime()->getDateTimeInt() : NULL,
             $object->getTargetDistance(),
             $object->getExpectedReward(),
@@ -125,12 +139,13 @@ class PageLink_Mapper extends A_Mapper
     protected function doUpdate(Models\A_DomainObject $object )
     {
         $values = array(
+            is_object($object->getCrawl()) ? $object->getCrawl()->getId() : $object->getCrawl(),
             $object->getUrl(),
             $object->getUrlHash(),
             $object->getAnchor(),
             $object->getAroundTextStr(),
             $object->getPageTitle(),
-            is_object($object->getParentPageLink()) ? $object->getParentPageLink()->getId() : $object->getParentPageLink(),
+            is_object($object->getParentLink()) ? $object->getParentLink()->getId() : $object->getParentLink(),
             is_object($object->getLastCrawlTime()) ? $object->getLastCrawlTime()->getDateTimeInt() : NULL,
             $object->getTargetDistance(),
             $object->getExpectedReward(),

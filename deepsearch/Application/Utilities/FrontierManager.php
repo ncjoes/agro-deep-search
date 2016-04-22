@@ -14,7 +14,7 @@
 namespace Application\Utilities;
 
 
-use Application\Models\PageLink;
+use Application\Models\Link;
 
 class FrontierManager extends A_Utility
 {
@@ -53,7 +53,7 @@ class FrontierManager extends A_Utility
         return array_shift($this->crawl_line);
     }
 
-    public function addToCrawlLine(PageLink $link)
+    public function addToCrawlLine(Link $link)
     {
         array_push($this->crawl_line, $link->getUrl());
         return $this;
@@ -62,7 +62,7 @@ class FrontierManager extends A_Utility
     public function reloadCrawLine($MODE=1)
     {
         //TODO ...
-        $link_objects = PageLink::getMapper('PageLink')->findRange();
+        $link_objects = Link::getMapper('PageLink')->findRange();
 
         foreach ($link_objects as $link_object)
         {

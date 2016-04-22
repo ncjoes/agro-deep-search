@@ -19,13 +19,15 @@ use System\Utilities\DateTime;
  * Class PageLink
  * @package Application\Models
  */
-class PageLink extends A_StatefulObject
+class Link extends A_StatefulObject
 {
+    private $crawl;
     private $url;
+    private $url_hash = null;
     private $anchor;
     private $around_text = array('before'=>"", 'after'=>"");
     private $page_title = "";
-    private $parent_page_link;
+    private $parent_link;
     private $last_crawl_time;
     private $target_distance;
     private $expected_reward;
@@ -42,6 +44,28 @@ class PageLink extends A_StatefulObject
     }
 
     /**
+     * @return Crawl
+     */
+    public function getCrawl()
+    {
+        if(! is_object($this->crawl))
+        {
+            $this->crawl = Crawl::getMapper('Crawl')->find($this->crawl);
+        }
+        return $this->crawl;
+    }
+
+    /**
+     * @param mixed $crawl
+     * @return mixed
+     */
+    public function setCrawl($crawl)
+    {
+        $this->parent_link = $crawl;
+        $this->markDirty();
+        return $this;
+    }
+    /**
      * @return mixed
      */
     public function getUrl()
@@ -51,7 +75,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param mixed $url
-     * @return PageLink
+     * @return Link
      */
     public function setUrl($url)
     {
@@ -65,7 +89,8 @@ class PageLink extends A_StatefulObject
      */
     public function getUrlHash()
     {
-        return md5($this->url);
+        if(is_null($this->url_hash)) $this->url_hash = md5($this->url);
+        return $this->url_hash;
     }
 
     /**
@@ -78,7 +103,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param string $anchor
-     * @return PageLink
+     * @return Link
      */
     public function setAnchor($anchor)
     {
@@ -131,7 +156,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param string $text
-     * @return PageLink
+     * @return Link
      */
     public function setAroundText($text)
     {
@@ -152,7 +177,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param string $page_title
-     * @return PageLink
+     * @return Link
      */
     public function setPageTitle($page_title)
     {
@@ -162,24 +187,24 @@ class PageLink extends A_StatefulObject
     }
 
     /**
-     * @return PageLink
+     * @return Link
      */
-    public function getParentPageLink()
+    public function getParentLink()
     {
-        if(! is_object($this->parent_page_link))
+        if(! is_object($this->parent_link))
         {
-            $this->parent_page_link = $this->mapper()->find($this->parent_page_link);
+            $this->parent_link = $this->mapper()->find($this->parent_link);
         }
-        return $this->parent_page_link;
+        return $this->parent_link;
     }
 
     /**
-     * @param mixed $parent_page_link
+     * @param mixed $parent_link
      * @return mixed
      */
-    public function setParentPageLink($parent_page_link)
+    public function setParentLink($parent_link)
     {
-        $this->parent_page_link = $parent_page_link;
+        $this->parent_link = $parent_link;
         $this->markDirty();
         return $this;
     }
@@ -194,7 +219,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param DateTime $last_crawl_time
-     * @return PageLink
+     * @return Link
      */
     public function setLastCrawlTime(DateTime $last_crawl_time)
     {
@@ -213,7 +238,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param int $target_distance
-     * @return PageLink
+     * @return Link
      */
     public function setTargetDistance($target_distance)
     {
@@ -232,7 +257,7 @@ class PageLink extends A_StatefulObject
 
     /**
      * @param mixed $expected_reward
-     * @return PageLink
+     * @return Link
      */
     public function setExpectedReward($expected_reward)
     {
