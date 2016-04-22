@@ -45,7 +45,7 @@ switch ($data['status'])
     } break;
 }
 
-if($data['status'] == 1 or $data['status'] == 2)
+if($data['status'] == 0 or $data['status'] == 1 or $data['status'] == 2)
 {
 ?>
     <div class="row text-center">

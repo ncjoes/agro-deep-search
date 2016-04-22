@@ -50,49 +50,47 @@ class DS_PHPCrawler extends PHPCrawler
 
     /**
      * @param \_Libraries\PHPCrawl\PHPCrawlerDocumentInfo $DocInfo
-     * @return null
+     * @return int
      */
     public function handleDocumentInfo(PHPCrawlerDocumentInfo $DocInfo)
     {
         //Bring Crawl-Record into scope
-        $crawl = $this->crawl_record;
+        $crawl = $this->crawl_record->reload();
 
-        //send progress report to browser
-        if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
-        $line = $DocInfo->http_status_code." - ".$DocInfo->url." [";
-        if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
-        $line .= "]";
-        echo $line.$lb."- - - ".$lb;
-
-        //handle received document
-        if($DocInfo->received_completely)
+        if($crawl->getStatus() == Crawl::STATUS_ONGOING)
         {
-            //TODO
-            //Classify Document
-            // if need be {
-            // do DB stuffs
-            //1. Load $DocInfo->source into HTMLParser
-            //2. Extract all links
-            //3. Extract all forms
-            // }
-            if($this->classifyPage() >= 0.5) //page belongs to our domain of interest
+            //send progress report to browser
+            if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
+            $line = ($crawl->getNumLinksFollowed()+1)." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
+            if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
+            $line .= "]";
+            echo $line.$lb."- - - ".$lb;
+
+            //handle received document
+            if($DocInfo->received_completely)
             {
-                $document = $this->prepareContent($DocInfo);
-                $num_links_extracted = $this->extractContainedLinks($document);
-                $num_forms_extracted = $this->extractContainedForms($document);
-                $crawl->setNumLinksExtracted($crawl->getNumLinksExtracted() + $num_links_extracted);
-                $crawl->setNumFormsExtracted($crawl->getNumFormsExtracted() + $num_forms_extracted);
+                if($this->classifyPage() >= 0.5) //page belongs to our domain of interest
+                {
+                    $document = $this->prepareContent($DocInfo);
+                    $num_links_extracted = $this->extractContainedLinks($document);
+                    $num_forms_extracted = $this->extractContainedForms($document);
+                    $crawl->setNumLinksExtracted($crawl->getNumLinksExtracted() + $num_links_extracted);
+                    $crawl->setNumFormsExtracted($crawl->getNumFormsExtracted() + $num_forms_extracted);
+                }
             }
+
+            //Update Crawl Process Record
+            $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
+            $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
+            $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received + $DocInfo->header_bytes_received : 0));
+            $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
+            $crawl->mapper()->update($crawl);
+
+            flush();
+
+            return 1;
         }
-
-        //Update Crawl Process Record
-        $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
-        $crawl->setNumDocumentsReceived($crawl->getNumDocumentsReceived() + ($DocInfo->received == true ? 1 : 0));
-        $crawl->setNumByteReceived( $crawl->getNumByteReceived() + ($DocInfo->received == true ? $DocInfo->bytes_received + $DocInfo->header_bytes_received : 0));
-        $crawl->setProcessRunTime(mktime() - $crawl->getStartTime()->getDateTimeInt());
-        $crawl->mapper()->update($crawl);
-
-        flush();
+        return 0;
     }
 
     /**

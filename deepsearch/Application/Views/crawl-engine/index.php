@@ -31,8 +31,12 @@ $sid = $data['sid'];
 
             setTimeout(function () {
                 showNode('crawler-monitor');
-            }, 3000);
-        }, 1000)
+            }, 2000);
+        }, 2000);
+
+        setTimeout(function () {
+            document.getElementById('crawl-process-starter').setAttribute('disabled', 'disabled');
+        }, 100);
     }
 
     function refreshStatusText( html )
@@ -48,7 +52,6 @@ $sid = $data['sid'];
         else
         {
             document.getElementById('crawl-progress-info').innerHTML = html;
-            document.getElementById('crawl-process-starter').setAttribute('disabled', 'disabled');
         }
     }
 
@@ -62,10 +65,11 @@ $sid = $data['sid'];
 
     function doStopCrawl( status )
     {
-        if(status == '1') {
-            clearInterval(intervalHandle);
+        if(status == 1) {
+            document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
             setTimeout(function () {
-                window.location = document.URL;
+                clearInterval(intervalHandle);
+                document.getElementById('monitor-display-toggle').removeAttribute('disabled');
             }, 3000);
         } else {
             alert("Error: Can not stop crawl");

@@ -12,6 +12,7 @@ namespace System\Models;
 
 interface I_StatefulObject
 {
+    /*
     const STATUS_PENDING = 2;
     const STATUS_APPROVED = 1;
     const STATUS_DELETED = 0;
@@ -25,12 +26,9 @@ interface I_StatefulObject
     const STATUS_PUBLISHED = 1;
     const STATUS_DRAFT = 2;
 
-    const STATUS_ON = 1;
-    const STATUS_OFF = 0;
-
     const STATUS_VALID = 1;
     const STATUS_CANCELED = 0;
-
+    */
     function getStatus();
     function setStatus($status);
 }

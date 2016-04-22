@@ -16,7 +16,8 @@ use System\Models\Mappers\MapperRegistry;
 
 abstract class DomainObject
 {
-    private $id = -1;
+    const DEFAULT_ID = -1;
+    private $id;
 
     /**
      * DomainObject constructor.
@@ -27,6 +28,7 @@ abstract class DomainObject
         if(is_null($id))
         {
             $this->markNew();
+            $this->id = $this::DEFAULT_ID;
         }
         else
         {
@@ -91,16 +93,25 @@ abstract class DomainObject
     {
         DomainObjectWatcher::addNew($this);
     }
+
     public function markClean()
     {
         DomainObjectWatcher::addClean($this);
     }
+
     public function markDirty()
     {
         DomainObjectWatcher::addDirty($this);
     }
+
     public function markDelete()
     {
         DomainObjectWatcher::addDelete($this);
+    }
+
+    public function reload()
+    {
+        DomainObjectWatcher::unwatch($this);
+        return $this->mapper()->find($this->getId());
     }
 }

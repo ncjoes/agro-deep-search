@@ -11,6 +11,10 @@ namespace System\Models;
 
 use System\Models\Mappers\Mapper;
 
+/**
+ * Class DomainObjectWatcher
+ * @package System\Models
+ */
 class DomainObjectWatcher
 {
     private $all = array();
@@ -19,8 +23,14 @@ class DomainObjectWatcher
     private $delete = array();
     private static $instance;
 
+    /**
+     * DomainObjectWatcher constructor.
+     */
     private function __construct() { }
 
+    /**
+     * @return DomainObjectWatcher
+     */
     public static function instance()
     {
         if ( ! self::$instance )
@@ -30,18 +40,30 @@ class DomainObjectWatcher
         return self::$instance;
     }
 
-    public function globalKey( DomainObject $obj )
+    /**
+     * @param DomainObject $obj
+     * @return string
+     */
+    public function globalKey(DomainObject $obj )
     {
         $key = get_class( $obj ).".".$obj->getId();
         return $key;
     }
 
-    public static function add( DomainObject $obj )
+    /**
+     * @param DomainObject $obj
+     */
+    public static function add(DomainObject $obj )
     {
         $inst = self::instance();
         $inst->all[$inst->globalKey( $obj )] = $obj;
     }
 
+    /**
+     * @param $class_name
+     * @param $id
+     * @return mixed|null
+     */
     public static function exists($class_name, $id )
     {
         $inst = self::instance();
@@ -53,12 +75,18 @@ class DomainObjectWatcher
         return null;
     }
 
+    /**
+     * @param DomainObject $obj
+     */
     public static function addDelete(DomainObject $obj )
     {
         $self = self::instance();
         $self->delete[$self->globalKey( $obj )] = $obj;
     }
 
+    /**
+     * @param DomainObject $obj
+     */
     public static function addDirty(DomainObject $obj )
     {
         $inst = self::instance();
@@ -68,14 +96,20 @@ class DomainObjectWatcher
         }
     }
 
-    static function addNew(DomainObject $obj )
+    /**
+     * @param DomainObject $obj
+     */
+    public static function addNew(DomainObject $obj )
     {
         $inst = self::instance();
         // we don't yet have an id
         $inst->new[] = $obj;
     }
 
-    static function addClean(DomainObject $obj )
+    /**
+     * @param DomainObject $obj
+     */
+    public static function addClean(DomainObject $obj )
     {
         $self = self::instance();
         unset( $self->delete[$self->globalKey( $obj )] );
@@ -83,6 +117,17 @@ class DomainObjectWatcher
         $self->new = array_filter( $self->new, function( $a ) use ( $obj ) { return !( $a === $obj ); });
     }
 
+    public static function unwatch(DomainObject $obj)
+    {
+        $self = self::instance();
+        $self->addClean($obj);
+        $key = $self->globalKey($obj);
+        if(isset($self->all[ $key ])) unset($self->all[ $key ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function performOperations()
     {
         //START TRANSACTION
@@ -96,6 +141,9 @@ class DomainObjectWatcher
         Mapper::getPDO()->exec("COMMIT;");
     }
 
+    /**
+     * @param $array
+     */
     private function processNewObjects(&$array)
     {
         $object = array_shift($array);
@@ -106,6 +154,9 @@ class DomainObjectWatcher
         }
     }
 
+    /**
+     * @param $array
+     */
     private function processDeletedObjects(&$array)
     {
         $object = array_shift($array);
@@ -118,6 +169,9 @@ class DomainObjectWatcher
         }
     }
 
+    /**
+     * @param $array
+     */
     private function processModifiedObjects(&$array)
     {
         $object = array_shift($array);

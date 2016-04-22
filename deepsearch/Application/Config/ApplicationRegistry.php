@@ -36,7 +36,7 @@ class ApplicationRegistry
         'designer-url'          => "https://ng.linkedin.com/in/jcnwobodo",
         'designer-name'         => "C. Joseph (Fibonacci)",
         'contractor-url'        => "#",
-        'development-mode'      => false
+        'development-mode'      => true
     );
 
     private function __construct(){}
