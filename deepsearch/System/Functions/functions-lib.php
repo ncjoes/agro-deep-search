@@ -123,20 +123,6 @@ function validate_email($email)
 }
 
 /**
- * @param $address
- * @return bool
- */
-function validate_webAddress($address)
-{
-    $regexp = "^([a-z]{3,4})://([a-z]+).(\.[_a-z0-9-]+).([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,6})$";
-    if(preg_match($regexp,$address))
-    {
-        return true;
-    }
-    return false;
-}
-
-/**
  * @param $phone
  * @return bool
  */

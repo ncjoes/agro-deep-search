@@ -28,7 +28,18 @@ abstract class A_Utility
 
     public static function trimUrl($url)
     {
-        return strtolower( trim($url, " /\t\n\r\v\\") );
+        $url_comp = parse_url($url);
+        if(is_array($url_comp))
+        {
+            $url = "";
+            if(isset($url_comp['http'])) $url .= strtolower(trim($url_comp['http'], "://"))."://";
+            if(isset($url_comp['host'])) $url .= strtolower($url_comp['host']);
+            if(isset($url_comp['port'])) $url .= ":".$url_comp['port'];
+            if(isset($url_comp['path'])) $url .= "/".trim($url_comp['path'], "/")."/";
+            if(isset($url_comp['query'])) $url .= "?".trim($url_comp['query'], "?");
+            if(isset($url_comp['fragment'])) $url .= "#".trim($url_comp['fragment'], "#");
+        }
+        return  trim($url, " /\t\n\r\v\\");
     }
 
     public static function trimFormMarkup($markup)
