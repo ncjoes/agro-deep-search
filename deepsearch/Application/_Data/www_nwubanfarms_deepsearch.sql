@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2016 at 01:02 PM
+-- Generation Time: Apr 23, 2016 at 11:25 AM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.4
 
@@ -97,10 +97,10 @@ CREATE TABLE `app_features` (
 
 CREATE TABLE `app_forms` (
   `id` int(16) NOT NULL,
-  `page_link` int(16) NOT NULL,
+  `link` int(16) NOT NULL,
   `markup` text NOT NULL,
   `relevance` int(2) NOT NULL,
-  `hash` int(32) NOT NULL
+  `hash` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -112,7 +112,7 @@ CREATE TABLE `app_forms` (
 CREATE TABLE `app_links` (
   `id` int(16) NOT NULL,
   `url` varchar(2000) NOT NULL,
-  `url_hash` varchar(32) NOT NULL,
+  `url_hash` varchar(50) NOT NULL,
   `anchor` varchar(1000) NOT NULL,
   `around_text` text,
   `page_title` varchar(1000) DEFAULT NULL,
@@ -123,14 +123,6 @@ CREATE TABLE `app_links` (
   `ext_reward` float DEFAULT NULL,
   `status` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `app_links`
---
-
-INSERT INTO `app_links` (`id`, `url`, `url_hash`, `anchor`, `around_text`, `page_title`, `parent_link`, `last_crawl_id`, `last_crawl_time`, `target_distance`, `ext_reward`, `status`) VALUES
-(1, 'http://127.0.0.1/_www/PhoenixLabs/nwubanfarms.com/deepsearch', 'a6718c336fbd7fac6aaba2757edd7846', 'http://127.0.0.1/_www/PhoenixLabs/nwubanfarms.com/deepsearch', '\n----\n', '', NULL, NULL, NULL, NULL, NULL, 0),
-(2, 'http://127.0.0.1/_www/', '76e930dae4d56413ab219d47dc214175', 'http://127.0.0.1/_www/', '\n----\n', '', NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -242,7 +234,7 @@ INSERT INTO `bb_sessions` (`id`, `user_id`, `privilege`, `start_time`, `user_age
 (11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461197580, 0),
 (12, 1, 1, 1461198220, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461198220, 0),
 (13, 1, 1, 1461198231, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461290307, 1),
-(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461320526, 1);
+(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461369526, 1);
 
 -- --------------------------------------------------------
 
@@ -350,7 +342,7 @@ ALTER TABLE `app_features`
 ALTER TABLE `app_forms`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `hash` (`hash`),
-  ADD KEY `link_id` (`page_link`);
+  ADD KEY `link_id` (`link`);
 
 --
 -- Indexes for table `app_links`
@@ -454,7 +446,7 @@ ALTER TABLE `app_forms`
 -- AUTO_INCREMENT for table `app_links`
 --
 ALTER TABLE `app_links`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `bb_comments`
 --
@@ -498,7 +490,7 @@ ALTER TABLE `bb_users_privileges`
 -- Constraints for table `app_forms`
 --
 ALTER TABLE `app_forms`
-  ADD CONSTRAINT `app_forms_ibfk_1` FOREIGN KEY (`page_link`) REFERENCES `app_links` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `app_forms_ibfk_1` FOREIGN KEY (`link`) REFERENCES `app_links` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `bb_events_log`
