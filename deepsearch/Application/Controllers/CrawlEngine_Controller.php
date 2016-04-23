@@ -22,13 +22,22 @@ use Application\Models\CrawlSetting;
 use Application\Models\Link;
 use Application\Utilities\A_Utility;
 use Application\Utilities\FrontierManager;
+use Application\Models\UserPrivilege;
 use System\Models\DomainObjectWatcher;
 use System\Request\RequestContext;
 use Application\Utilities\DS_PHPCrawler;
 use System\Utilities\DateTime;
 
-class CrawlEngine_Controller extends A_Controller
+class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
 {
+    public function execute(RequestContext $requestContext)
+    {
+        if($this->securityPass($requestContext, UserPrivilege::UT_ADMIN, 'crawl-engine'))
+        {
+            parent::execute($requestContext);
+        }
+    }
+
     public function doExecute(RequestContext $requestContext)
     {
         $data = array();
@@ -150,7 +159,7 @@ class CrawlEngine_Controller extends A_Controller
                 $start_url = $fields['val']['setURL'];
                 if((int)$fields['url-option'] == 1)
                 {
-                    $MRL = trim(FrontierManager::instance()->getMostRelevantLink());
+                    $MRL = A_Utility::trimUrl(FrontierManager::instance()->getMostRelevantLink());
                     if($MRL !="" and strlen($MRL)) $start_url = $MRL;
                 }
                 $start_url = A_Utility::trimUrl($start_url);
