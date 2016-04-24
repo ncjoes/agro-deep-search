@@ -14,7 +14,7 @@ class ApplicationRegistry
     static private $instance;
     static private $dsn = "mysql:dbname=www_nwubanfarms_deepsearch;host=localhost";
     static private $db_user = "root";
-    static private $db_user_password = "";
+    static private $db_user_password = "db-key";
     static private $site_info = array(
         'charset'               => "UTF-8",
         'host-name'             => "127.0.0.1",

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2016 at 11:25 AM
+-- Generation Time: Apr 24, 2016 at 12:52 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.4
 
@@ -51,30 +51,32 @@ CREATE TABLE `app_crawls` (
 CREATE TABLE `app_crawl_settings` (
   `id` int(3) NOT NULL,
   `var_name` varchar(150) NOT NULL,
-  `current_value` text NOT NULL,
-  `default_value` text NOT NULL
+  `current_value` text,
+  `default_value` text,
+  `multi_valued` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `app_crawl_settings`
 --
 
-INSERT INTO `app_crawl_settings` (`id`, `var_name`, `current_value`, `default_value`) VALUES
-(1, 'setFollowMode', '2', '2'),
-(2, 'setFollowRedirects', '1', '1'),
-(3, 'enableCookieHandling', '1', '1'),
-(4, 'enableAggressiveLinkSearch', '1', '1'),
-(5, 'obeyRobotsTxt', '0', '0'),
-(6, 'obeyNoFollowTags', '0', '0'),
-(7, 'setRequestLimit', '50000', '50000'),
-(8, 'setTrafficLimit', '104857600', '104857600'),
-(9, 'setContentSizeLimit', '2097152', '2097152'),
-(10, 'setConnectionTimeout', '10', '10'),
-(11, 'setStreamTimeout', '30', '30'),
-(12, 'addContentTypeReceiveRule', '#text/html#', '#text/html#'),
-(13, 'addURLFollowRule', '', ''),
-(14, 'addURLFilterRule', '#\\.(jpg|png|gif|css|js)#', '#\\.(jpg|png|gif|css|js)#'),
-(15, 'setCrawlingDepthLimit', '5', '5');
+INSERT INTO `app_crawl_settings` (`id`, `var_name`, `current_value`, `default_value`, `multi_valued`) VALUES
+(1, 'setFollowMode', '3', '3', 0),
+(2, 'setFollowRedirects', '1', '1', 0),
+(3, 'enableCookieHandling', '1', '1', 0),
+(4, 'enableAggressiveLinkSearch', '1', '1', 0),
+(5, 'obeyRobotsTxt', '0', '0', 0),
+(6, 'obeyNoFollowTags', '0', '0', 0),
+(7, 'setRequestLimit', '50000', '50000', 0),
+(8, 'setTrafficLimit', '104857600', '104857600', 0),
+(9, 'setContentSizeLimit', '2097152', '2097152', 0),
+(10, 'setConnectionTimeout', '10', '10', 0),
+(11, 'setStreamTimeout', '30', '30', 0),
+(15, 'setCrawlingDepthLimit', '5', '5', 0),
+(21, 'addContentTypeReceiveRule', '#text/html#|#text/css#', '#text/html#|#text/css#', 1),
+(22, 'addURLFilterRule', 'jpg|png|gif|css|js|pdf|exe|apk|m4a|mp4', 'jpg|png|gif|css|js|pdf|exe|apk|m4a|mp4', 1),
+(23, 'setLinkExtractionTags', 'href', 'href', 1),
+(24, 'addURLFollowRule', NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -234,7 +236,7 @@ INSERT INTO `bb_sessions` (`id`, `user_id`, `privilege`, `start_time`, `user_age
 (11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461197580, 0),
 (12, 1, 1, 1461198220, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461198220, 0),
 (13, 1, 1, 1461198231, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461290307, 1),
-(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461369526, 1);
+(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461494494, 1);
 
 -- --------------------------------------------------------
 
@@ -431,7 +433,7 @@ ALTER TABLE `app_crawls`
 -- AUTO_INCREMENT for table `app_crawl_settings`
 --
 ALTER TABLE `app_crawl_settings`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `app_features`
 --
