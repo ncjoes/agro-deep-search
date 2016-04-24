@@ -44,6 +44,7 @@ $sid = $data['sid'];
         if (crawler_status_code == 1 || crawler_status_code == 0)
         {
             document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
+            document.getElementById('force-exit-btn').setAttribute('disabled', 'disabled');
             clearInterval(intervalHandle);
             document.getElementById('crawl-process-starter').removeAttribute('disabled');
             document.getElementById('monitor-display-toggle').removeAttribute('disabled');
@@ -67,6 +68,7 @@ $sid = $data['sid'];
         if(status == '+')
         {
             document.getElementById('process-stopper').setAttribute('disabled', 'disabled');
+            document.getElementById('force-exit-btn').setAttribute('disabled', 'disabled');
             setTimeout(function () {
                 //clearInterval(intervalHandle);
                 //document.getElementById('monitor-display-toggle').removeAttribute('disabled');
@@ -75,6 +77,7 @@ $sid = $data['sid'];
         else
         {
             alert("Error: Can not stop crawl");
+            if(status != '-') alert(status);
         }
     }
 </script>
@@ -160,11 +163,11 @@ $sid = $data['sid'];
                         </button>
                     </p>
                     <p>
-                        <button id="process-stopper" class="btn btn-sm btn-danger" onclick="stopCrawl()">
+                        <button id="process-stopper" class="btn btn-sm btn-warning" onclick="stopCrawl()">
                             <span class="glyphicon glyphicon-off"></span> Stop Crawl
                         </button>
-                        <button class="btn btn-sm btn-default" onclick="window.location = '<?php home_url('/crawl-engine'); ?>'">
-                            <span class="glyphicon glyphicon-refresh"></span> Reload Page
+                        <button id="force-exit-btn" class="btn btn-sm btn-danger" onclick="window.location = '<?php home_url('/crawl-engine'); ?>'">
+                            <span class="glyphicon glyphicon-refresh"></span> Force Exit
                         </button>
                     </p>
                 </div>

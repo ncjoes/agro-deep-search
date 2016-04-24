@@ -306,15 +306,12 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
             {
                 $crawl->SetStatus(Crawl::STATUS_TERMINATED);
                 $crawl->mapper()->update($crawl);
-                unset($crawl);
                 echo '+';
-                exit;
             }
-            echo '-';
-            exit;
+            else echo '-';
         } catch (\Exception $e) {
             echo '-';
-            exit;
         }
+        $requestContext->setView('_includes/_empty.php');
     }
 }
