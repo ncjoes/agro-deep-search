@@ -35,6 +35,9 @@ class Form_Mapper extends A_Mapper
         $this->updateStmt = self::$PDO->prepare("UPDATE app_forms SET link=?, text=?, hash=?, markup=?, relevance=? WHERE id=?");
         $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (link,text,hash,markup,relevance)VALUES(?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_forms WHERE id=?");
+
+        $this->SearchByTermStmt = self::$PDO->prepare("SELECT * FROM app_forms AS f, app_links AS l WHERE f.link=l.id AND 
+          (f.text LIKE :t OR l.anchor LIKE :t OR l.page_title LIKE :t OR l.url LIKE :t)");
     }
 
     /**
@@ -55,6 +58,18 @@ class Form_Mapper extends A_Mapper
     public function findByHash($hash)
     {
         return $this->findHelper($hash, $this->selectByHashStmt, 'hash');
+    }
+
+    /**
+     * @param $term
+     * @return \System\Models\Collections\Collection
+     */
+    public function searchByTerm($term)
+    {
+        $this->SearchByTermStmt->bindValue(':t', '%'. $term .'%');
+        $this->SearchByTermStmt->execute();
+        $raw_data = $this->SearchByTermStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection( $raw_data );
     }
 
     /**
