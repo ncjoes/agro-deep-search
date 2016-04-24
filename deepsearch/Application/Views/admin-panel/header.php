@@ -37,10 +37,12 @@ require_once("raw-header.php");
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="<?php home_url('/crawl-engine/'); ?>"><span class="glyphicon glyphicon-forward"></span> Run Crawl</a></li>
-                            <li><a href="<?php home_url('/crawl-engine/manage-links/'); ?>"><span class="glyphicon glyphicon-link"></span> Link Frontier</a></li>
-                            <li><a href="<?php home_url('/crawl-engine/manage-forms/'); ?>"><span class="glyphicon glyphicon-book"></span> Manage Forms</a></li>
-                            <li><a href="<?php home_url('/crawl-engine/manage-features/'); ?>"><span class="glyphicon glyphicon-leaf"></span> Manage Features</a></li>
-                            <li><a href="<?php home_url('/crawl-engine/default-crawl-settings/'); ?>"><span class="glyphicon glyphicon-cog"></span> Crawler Configurations</a></li>
+                            <li><a href="<?php home_url('/crawl-engine/default-crawl-settings/'); ?>"><span class="glyphicon glyphicon-cog"></span> Configurations</a></li>
+                            <li class="divider"></li>
+                            <li><a href="<?php home_url('/crawl-engine-manager/'); ?>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                            <li><a href="<?php home_url('/crawl-engine-manager/manage-links/'); ?>"><span class="glyphicon glyphicon-link"></span> Link Frontier</a></li>
+                            <li><a href="<?php home_url('/crawl-engine-manager/manage-forms/'); ?>"><span class="glyphicon glyphicon-book"></span> Manage Forms</a></li>
+                            <li><a href="<?php home_url('/crawl-engine-manager/manage-features/'); ?>"><span class="glyphicon glyphicon-leaf"></span> Manage Features</a></li>
                         </ul>
                     </li>
                     <li class="dropdown <?=$rc->isRequestUrl('admin-panel') ? 'active': ''; ?>">
