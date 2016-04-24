@@ -166,7 +166,7 @@ class DS_PHPCrawler extends PHPCrawler
             $markup = A_Utility::getDOMNodeHTML($formNodes->item($i));
             $form = $this->findFormObj($markup);
             $form->setLink($link);
-            $form->setFormMarkup($markup);
+            $form->setMarkup($markup);
             if(is_null($form->getRelevance())) $form->setRelevance(Form::REL_UNKNOWN);
             if($form->getId() == $form::DEFAULT_ID) $num_forms_extracted++;
         }

@@ -38,6 +38,22 @@ function recursive_implode($glue, $pieces)
 }
 
 /**
+ * @param mixed $find
+ * @param mixed $replacements
+ * @param mixed $subject
+ * @return mixed
+ */
+function recursive_str_replace($find, $replacements, $subject)
+{
+    $num_replacements = 0;
+    $subject = str_replace($find, $replacements, $subject, $num_replacements);
+    if($num_replacements == 0)
+        return $subject;
+    else
+        return recursive_str_replace($find, $replacements, $subject);
+}
+
+/**
  * @param $object
  * @return string
  */

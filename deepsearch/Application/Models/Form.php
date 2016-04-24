@@ -22,9 +22,10 @@ use Application\Utilities\A_Utility;
 class Form extends A_DomainObject
 {
     private $link;
-    private $form_markup;
-    private $relevance = null;
+    private $text;
     private $hash = null;
+    private $markup;
+    private $relevance = null;
 
     const REL_NEGATIVE = -1;
     const REL_UNKNOWN = 0;
@@ -61,18 +62,37 @@ class Form extends A_DomainObject
     /**
      * @return mixed
      */
-    public function getFormMarkup()
+    public function getText()
     {
-        return $this->form_markup;
+        return $this->text;
     }
 
     /**
-     * @param mixed $form_markup
+     * @return mixed
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMarkup()
+    {
+        return $this->markup;
+    }
+
+    /**
+     * @param mixed $markup
      * @return Form
      */
-    public function setFormMarkup($form_markup)
+    public function setMarkup($markup)
     {
-        $this->form_markup = A_Utility::trimFormMarkup($form_markup);
+        $this->markup = A_Utility::trimFormMarkup($markup);
+        $this->text = recursive_str_replace(array("\n","\r"), " ", strip_tags($this->markup));
+        $this->text = recursive_str_replace("  ", " ", $this->text);
+        $this->hash = md5($this->markup);
         $this->markDirty();
         return $this;
     }
@@ -94,14 +114,5 @@ class Form extends A_DomainObject
         $this->relevance = $relevance;
         $this->markDirty();
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHash()
-    {
-        if(is_null($this->hash)) $this->hash = md5($this->form_markup);
-        return $this->hash;
     }
 }

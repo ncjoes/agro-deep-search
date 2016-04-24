@@ -32,8 +32,8 @@ class Form_Mapper extends A_Mapper
         $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_forms");
         $this->selectByLinkStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE link=?");
         $this->selectByHashStmt = self::$PDO->prepare("SELECT * FROM app_forms WHERE hash=?");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_forms SET link=?, markup=?, relevance=?, hash=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (link,markup,relevance,hash)VALUES(?,?,?,?)");
+        $this->updateStmt = self::$PDO->prepare("UPDATE app_forms SET link=?, text=?, hash=?, markup=?, relevance=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (link,text,hash,markup,relevance)VALUES(?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_forms WHERE id=?");
     }
 
@@ -74,7 +74,7 @@ class Form_Mapper extends A_Mapper
         $class = $this->targetClass();
         $object = new $class($array['id']);
         $object->setLink(Models\Link::getMapper("Link")->find($array['link']));
-        $object->setFormMarkup($array['markup']);
+        $object->setMarkup($array['markup']);
         $object->setRelevance($array['relevance']);
 
         return $object;
@@ -88,9 +88,10 @@ class Form_Mapper extends A_Mapper
     {
         $values = array(
             $object->getLink()->getId(),
-            $object->getFormMarkup(),
-            $object->getRelevance(),
-            $object->getHash()
+            $object->getText(),
+            $object->getHash(),
+            $object->getMarkup(),
+            $object->getRelevance()
         );
         $this->insertStmt->execute( $values );
         $id = self::$PDO->lastInsertId();
@@ -105,9 +106,10 @@ class Form_Mapper extends A_Mapper
     {
         $values = array(
             $object->getLink()->getId(),
-            $object->getFormMarkup(),
-            $object->getRelevance(),
+            $object->getText(),
             $object->getHash(),
+            $object->getMarkup(),
+            $object->getRelevance(),
             $object->getId()
         );
         $this->updateStmt->execute( $values );
