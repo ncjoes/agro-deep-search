@@ -184,13 +184,13 @@
             <?php
             $options = array("#text/html#", "#text/css#", "#text/javascript#", "#image/gif#", "#image/png#", "#image/jpeg#")
             ?>
-            <select name="val[addContentTypeReceiveRule]" id="addContentTypeReceiveRule" multiple class="form-control height-10vh">
+            <select name="val[addContentTypeReceiveRule][]" id="addContentTypeReceiveRule" multiple class="form-control height-10vh">
                 <?php
                 $fields['val']['addContentTypeReceiveRule'] = (isset($fields['val']['addContentTypeReceiveRule']) and is_array($fields['val']['addContentTypeReceiveRule'])) ?
                     $fields['val']['addContentTypeReceiveRule'] : array('#text/html#');
                 foreach ($options as $option){
                     ?>
-                    <option value="href" <?=selected_multi($option, $fields['val']['addContentTypeReceiveRule'])?>><?= strtoupper($option); ?></option>
+                    <option value="<?= $option; ?>" <?=selected_multi($option, $fields['val']['addContentTypeReceiveRule'])?>><?= strtoupper($option); ?></option>
                     <?php
                 }
                 ?>
@@ -204,13 +204,13 @@
             <?php
             $options = array('html', 'htm', 'php', 'php3', 'php4', 'php5', 'asp', 'aspx', 'jsp')
             ?>
-            <select name="val[addURLFollowRule]" id="addURLFollowRule" multiple class="form-control height-10vh">
+            <select name="val[addURLFollowRule][]" id="addURLFollowRule" multiple class="form-control height-10vh">
                 <?php
                 $fields['val']['addURLFollowRule'] = (isset($fields['val']['addURLFollowRule']) and is_array($fields['val']['addURLFollowRule'])) ?
                     $fields['val']['addURLFollowRule'] : array();
                 foreach ($options as $option){
                     ?>
-                    <option value="href" <?=selected_multi($option, $fields['val']['addURLFollowRule'])?>><?= strtoupper($option); ?></option>
+                    <option value="<?= $option; ?>" <?=selected_multi($option, $fields['val']['addURLFollowRule'])?>><?= strtoupper($option); ?></option>
                     <?php
                 }
                 ?>
@@ -224,13 +224,13 @@
             <?php
             $options = array('jpg', 'png', 'gif', 'css', 'js', 'pdf', 'exe', 'apk', 'm4a', 'mp4')
             ?>
-            <select name="val[addURLFilterRule]" id="addURLFilterRule" multiple class="form-control height-10vh">
+            <select name="val[addURLFilterRule][]" id="addURLFilterRule" multiple class="form-control height-10vh">
                 <?php
                 $fields['val']['addURLFilterRule'] = (isset($fields['val']['addURLFilterRule']) and is_array($fields['val']['addURLFilterRule'])) ?
                     $fields['val']['addURLFilterRule'] : $options;
                 foreach ($options as $option){
                     ?>
-                    <option value="href" <?=selected_multi($option, $fields['val']['addURLFilterRule'])?>><?= strtoupper($option); ?></option>
+                    <option value="<?= $option; ?>" <?=selected_multi($option, $fields['val']['addURLFilterRule'])?>><?= strtoupper($option); ?></option>
                     <?php
                 }
                 ?>
@@ -241,9 +241,9 @@
     <div class="col-md-3">
         <div class="form-group form-group-sm">
             <label for="setLinkExtractionTags">Link Extraction Tags</label>
-            <select name="val[setLinkExtractionTags]" id="setLinkExtractionTags" multiple class="form-control height-10vh">
+            <select name="val[setLinkExtractionTags][]" id="setLinkExtractionTags" multiple class="form-control height-10vh">
                 <?php
-                $fields['val']['setLinkExtractionTags'] = isset($fields['val']['setLinkExtractionTags']) ?
+                $fields['val']['setLinkExtractionTags'] = (isset($fields['val']['setLinkExtractionTags']) and is_array($fields['val']['setLinkExtractionTags'])) ?
                     $fields['val']['setLinkExtractionTags'] : array('href');
                 ?>
                 <option value="href" <?=selected_multi('href', $fields['val']['setLinkExtractionTags'])?>>Anchor HREF Attribute</option>
@@ -251,5 +251,4 @@
             </select>
         </div>
     </div>
-
 </div>

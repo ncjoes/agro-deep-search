@@ -18,11 +18,16 @@ namespace Application\Models;
  * Class CrawlSetting
  * @package Application\Models
  */
+/**
+ * Class CrawlSetting
+ * @package Application\Models
+ */
 class CrawlSetting extends A_DomainObject
 {
     private $var_name;
     private $current_value;
     private $default_value;
+    private $multi_valued = false;
 
     /**
      * CrawlSetting constructor.
@@ -86,6 +91,25 @@ class CrawlSetting extends A_DomainObject
     public function setDefaultValue($default_value)
     {
         $this->default_value = $default_value;
+        $this->markDirty();
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMultiValued()
+    {
+        return $this->multi_valued;
+    }
+
+    /**
+     * @param boolean $multi_valued
+     * @return CrawlSetting
+     */
+    public function setMultiValued($multi_valued)
+    {
+        $this->multi_valued = $multi_valued;
         $this->markDirty();
         return $this;
     }

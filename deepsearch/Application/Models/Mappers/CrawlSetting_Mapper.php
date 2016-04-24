@@ -31,8 +31,8 @@ class CrawlSetting_Mapper extends A_Mapper
         $this->selectStmt = self::$PDO->prepare("SELECT * FROM app_crawl_settings WHERE id=?");
         $this->selectAllStmt = self::$PDO->prepare("SELECT * FROM app_crawl_settings");
         $this->selectByVarNameStmt = self::$PDO->prepare("SELECT * FROM app_crawl_settings WHERE var_name=?");
-        $this->updateStmt = self::$PDO->prepare("UPDATE app_crawl_settings SET var_name=?, current_value=?, default_value=? WHERE id=?");
-        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_crawl_settings (var_name,current_value,default_value)VALUES(?,?,?)");
+        $this->updateStmt = self::$PDO->prepare("UPDATE app_crawl_settings SET var_name=?, current_value=?, default_value=?, multi_valued=? WHERE id=?");
+        $this->insertStmt = self::$PDO->prepare("INSERT INTO app_crawl_settings (var_name,current_value,default_value,multi_valued)VALUES(?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_crawl_settings WHERE id=?");
     }
 
@@ -64,6 +64,7 @@ class CrawlSetting_Mapper extends A_Mapper
         $object->setVarName($array['var_name']);
         $object->setCurrentValue($array['current_value']);
         $object->setDefaultValue($array['default_value']);
+        $object->setMultiValued(boolval($array['multi_valued']));
 
         return $object;
     }
@@ -77,7 +78,8 @@ class CrawlSetting_Mapper extends A_Mapper
         $values = array(
             $object->getVarName(),
             $object->getCurrentValue(),
-            $object->getDefaultValue()
+            $object->getDefaultValue(),
+            intval($object->isMultivalued())
         );
         $this->insertStmt->execute( $values );
         $id = self::$PDO->lastInsertId();
@@ -94,6 +96,7 @@ class CrawlSetting_Mapper extends A_Mapper
             $object->getVarName(),
             $object->getCurrentValue(),
             $object->getDefaultValue(),
+            intval($object->isMultivalued()),
             $object->getId()
         );
         $this->updateStmt->execute( $values );

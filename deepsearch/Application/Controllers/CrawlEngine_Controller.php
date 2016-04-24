@@ -38,17 +38,18 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
         }
     }
 
-    public function doExecute(RequestContext $requestContext)
+    protected function doExecute(RequestContext $requestContext)
     {
         $data = array();
         $fields = array();
         $fields['val'] = array();
-        $cs_mapper = CrawlSetting::getMapper('CrawlSetting');
+        $crawl_settings_objects = CrawlSetting::getMapper('CrawlSetting')->findAll();
 
-        $crawl_settings_objects = $cs_mapper->findAll();
         foreach ($crawl_settings_objects as $crawl_setting_object)
         {
-            $fields['val'][$crawl_setting_object->getVarName()] = $crawl_setting_object->getCurrentValue();
+            $value = $crawl_setting_object->getCurrentValue();
+            $value = $crawl_setting_object->isMultivalued() ? explode('|', $value) : $value;
+            $fields['val'][$crawl_setting_object->getVarName()] = $value;
         }
 
         $data['fields'] = $fields;
@@ -65,35 +66,39 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
         $fields['val'] = array();
         $cs_mapper = CrawlSetting::getMapper('CrawlSetting');
         
-        $crawl_settings_objects = $cs_mapper->findAll();
-        foreach ($crawl_settings_objects as $crawl_setting_object)
-        {
-            $fields['val'][$crawl_setting_object->getVarName()] = $crawl_setting_object->getCurrentValue();
-        }
-
         if($requestContext->fieldIsSet('save-changes', INPUT_POST))
         {
-            $fields = array_merge($fields, $requestContext->getAllFields(INPUT_POST));
+            $fields = $requestContext->getAllFields(INPUT_POST);
             foreach ($fields['val'] as $var_name => $value)
             {
                 $setting = $cs_mapper->findByVarName($var_name);
                 $setting = is_object($setting) ? $setting : new CrawlSetting();
-                $setting->setVarName($var_name)->setCurrentValue($value);
-                if(! strlen($setting->getDefaultValue())) $setting->setDefaultValue($value);
+                $setting->setVarName($var_name)->setCurrentValue(is_array($value) ? implode('|',$value) : $value);
+                if(is_array($value)) $setting->setMultiValued(true);
+                if(! is_null($setting->getDefaultValue())) $setting->setDefaultValue($setting->getCurrentValue());
+
+                //print_r($setting->getVarName()." = ".$setting->getCurrentValue()."<br/>");
             }
             $requestContext->setFlashData("Default Crawler Configurations Saved Successfully");
             $data['status'] = true;
         }
 
+        $crawl_settings_objects = $cs_mapper->findAll();
         if($requestContext->fieldIsSet('reset-all', INPUT_POST))
         {
             foreach ($crawl_settings_objects as $crawl_setting_object)
             {
                 $crawl_setting_object->setCurrentValue($crawl_setting_object->getDefaultValue());
-                $fields['val'][$crawl_setting_object->getVarName()] = $crawl_setting_object->getCurrentValue();
             }
             $requestContext->setFlashData("All Crawler Configurations Reset to Factory Defaults");
             $data['status'] = true;
+        }
+
+        foreach ($crawl_settings_objects as $crawl_setting_object)
+        {
+            $value = $crawl_setting_object->getCurrentValue();
+            $value = $crawl_setting_object->isMultivalued() ? explode('|', $value) : $value;
+            $fields['val'][$crawl_setting_object->getVarName()] = $value;
         }
 
         $data['fields'] = $fields;
