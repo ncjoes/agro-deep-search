@@ -32,7 +32,15 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
 {
     public function execute(RequestContext $requestContext)
     {
-        if($this->securityPass($requestContext, UserPrivilege::UT_ADMIN, 'crawl-engine'))
+        $private_key = "k25sFdr85i-kafgFdhsdkl-JJdfgFGDFhftdhFDRs";
+        $user_key = $requestContext->fieldIsSet('key', INPUT_GET) ? $requestContext->getField('key', INPUT_GET) : null;
+
+        /*
+         * To run automatic crawls through cron-jobs
+         * make this request
+         * http://deepsearch.nwubanfarms.com/crawl-engine/run-crawl/?auto-crawl=1&key=k25sFdr85i-kafgFdhsdkl-JJdfgFGDFhftdhFDRs
+         */
+        if($user_key == $private_key OR $this->securityPass($requestContext, UserPrivilege::UT_ADMIN, 'crawl-engine'))
         {
             parent::execute($requestContext);
         }
@@ -76,8 +84,6 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                 $setting->setVarName($var_name)->setCurrentValue(is_array($value) ? implode('|',$value) : $value);
                 if(is_array($value)) $setting->setMultiValued(true);
                 if(! is_null($setting->getDefaultValue())) $setting->setDefaultValue($setting->getCurrentValue());
-
-                //print_r($setting->getVarName()." = ".$setting->getCurrentValue()."<br/>");
             }
             $requestContext->setFlashData("Default Crawler Configurations Saved Successfully");
             $data['status'] = true;
@@ -120,121 +126,142 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
 
         try
         {
-            if($requestContext->fieldIsSet('crawl-process-starter', INPUT_POST))
+            $auto_crawl_mode = $requestContext->fieldIsSet('auto-crawl', INPUT_GET);
+
+            if($auto_crawl_mode == true or $requestContext->fieldIsSet('crawl-process-starter', INPUT_POST))
             {
-                $fields = $requestContext->getAllFields(INPUT_POST);
+                $fields = $auto_crawl_mode ? array('url-option'=>1,'max-run-time'=>30)
+                    : $requestContext->getAllFields(INPUT_POST);
+
+                //get default crawl-settings
+                $default_settings = array();
+                $crawl_settings_objects = CrawlSetting::getMapper('CrawlSetting')->findAll();
+                foreach ($crawl_settings_objects as $crawl_setting_object)
+                {
+                    $value = $crawl_setting_object->getCurrentValue();
+                    $value = $crawl_setting_object->isMultivalued() ? explode('|', $value) : $value;
+                    $default_settings[$crawl_setting_object->getVarName()] = $value;
+                    if($auto_crawl_mode) $fields['val'][$crawl_setting_object->getVarName()] = $value;
+                }
 
                 //Instantiate and setup Crawler Object
-                $crawler = new DS_PHPCrawler();
-                foreach ($fields['val'] as $method => $value)
+                $start_url = isset($fields['val']['setURL']) ? $fields['val']['setURL'] : null;
+                if($fields['url-option'] == 1)
                 {
-                    if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
+                    $MRL = FrontierManager::instance()->getMostRelevantLink();
+                    if($MRL !="" and !is_null($MRL)) $start_url = $MRL;
+                }
+
+                if(! is_null($start_url))
+                {
+
+                    $start_url = A_Utility::trimUrl($start_url);
+                    $crawler = new DS_PHPCrawler();
+                    $crawler->setURL($start_url);
+                    foreach ($fields['val'] as $method => $value)
                     {
-                        switch ($method)
+                        if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
                         {
-                            case 'addContentTypeReceiveRule' :
+                            switch ($method)
                             {
-                                if(!is_array($value) or !sizeof($value))
-                                    $value = array("#text/html#", "#text/css#", "#text/javascript#", "#image/gif#", "#image/png#", "#image/jpeg#");
-                                foreach ($value as $rule) { $crawler->addContentTypeReceiveRule($rule); }
-                            } break;
-                            case 'addURLFollowRule' :
-                            {
-                                if(!is_array($value) or !sizeof($value))
-                                    $value = array('html', 'htm', 'php', 'php3', 'php4', 'php5', 'asp', 'aspx', 'jsp');
-                                $crawler->addURLFollowRule("#(".implode("|", $value).")$# i");
-                            } break;
-                            case 'addURLFilterRule' :
-                            {
-                                if(!is_array($value) or !sizeof($value))
-                                    $value = array('jpg', 'png', 'gif', 'css', 'js', 'pdf', 'exe', 'apk', 'm4a', 'mp4');
-                                $crawler->addURLFilterRule("#\.(".implode('|', $value).")$# i");
-                            } break;
-                            case 'setLinkExtractionTags' :
-                            {
-                                if (!is_array($value) or sizeof($value)) $value = array('href');
-                                $crawler->setLinkExtractionTags($value);
-                            } break;
-                            default : $crawler->$method(trim($value));
+                                case 'addContentTypeReceiveRule' :
+                                {
+                                    if(!is_array($value) or !sizeof($value))
+                                        $value = $default_settings[$method];
+                                    foreach ($value as $rule) { $crawler->addContentTypeReceiveRule($rule); }
+                                } break;
+                                case 'addURLFollowRule' :
+                                {
+                                    if(!is_array($value) or !sizeof($value))
+                                        $value = $default_settings[$method];
+                                    foreach ($value as $rule) { $crawler->addURLFollowRule("#\.(".$rule.")$# i"); }
+                                } break;
+                                case 'addURLFilterRule' :
+                                {
+                                    if(!is_array($value) or !sizeof($value))
+                                        $value = $default_settings[$method];
+                                    foreach ($value as $rule) { $crawler->addURLFilterRule("#\.(".$rule.")$# i"); }
+                                } break;
+                                case 'setLinkExtractionTags' :
+                                {
+                                    if (!is_array($value) or sizeof($value)) $value = $default_settings[$method];
+                                    $crawler->setLinkExtractionTags($value);
+                                } break;
+                                default : $crawler->$method($value);
+                            }
+                        }else{
+                            throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
                         }
-                    }else{
-                        throw new \Exception("Method ".get_class($crawler)."::".$method." does not exist");
                     }
+                    $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
+                    $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
+                    $crawler->setRequestDelay(0.2);
+                    $crawler->excludeLinkSearchDocumentSections(
+                        PHPCrawlerLinkSearchDocumentSections::SCRIPT_SECTIONS |
+                        PHPCrawlerLinkSearchDocumentSections::HTML_COMMENT_SECTIONS);
+                    $crawler->enableResumption();
+
+                    //Check records for url
+                    $link = $crawler->findLinkObj($start_url);
+                    $link->setUrl($start_url);
+                    $link->setStatus(Link::STATUS_UNVISITED);
+                    ($link->getId() == Link::DEFAULT_ID) ? $link->mapper()->insert($link) : $link->mapper()->update($link); //where -1 is default DO-Id
+
+                    //Instantiate and setup Crawl object to record crawl-history
+                    $crawl = new Crawl();
+                    $crawl->setCrawlerId($crawler->getCrawlerId());
+                    $crawl->setSessionId($requestContext->getSession()->getId());
+                    $crawl->setStartUrl($link);
+                    $crawl->setStartTime(new DateTime());
+                    $crawl->setStatus(Crawl::STATUS_ONGOING);
+                    $crawl->mapper()->insert($crawl);
+
+                    //Run Crawler
+                    set_time_limit($fields['max-run-time'] * 60);
+                    $lb = "<br />";
+                    echo "<p>";
+                    echo "<b>Crawl Started ...</b>".$lb;
+                    echo "URL: ".$start_url.$lb;
+                    echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
+                    echo "Start Time: ".date("F d, Y / g:i:s A");
+                    echo "</p>";
+                    echo "<hr/>";
+                    $crawler->go();
+
+                    //Obtain process report
+                    $report = $crawler->getProcessReport();
+
+                    //Update Crawl Record
+                    $crawl->setEndTime(new DateTime());
+                    switch ($report->abort_reason)
+                    {
+                        case PHPCrawlerAbortReasons::ABORTREASON_PASSEDTHROUGH : $crawl->setStatus(Crawl::STATUS_COMPLETE); break;
+                        case PHPCrawlerAbortReasons::ABORTREASON_USERABORT :
+                        case PHPCrawlerAbortReasons::ABORTREASON_TRAFFICLIMIT_REACHED :
+                        case PHPCrawlerAbortReasons::ABORTREASON_FILELIMIT_REACHED : $crawl->setStatus(Crawl::STATUS_TERMINATED); break;
+                    }
+
+                    //Crawl Process Summary
+                    echo "<hr/>";
+                    echo "<p>";
+                    echo "<b>Summary</b>".$lb;
+                    echo "Links followed: ".$report->links_followed.$lb;
+                    echo "Documents received: ".$report->files_received.$lb;
+                    echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
+                    echo "Stop Time: ".date("F d, Y / g:i:s A").$lb;
+                    echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
+                    echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
+                    echo "</p>";
+
+                    //wrap-up process
+                    DomainObjectWatcher::instance()->performOperations();
+                    flush();
                 }
-                $start_url = $fields['val']['setURL'];
-                if((int)$fields['url-option'] == 1)
-                {
-                    $MRL = A_Utility::trimUrl(FrontierManager::instance()->getMostRelevantLink());
-                    if($MRL !="" and strlen($MRL)) $start_url = $MRL;
+                else {
+                    throw new \Exception("No Starting URL");
                 }
-                $start_url = A_Utility::trimUrl($start_url);
-                $crawler->setURL($start_url);
-                $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
-                $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
-                $crawler->setRequestDelay(0.2);
-                $crawler->excludeLinkSearchDocumentSections(
-                    PHPCrawlerLinkSearchDocumentSections::SCRIPT_SECTIONS |
-                    PHPCrawlerLinkSearchDocumentSections::HTML_COMMENT_SECTIONS);
-                $crawler->enableResumption();
-
-                //Check records for url
-                $link = $crawler->findLinkObj($start_url);
-                $link->setUrl($start_url);
-                $link->setStatus(Link::STATUS_UNVISITED);
-                ($link->getId() == Link::DEFAULT_ID) ? $link->mapper()->insert($link) : $link->mapper()->update($link); //where -1 is default DO-Id
-
-                //Instantiate and setup Crawl object to record crawl-history
-                $crawl = new Crawl();
-                $crawl->setCrawlerId($crawler->getCrawlerId());
-                $crawl->setSessionId($requestContext->getSession()->getId());
-                $crawl->setStartUrl($link);
-                $crawl->setStartTime(new DateTime());
-                $crawl->setStatus(Crawl::STATUS_ONGOING);
-                $crawl->mapper()->insert($crawl);
-
-                //Run Crawler
-                set_time_limit($fields['max-run-time'] * 60);
-                $lb = "<br />";
-                echo "<p>";
-                echo "<b>Crawl Started ...</b>".$lb;
-                echo "URL: ".$start_url.$lb;
-                echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
-                echo "Start Time: ".date("F d, Y / g:i:s A");
-                echo "</p>";
-                echo "<hr/>";
-                $crawler->go();
-
-                //Obtain process report
-                $report = $crawler->getProcessReport();
-
-                //Update Crawl Record
-                $crawl->setEndTime(new DateTime());
-                switch ($report->abort_reason)
-                {
-                    case PHPCrawlerAbortReasons::ABORTREASON_PASSEDTHROUGH : $crawl->setStatus(Crawl::STATUS_COMPLETE); break;
-                    case PHPCrawlerAbortReasons::ABORTREASON_USERABORT :
-                    case PHPCrawlerAbortReasons::ABORTREASON_TRAFFICLIMIT_REACHED :
-                    case PHPCrawlerAbortReasons::ABORTREASON_FILELIMIT_REACHED : $crawl->setStatus(Crawl::STATUS_TERMINATED); break;
-                }
-
-                //Crawl Process Summary
-                echo "<hr/>";
-                echo "<p>";
-                echo "<b>Summary</b>".$lb;
-                echo "Links followed: ".$report->links_followed.$lb;
-                echo "Documents received: ".$report->files_received.$lb;
-                echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
-                echo "Stop Time: ".date("F d, Y / g:i:s A").$lb;
-                echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
-                echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
-                echo "</p>";
-
-                //wrap-up process
-                DomainObjectWatcher::instance()->performOperations();
-                flush();
             }
-            else
-            {
+            else {
                 throw new \Exception("Invalid Request");
             }
         }

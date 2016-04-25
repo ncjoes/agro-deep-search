@@ -51,6 +51,7 @@ class DS_PHPCrawler extends PHPCrawler
                 $link->setLastCrawl($crawl);
                 $link->setLastCrawlTime(new DateTime());
                 $link->setStatus(Link::STATUS_VISITED);
+                echo $link->getId()."<br/>";
 
                 //handle received document
                 if($DocInfo->received_completely)
@@ -70,6 +71,10 @@ class DS_PHPCrawler extends PHPCrawler
                         unset($document);
                     }
                 }
+                else //handle links that could not be retrieved
+                {
+                    $link->setExpectedReward(0.0);
+                }
 
                 //Update Crawl Process Record
                 $crawl->setNumLinksFollowed($crawl->getNumLinksFollowed() + 1);
@@ -80,7 +85,7 @@ class DS_PHPCrawler extends PHPCrawler
 
                 //send progress report to browser
                 if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
-                $line = ($crawl->getNumLinksFollowed()+1)." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
+                $line = ($crawl->getNumLinksFollowed())." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
                 if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
                 $line .= "]";
                 echo $line.$lb."- - - ".$lb;
@@ -141,12 +146,19 @@ class DS_PHPCrawler extends PHPCrawler
         for($i = 0; $i < $num_links_contained; ++$i)
         {
             $linkNode = $linkNodes[$i];
-            $link = $this->findLinkObj($linkNode['url_rebuild']);
-            $link->setUrl($linkNode['url_rebuild']);
-            $link->setAnchor($linkNode['linktext']);
-            $link->setParentLink($plink);
-            if(is_null($link->getStatus())) $link->setStatus(Link::STATUS_UNVISITED);
-            if($link->getId() == $link::DEFAULT_ID) $num_links_extracted++;
+            if(! preg_match("#\.(pdf|png|jpg)#", $linkNode['url_rebuild']))
+            {
+                $link = $this->findLinkObj($linkNode['url_rebuild']);
+                $link->setUrl($linkNode['url_rebuild']);
+                $link->setAnchor($linkNode['linktext']);
+                $link->setParentLink($plink);
+                if($link->getId() == $link::DEFAULT_ID)
+                {
+                    $num_links_extracted++;
+                    $link->setExpectedReward(0.5);
+                    $link->setStatus(Link::STATUS_UNVISITED);
+                }
+            }
         }
         return $num_links_extracted;
     }
@@ -167,9 +179,13 @@ class DS_PHPCrawler extends PHPCrawler
             $form = $this->findFormObj($markup);
             $form->setLink($link);
             $form->setMarkup($markup);
-            if(is_null($form->getRelevance())) $form->setRelevance(Form::REL_UNKNOWN);
-            if($form->getId() == $form::DEFAULT_ID) $num_forms_extracted++;
+            if($form->getId() == $form::DEFAULT_ID)
+            {
+                $num_forms_extracted++;
+                $form->setRelevance(Form::REL_UNKNOWN);
+            }
         }
+        if($num_forms_contained) $link->setExpectedReward(0.6);
         return $num_forms_extracted;
     }
 

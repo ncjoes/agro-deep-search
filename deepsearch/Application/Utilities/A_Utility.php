@@ -32,12 +32,13 @@ abstract class A_Utility
         if(is_array($url_comp))
         {
             $url = "";
-            if(isset($url_comp['scheme'])) $url .= strtolower(trim($url_comp['scheme'], "://"))."://";
-            if(isset($url_comp['host'])) $url .= strtolower($url_comp['host']);
-            if(isset($url_comp['port'])) $url .= ":".$url_comp['port'];
-            if(isset($url_comp['path'])) $url .= "/".trim($url_comp['path'], "/")."/";
-            if(isset($url_comp['query'])) $url .= "?".trim($url_comp['query'], "?");
-            if(isset($url_comp['fragment'])) $url .= "#".trim($url_comp['fragment'], "#");
+            if(isset($url_comp['scheme']) and strlen($url_comp['scheme']))
+                $url .= strtolower(trim($url_comp['scheme'], "://"))."://";
+            if(isset($url_comp['host']) and strlen($url_comp['host'])) $url .= strtolower($url_comp['host']);
+            if(isset($url_comp['port']) and strlen($url_comp['port'])) $url .= ":".$url_comp['port'];
+            if(isset($url_comp['path']) and strlen($url_comp['path'])) $url .= "/".trim($url_comp['path'], "/");
+            if(isset($url_comp['query']) and strlen($url_comp['query'])) $url .= "?".trim($url_comp['query'], "?");
+            if(isset($url_comp['fragment']) and strlen($url_comp['fragment'])) $url .= "#".trim($url_comp['fragment'], "#");
         }
         return  trim($url, " \t\n\r\v\\");
     }

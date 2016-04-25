@@ -50,23 +50,23 @@ class FrontierManager extends A_Utility
 
     public function getMostRelevantLink()
     {
-        return array_shift($this->crawl_line);
+        $index = rand(0, sizeof($this->crawl_line));
+        return (isset($this->crawl_line[$index]) ? $this->crawl_line[$index] : null);
     }
 
     public function addToCrawlLine(Link $link)
     {
-        array_push($this->crawl_line, $link->getUrl());
-        return $this;
+        return array_push($this->crawl_line, $link->getUrl());
     }
 
     public function reloadCrawLine($MODE=1)
     {
         //TODO ...
-        $link_objects = Link::getMapper('Link')->findRange();
+        $link_objects = Link::getMapper('Link')->findRange(Link::STATUS_UNVISITED);
 
         foreach ($link_objects as $link_object)
         {
-            $this->crawl_line[] = $link_object->getUrl();
+            $this->crawl_line[] = A_Utility::trimUrl($link_object->getUrl());
         }
     }
 
