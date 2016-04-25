@@ -17,6 +17,7 @@ namespace Application\Utilities;
 use _Libraries\PHPCrawl\PHPCrawler;
 use _Libraries\PHPCrawl\PHPCrawlerDocumentInfo;
 use Application\Models\Crawl;
+use Application\Models\CrawlSetting;
 use Application\Models\Link;
 use Application\Models\Form;
 use System\Models\DomainObjectWatcher;
@@ -51,7 +52,6 @@ class DS_PHPCrawler extends PHPCrawler
                 $link->setLastCrawl($crawl);
                 $link->setLastCrawlTime(new DateTime());
                 $link->setStatus(Link::STATUS_VISITED);
-                echo $link->getId()."<br/>";
 
                 //handle received document
                 if($DocInfo->received_completely)
@@ -143,10 +143,13 @@ class DS_PHPCrawler extends PHPCrawler
         $num_links_extracted = 0;
         $linkNodes = $documentInfo->links_found;
         $num_links_contained = sizeof($linkNodes);
+
+        $filter_rules = CrawlSetting::getMapper('CrawlSetting')->findByVarName('addURLFilterRule')->getCurrentValue();
+
         for($i = 0; $i < $num_links_contained; ++$i)
         {
             $linkNode = $linkNodes[$i];
-            if(! preg_match("#\.(pdf|png|jpg)#", $linkNode['url_rebuild']))
+            if(! preg_match("#\.(".$filter_rules.")$# i", $linkNode['url_rebuild']))
             {
                 $link = $this->findLinkObj($linkNode['url_rebuild']);
                 $link->setUrl($linkNode['url_rebuild']);
