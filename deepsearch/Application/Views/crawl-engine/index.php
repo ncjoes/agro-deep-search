@@ -84,7 +84,7 @@ $sid = $data['sid'];
 
 <div class="row">
     <div class="col-md-10 col-md-offset-1 main">
-        <h3 class="page-header">Run Web Crawl</h3>
+        <h3 class="page-header">Run Crawler</h3>
         <form method="post" enctype="multipart/form-data" action="<?php home_url('/crawl-engine/run-crawl/'); ?>" target="crawled-links-view"
               onsubmit="refreshMonitorStatus('monitor-display-toggle');">
 

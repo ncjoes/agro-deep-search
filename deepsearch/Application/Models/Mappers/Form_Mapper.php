@@ -44,7 +44,7 @@ class Form_Mapper extends A_Mapper
         $this->SearchByTermStmt = self::$PDO->prepare(
             "SELECT *, MATCH(text) AGAINST (:t IN BOOLEAN MODE) AS relevance 
               FROM app_forms AS f, app_links AS l WHERE MATCH(text) AGAINST (:t IN BOOLEAN MODE) 
-              AND app_links.id=app_forms.link ORDER BY relevance DESC");
+              AND l.id=f.link ORDER BY relevance DESC");
     }
 
     /**
