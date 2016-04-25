@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 25, 2016 at 04:17 AM
+-- Generation Time: Apr 25, 2016 at 05:59 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.4
 
@@ -41,30 +41,6 @@ CREATE TABLE `app_crawls` (
   `end_time` int(20) DEFAULT NULL,
   `status` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `app_crawls`
---
-
-INSERT INTO `app_crawls` (`id`, `crawler_id`, `session_id`, `start_url`, `num_links_followed`, `num_documents_received`, `num_links_extracted`, `num_forms_extracted`, `num_bytes_received`, `process_run_time`, `start_time`, `end_time`, `status`) VALUES
-(1, '117801461495230', 14, 1, 8, 3, 8, 4, 26277, 10, 1461495231, 1461495241, 1),
-(2, '117801461495282', 14, 1, 8, 3, 0, 0, 26277, 6, 1461495282, 1461495288, 1),
-(3, '117801461495422', 14, 1, 8, 3, 0, 0, 26277, 5, 1461495422, 1461495428, 1),
-(4, '117801461495596', 14, 1, 8, 3, 8, 0, 26277, 5, 1461495596, 1461495602, 1),
-(5, '117801461495693', 14, 21, 121, 111, 140, 3, 273011, 91, 1461495693, 1461495785, 1),
-(6, '117801461496132', 14, 21, 121, 111, 0, 0, 273011, 75, 1461496132, 1461496208, 1),
-(7, '117801461496382', 14, 21, 121, 111, 0, 0, 273011, 84, 1461496382, 1461496466, 1),
-(8, '117801461496488', 14, 21, 121, 111, 0, 0, 273011, 84, 1461496488, 1461496573, 1),
-(9, '117801461497097', 14, 1, 8, 3, 0, 0, 26277, 5, 1461497097, 1461497102, 1),
-(10, '117801461497126', 14, 21, 121, 111, 0, 0, 273011, 65, 1461497126, 1461497191, 1),
-(11, '117801461497420', 14, 1, 8, 3, 0, 0, 26277, 5, 1461497420, 1461497426, 1),
-(12, '117801461498410', 14, 21, 2, 1, 0, 0, 1597, 1, 1461498411, 1461498413, 1),
-(13, '79881461523413', 14, 163, 120, 114, 149, 7, 293024, 81, 1461523413, 1461523495, 1),
-(14, '79881461523788', 14, 163, 120, 114, 0, 7, 293024, 61, 1461523788, 1461523849, 1),
-(15, '79881461525105', 14, 163, 120, 114, 0, 7, 293024, 62, 1461525105, 1461525167, 1),
-(16, '79881461525376', 14, 163, 120, 114, 0, 7, 293024, 72, 1461525376, 1461525449, 1),
-(17, '79881461525625', 14, 163, 120, 114, 0, 0, 293024, 65, 1461525626, 1461525691, 1),
-(18, '79881461525904', 14, 163, 120, 114, 0, 0, 293024, 74, 1461525904, 1461525979, 1);
 
 -- --------------------------------------------------------
 
@@ -147,7 +123,7 @@ CREATE TABLE `app_links` (
   `last_crawl_id` int(16) DEFAULT NULL,
   `last_crawl_time` int(20) DEFAULT NULL,
   `target_distance` int(1) DEFAULT NULL,
-  `ext_reward` float DEFAULT NULL,
+  `ext_reward` float DEFAULT '0.5',
   `status` int(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -261,7 +237,7 @@ INSERT INTO `bb_sessions` (`id`, `user_id`, `privilege`, `start_time`, `user_age
 (11, 1, 1, 1461035100, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461197580, 0),
 (12, 1, 1, 1461198220, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461198220, 0),
 (13, 1, 1, 1461198231, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461290307, 1),
-(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461539907, 1);
+(14, 1, 1, 1461292295, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36', '127.0.0.1', 1461599165, 1);
 
 -- --------------------------------------------------------
 
@@ -459,7 +435,7 @@ ALTER TABLE `bb_users_privileges`
 -- AUTO_INCREMENT for table `app_crawls`
 --
 ALTER TABLE `app_crawls`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 --
 -- AUTO_INCREMENT for table `app_crawl_settings`
 --
@@ -474,12 +450,12 @@ ALTER TABLE `app_features`
 -- AUTO_INCREMENT for table `app_forms`
 --
 ALTER TABLE `app_forms`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 --
 -- AUTO_INCREMENT for table `app_links`
 --
 ALTER TABLE `app_links`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=288;
 --
 -- AUTO_INCREMENT for table `bb_comments`
 --

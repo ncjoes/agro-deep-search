@@ -102,11 +102,12 @@ class Link extends A_StatefulObject
     }
 
     /**
+     * @param $separator
      * @return array
      */
-    public function getAroundTextStr()
+    public function getAroundTextStr($separator = self::AROUND_TEXT_SEPARATOR)
     {
-        return implode(self::AROUND_TEXT_SEPARATOR, $this->around_text);
+        return implode($separator, $this->around_text);
     }
 
     /**
