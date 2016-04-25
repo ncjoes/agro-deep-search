@@ -111,7 +111,7 @@ $sid = $data['sid'];
                     </div>
                     <div class="col-sm-2 col-md-1"><label for="setPort">Port</label></div>
                     <div class="col-sm-2">
-                        <input name="val[setPort]" id="setPort" type="number" class="form-control" value="<?= isset($fields['val']['setPort']) ? $fields['val']['setPort'] : '8080'; ?>" placeholder="8080"/>
+                        <input name="val[setPort]" id="setPort" type="number" class="form-control" value="<?= isset($fields['val']['setPort']) ? $fields['val']['setPort'] : '80'; ?>" placeholder="80"/>
                     </div>
                 </div>
             </div>

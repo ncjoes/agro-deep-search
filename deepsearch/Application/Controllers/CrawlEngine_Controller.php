@@ -174,13 +174,13 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                                 {
                                     if(!is_array($value) or !sizeof($value))
                                         $value = $default_settings[$method];
-                                    foreach ($value as $rule) { $crawler->addURLFollowRule("#\.(".$rule.")$# i"); }
+                                    $crawler->addURLFollowRule("#(".implode("|", $value).")$# i");
                                 } break;
                                 case 'addURLFilterRule' :
                                 {
                                     if(!is_array($value) or !sizeof($value))
                                         $value = $default_settings[$method];
-                                    foreach ($value as $rule) { $crawler->addURLFilterRule("#\.(".$rule.")$# i"); }
+                                    $crawler->addURLFilterRule("#(".implode("|", $value).")$# i");
                                 } break;
                                 case 'setLinkExtractionTags' :
                                 {
