@@ -842,7 +842,7 @@ class PHPCrawler
     // Check if writable
     if (!is_writeable($this->working_base_directory))
     {
-      throw new Exception("Error creating working directory '".$this->working_directory."'");
+      throw new \Exception("Error creating working directory '".$this->working_directory."'");
     }
     
     // Create dir
