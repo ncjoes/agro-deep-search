@@ -29,7 +29,7 @@ $result_set = $data['result-set'];
                     ?>
                     <p class="result-group">
                     <a href="<?= $main_link->getUrl(); ?>" target="_blank"><?= $main_link->getAnchor() ?> - <?= $main_link->getPageTitle(); ?></a><br/>
-                    <span><?= $main_link->getAroundTextStr('...'); ?></span>
+                    <span><?= $main_link->getAroundTextStr('...')!='...' ? $main_link->getAroundTextStr('...') : ''; ?></span>
                     <?php
                     if(is_array($rel_links) and sizeof($rel_links)>0)
                     {
