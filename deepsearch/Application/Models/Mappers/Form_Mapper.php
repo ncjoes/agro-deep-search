@@ -36,8 +36,15 @@ class Form_Mapper extends A_Mapper
         $this->insertStmt = self::$PDO->prepare("INSERT INTO app_forms (link,text,hash,markup,relevance)VALUES(?,?,?,?,?)");
         $this->deleteStmt = self::$PDO->prepare("DELETE FROM app_forms WHERE id=?");
 
+        /*
         $this->SearchByTermStmt = self::$PDO->prepare("SELECT * FROM app_forms AS f, app_links AS l WHERE f.link=l.id AND 
-          (f.text LIKE :t OR l.anchor LIKE :t OR l.page_title LIKE :t OR l.url LIKE :t)");
+          (f.text REGEXP :t OR l.anchor REGEXP :t OR l.page_title REGEXP :t)");
+        */
+
+        $this->SearchByTermStmt = self::$PDO->prepare(
+            "SELECT *, MATCH(text) AGAINST (:t IN BOOLEAN MODE) AS relevance 
+              FROM app_forms AS f, app_links AS l WHERE MATCH(text) AGAINST (:t IN BOOLEAN MODE) 
+              AND app_links.id=app_forms.link ORDER BY relevance DESC");
     }
 
     /**
@@ -66,7 +73,8 @@ class Form_Mapper extends A_Mapper
      */
     public function searchByTerm($term)
     {
-        $this->SearchByTermStmt->bindValue(':t', '%'. $term .'%');
+        //$this->SearchByTermStmt->bindValue(':t', '([[[:blank:][:punct:]]|^)'. $term .'([[:blank:][:punct:]]|$)');
+        $this->SearchByTermStmt->bindValue(':t', $term);
         $this->SearchByTermStmt->execute();
         $raw_data = $this->SearchByTermStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection( $raw_data );
