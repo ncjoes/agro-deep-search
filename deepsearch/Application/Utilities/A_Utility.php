@@ -39,7 +39,7 @@ abstract class A_Utility
             if(isset($url_comp['query'])) $url .= "?".trim($url_comp['query'], "?");
             if(isset($url_comp['fragment'])) $url .= "#".trim($url_comp['fragment'], "#");
         }
-        return  trim($url, " /\t\n\r\v\\");
+        return  trim($url, " \t\n\r\v\\");
     }
 
     public static function trimFormMarkup($markup)
