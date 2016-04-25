@@ -64,7 +64,7 @@ class CrawlSetting_Mapper extends A_Mapper
         $object->setVarName($array['var_name']);
         $object->setCurrentValue($array['current_value']);
         $object->setDefaultValue($array['default_value']);
-        $object->setMultiValued(boolval($array['multi_valued']));
+        $object->setMultiValued($array['multi_valued']);
 
         return $object;
     }

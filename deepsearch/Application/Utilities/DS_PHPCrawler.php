@@ -123,7 +123,7 @@ class DS_PHPCrawler extends PHPCrawler
         $document->validateOnParse = false;
         $document->strictErrorChecking = false;
         $document->preserveWhiteSpace = false;
-        $document->loadHTML($documentInfo->source, LIBXML_NOERROR );
+        $document->loadHTML($documentInfo->source);
 
         return $document;
     }
