@@ -34,13 +34,14 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
     {
         $private_key = "k25sFdr85i-kafgFdhsdkl-JJdfgFGDFhftdhFDRs";
         $user_key = $requestContext->fieldIsSet('key', INPUT_GET) ? $requestContext->getField('key', INPUT_GET) : null;
+        $auto_mode = $requestContext->fieldIsSet('auto-crawl', INPUT_GET) ? $requestContext->getField('auto-crawl', INPUT_GET) : null;
 
         /*
          * To run automatic crawls through cron-jobs
          * make this request
          * http://deepsearch.nwubanfarms.com/crawl-engine/run-crawl/?auto-crawl=1&key=k25sFdr85i-kafgFdhsdkl-JJdfgFGDFhftdhFDRs
          */
-        if($user_key == $private_key OR $this->securityPass($requestContext, UserPrivilege::UT_ADMIN, 'crawl-engine'))
+        if(($auto_mode == 1 and $user_key == $private_key) OR $this->securityPass($requestContext, UserPrivilege::UT_ADMIN, 'crawl-engine'))
         {
             parent::execute($requestContext);
         }
@@ -145,19 +146,20 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                 }
 
                 //Instantiate and setup Crawler Object
-                $start_url = isset($fields['val']['setURL']) ? $fields['val']['setURL'] : null;
+                $fields['val']['setURL'] = isset($fields['val']['setURL']) ? $fields['val']['setURL'] : null;
                 if($fields['url-option'] == 1)
                 {
                     $MRL = FrontierManager::instance()->getMostRelevantLink();
-                    if($MRL !="" and !is_null($MRL)) $start_url = $MRL;
+                    if($MRL !="" and !is_null($MRL)) $fields['val']['setURL'] = $MRL;
                 }
 
-                if(! is_null($start_url))
+                if(! is_null($fields['val']['setURL']))
                 {
 
-                    $start_url = A_Utility::trimUrl($start_url);
+                    $fields['val']['setURL'] = A_Utility::trimUrl($fields['val']['setURL']);
                     $crawler = new DS_PHPCrawler();
-                    $crawler->setURL($start_url);
+
+                    //Setup Crawler
                     foreach ($fields['val'] as $method => $value)
                     {
                         if( method_exists($crawler, $method) and is_callable( array($crawler, $method ) ))
@@ -202,15 +204,15 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                     $crawler->enableResumption();
 
                     //Check records for url
-                    $link = $crawler->findLinkObj($start_url);
-                    $link->setUrl($start_url);
+                    $link = $crawler->findLinkObj($fields['val']['setURL']);
+                    $link->setUrl($fields['val']['setURL']);
                     $link->setStatus(Link::STATUS_UNVISITED);
                     ($link->getId() == Link::DEFAULT_ID) ? $link->mapper()->insert($link) : $link->mapper()->update($link); //where -1 is default DO-Id
 
                     //Instantiate and setup Crawl object to record crawl-history
                     $crawl = new Crawl();
                     $crawl->setCrawlerId($crawler->getCrawlerId());
-                    $crawl->setSessionId($requestContext->getSession()->getId());
+                    $crawl->setSessionId(! $auto_crawl_mode ? $requestContext->getSession()->getId(): NULL);
                     $crawl->setStartUrl($link);
                     $crawl->setStartTime(new DateTime());
                     $crawl->setStatus(Crawl::STATUS_ONGOING);
@@ -221,7 +223,7 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                     $lb = "<br />";
                     echo "<p>";
                     echo "<b>Crawl Started ...</b>".$lb;
-                    echo "URL: ".$start_url.$lb;
+                    echo "Start-URL: ".$fields['val']['setURL'].$lb;
                     echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
                     echo "Start Time: ".date("F d, Y / g:i:s A");
                     echo "</p>";
