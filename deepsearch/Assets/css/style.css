@@ -81,10 +81,10 @@ input[required], select[required], textarea[required]{
 }
 
 .reader-text{
-    font-size: 16px;
+    font-size: 14px;
 }
 .result-group{
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
 }
 @media all and (max-width: 1024px) {
     #logo{
