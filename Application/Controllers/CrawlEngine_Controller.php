@@ -197,7 +197,7 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                     }
                     $crawler->setUserAgentString($_SERVER['HTTP_USER_AGENT']);
                     $crawler->setUrlCacheType(PHPCrawlerUrlCacheTypes::URLCACHE_SQLITE);
-                    $crawler->setRequestDelay(0.2);
+                    $crawler->setRequestDelay(0.5);
                     $crawler->excludeLinkSearchDocumentSections(
                         PHPCrawlerLinkSearchDocumentSections::SCRIPT_SECTIONS |
                         PHPCrawlerLinkSearchDocumentSections::HTML_COMMENT_SECTIONS);
