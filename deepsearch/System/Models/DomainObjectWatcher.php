@@ -67,7 +67,7 @@ class DomainObjectWatcher
     public static function exists($class_name, $id )
     {
         $inst = self::instance();
-        $key = $class_name.".".$id;
+        $key = "$class_name.".".$id";
         if ( isset( $inst->all[$key] ) )
         {
             return $inst->all[$key];
