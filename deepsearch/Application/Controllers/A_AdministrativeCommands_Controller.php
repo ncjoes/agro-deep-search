@@ -120,7 +120,7 @@ abstract class A_AdministrativeCommands_Controller extends A_UserCommands_Contro
 
         $data['mode'] = 'create-post';
         $data['page-title'] = "Create Post";
-        $data['categories'] = PostCategory::getMapper('PostCategory')->findByStatus(PostCategory::STATUS_APPROVED);
+        $data['categories'] = PostCategory::getMapper('PostCategory')->findByStatus(PostCategory::STATUS_VALID);
 
         $requestContext->setResponseData($data);
         $requestContext->setView('admin-panel/post-editor.php');
@@ -142,7 +142,7 @@ abstract class A_AdministrativeCommands_Controller extends A_UserCommands_Contro
             $data = array();
             $data['mode'] = 'update-post';
             $data['page-title'] = "Update Post";
-            $data['categories'] = PostCategory::getMapper('PostCategory')->findByStatus(PostCategory::STATUS_APPROVED);
+            $data['categories'] = PostCategory::getMapper('PostCategory')->findByStatus(PostCategory::STATUS_VALID);
 
             $fields = array();
             $fields['post-title'] = $post->getTitle();

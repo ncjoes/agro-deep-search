@@ -21,6 +21,8 @@ class PostCategory extends A_NamedStatefulObject
 
     const TYPE_POST = 'post';
 
+    const STATUS_VALID = 1;
+    const STATUS_DELETED = 0;
     /**
      * PostCategory constructor.
      * @param null $id

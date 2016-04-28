@@ -21,6 +21,10 @@ class Upload extends A_DomainObject implements I_StatefulObject
     private $file_size;
     private $status;
 
+    const STATUS_PENDING = 2;
+    const STATUS_DELETED = 0;
+    const STATUS_COMPLETED = 1;
+    
     /**
      * Upload constructor.
      * @param null $id

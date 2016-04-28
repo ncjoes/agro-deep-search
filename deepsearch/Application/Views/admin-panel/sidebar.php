@@ -17,6 +17,7 @@ $group4 = array('create-page', 'update-page', 'manage-pages');
 
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
 
+        <!--
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="heading-3">
                 <h4 class="panel-title">
@@ -35,7 +36,8 @@ $group4 = array('create-page', 'update-page', 'manage-pages');
                 </div>
             </div>
         </div>
-
+        -->
+        
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="heading-4">
                 <h4 class="panel-title">

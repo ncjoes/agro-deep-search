@@ -50,9 +50,9 @@ require_once("raw-header.php");
                             <span class="glyphicon glyphicon-collapse-down"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="<?php home_url('/admin-panel/manage-posts/'); ?>">Manage Posts</a></li>
+                            <!--<li><a href="<?php home_url('/admin-panel/manage-posts/'); ?>">Manage Posts</a></li>-->
                             <li><a href="<?php home_url('/admin-panel/manage-pages/'); ?>">Manage Website Pages</a></li>
-                            <li><a href="<?php home_url('/admin-panel/manage-categories/'); ?>">Manage Post Categories</a></li>
+                            <!--<li><a href="<?php home_url('/admin-panel/manage-categories/'); ?>">Manage Post Categories</a></li>-->
                         </ul>
                     </li>
                     <li class="dropdown <?= ($rc->isRequestUrl('my-account') ? 'active': ''); ?>">
