@@ -17,27 +17,29 @@ class Contact_Controller extends A_Controller
     {
         $requestContext->setView('page-contact.php');
         $requestContext->setResponseData(array('page-title'=>"Contact Us",'content'=>"", 'status'=>null));
+
+        if($requestContext->fieldIsSet('send', INPUT_POST)) $this->sendMail($requestContext);
     }
 
-    public function send(RequestContext $requestContext)
+    private function sendMail(RequestContext $requestContext)
     {
         $requestContext->setView('page-contact.php');
         $response_status = false;
 
         $fields = $requestContext->getAllFields(INPUT_POST);
-        $names = $fields['names'];
+        $subject = $fields['subject'];
+        $names = $fields['name'];
         $email = $fields['email'];
         $phone = $fields['phone'];
-        $company = $fields['company'];
-        $address = $fields['address'];
-        $text = "Company: ".$company."\nAddress: ".$address."\nPhone: ".$phone."\n\nMessage\n".$fields['message'];
+        $text = "Subject: ".$subject."\r\nName: ".$names."\r\nPhone: ".$phone."\r\n\r\nMessage\r\n".$fields['message'];
         $message = wordwrap(str_replace('\n.', '\n..',$text), 70);
-        $send_to = site_info('contact_email', false);
+        $send_to = site_info('contact-email', false);
 
         if(mail($send_to, "Website Message From: {$names}", $message, "From: {$names}<{$email}>\r\n"))
         {
             $response_status = true;
+            $requestContext->setFlashData("Your message has been delivered successfully. We shall be in touch with you soon.");
         }
-        $requestContext->setResponseData(array('content'=>"", 'status'=>$response_status));
+        $requestContext->setResponseData(array('status'=>$response_status));
     }
 }

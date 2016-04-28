@@ -18,7 +18,7 @@ $fields = $requestContext->getAllFields(INPUT_POST);
                 <div class="row">
                     <div class="col-md-6">
                         <h3 class="page-header tiny-margin-top">Contact Details</h3>
-                        <p class="lead">Our doors are always open to the people of Enugu State</p>
+                        <p class="lead">Our doors are always open</p>
                         <p>
                             <b><span class="glyphicon glyphicon-home"></span> Head-quarters</b><br/>
                             <?php site_info('office-address'); ?>
@@ -55,50 +55,50 @@ $fields = $requestContext->getAllFields(INPUT_POST);
                         <div class="form-group form-group-sm">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="sender-subject"><span class="glyphicon glyphicon-flag"></span> Subject</label>
+                                    <label for="subject"><span class="glyphicon glyphicon-flag"></span> Subject</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input name="sender-subject" id="sender-subject" required type="text" class="form-control" placeholder="Subject of discussion" value="<?= isset($fields['sender-subject'])?$fields['sender-subject']:'';?>"/>
+                                    <input name="subject" id="subject" required type="text" class="form-control" placeholder="Subject of discussion" value="<?= isset($fields['subject'])?$fields['subject']:'';?>"/>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="sender-name"><span class="glyphicon glyphicon-user"></span> Name</label>
+                                    <label for="name"><span class="glyphicon glyphicon-user"></span> Name</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input name="sender-name" id="sender-name" required type="text" class="form-control" placeholder="Your Name" value="<?= isset($fields['sender-name'])?$fields['sender-name']:'';?>"/>
+                                    <input name="name" id="name" required type="text" class="form-control" placeholder="Your Name" value="<?= isset($fields['name'])?$fields['name']:'';?>"/>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="sender-email"><span class="glyphicon glyphicon-envelope"></span> Email</label>
+                                    <label for="email"><span class="glyphicon glyphicon-envelope"></span> Email</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input name="sender-email" id="sender-email" required type="email" class="form-control" placeholder="your-email@website.com" value="<?= isset($fields['sender-email'])?$fields['sender-email']:'';?>"/>
+                                    <input name="email" id="email" required type="email" class="form-control" placeholder="your-email@website.com" value="<?= isset($fields['email'])?$fields['email']:'';?>"/>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="sender-phone" class="text-nowrap"><span class="glyphicon glyphicon-phone"></span> Phone</label>
+                                    <label for="phone" class="text-nowrap"><span class="glyphicon glyphicon-phone"></span> Phone</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input name="sender-phone" id="sender-phone" required type="tel" class="form-control" placeholder="08012345678" value="<?= isset($fields['sender-phone'])?$fields['sender-phone']:'';?>"/>
+                                    <input name="phone" id="phone" required type="tel" class="form-control" placeholder="08012345678" value="<?= isset($fields['phone'])?$fields['phone']:'';?>"/>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="sender-message"><span class="glyphicon glyphicon-pencil"></span> Message</label>
+                                    <label for="message"><span class="glyphicon glyphicon-pencil"></span> Message</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <textarea name="sender-message" id="sender-message" required class="form-control" placeholder="Your message ..." style="height: 13em;"><?= isset($fields['sender-message'])?$fields['sender-message']:'';?></textarea>
+                                    <textarea name="message" id="message" required class="form-control" placeholder="Your message ..." style="height: 13em;"><?= isset($fields['message'])?$fields['message']:'';?></textarea>
                                 </div>
                             </div>
                         </div>

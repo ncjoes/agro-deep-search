@@ -3,5 +3,6 @@ RewriteEngine On
 
 RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*/Assets/*'"
 RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*/Uploads/*'"
+RewriteCond expr "! %{REQUEST_FILENAME} -strmatch '*/mailbox/*'"
 
 RewriteRule . index.php [L]
