@@ -44,7 +44,7 @@ class Form_Mapper extends A_Mapper
         $this->SearchByTermStmt = self::$PDO->prepare(
             "SELECT *, MATCH(text) AGAINST (:t IN BOOLEAN MODE) AS relevance 
               FROM app_forms AS f, app_links AS l WHERE MATCH(text) AGAINST (:t IN BOOLEAN MODE) 
-              AND l.id=f.link ORDER BY relevance DESC");
+              AND l.id=f.link ORDER BY relevance DESC LIMIT :row_count OFFSET :offset;");
     }
 
     /**
@@ -69,12 +69,15 @@ class Form_Mapper extends A_Mapper
 
     /**
      * @param $term
+     * @param $row_count
+     * @param $offset
      * @return \System\Models\Collections\Collection
      */
-    public function searchByTerm($term)
+    public function searchByTerm($term, $row_count=20, $offset=0)
     {
-        //$this->SearchByTermStmt->bindValue(':t', '([[[:blank:][:punct:]]|^)'. $term .'([[:blank:][:punct:]]|$)');
         $this->SearchByTermStmt->bindValue(':t', $term);
+        $this->SearchByTermStmt->bindParam(':row_count', $row_count, \PDO::PARAM_INT);
+        $this->SearchByTermStmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
         $this->SearchByTermStmt->execute();
         $raw_data = $this->SearchByTermStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection( $raw_data );

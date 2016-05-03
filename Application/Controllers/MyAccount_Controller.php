@@ -122,7 +122,7 @@ class MyAccount_Controller extends A_UserCommands_Controller
                             $photo->setLocation($uploader->getUploadDirectory());
                             $photo->setFileName($uploader->getOutputFileName().".".$uploader->getFileExtension());
                             $photo->setFileSize($uploader->getFileSize());
-                            $photo->setStatus(Upload::STATUS_VALID);
+                            $photo->setStatus(Upload::STATUS_COMPLETED);
                             $photo->mapper()->insert($photo);
 
                             $photo_handled = true;

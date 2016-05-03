@@ -41,25 +41,23 @@ class Default_Controller extends A_Controller
         $search_string = $requestContext->getField('search', INPUT_GET);
         $result_set = array();
 
+        //ini_set('memory_limit', '65M');
         $search_terms = $this->stemSearchTerms(explode(" ", $search_string));
-        foreach ($search_terms as $term)
+        $matching_forms = Form::getMapper('Form')->searchByTerm(implode(" ", $search_terms));
+        if(is_object($matching_forms) and $matching_forms->size())
         {
-            $matching_forms = Form::getMapper('Form')->searchByTerm($term);
-            if(is_object($matching_forms) and $matching_forms->size())
+            foreach ($matching_forms as $form)
             {
-                foreach ($matching_forms as $form)
+                if(!isset($result_set[$form->getId()]))
                 {
-                    if(!isset($result_set[$form->getId()]))
-                    {
-                        $result_group = array();
-                        $form_link = $form->getLink();
-                        $result_group['main-link'] = $form_link;
-                        $result_group['rel-links'] = $this->getRelatedLinks($form_link);
-                        $result_set[$form->getId()] = $result_group;
-                    } //if form had been previously retrieved
-                }//foreach of matching forms
-            }//if there are matching forms
-        }//for each term in search string
+                    $result_group = array();
+                    $form_link = $form->getLink();
+                    $result_group['main-link'] = $form_link;
+                    $result_group['rel-links'] = $this->getRelatedLinks($form_link);
+                    $result_set[$form->getId()] = $result_group;
+                } //if form had been previously retrieved
+            }//foreach of matching forms
+        }//if there are matching forms
 
         $data['page-title'] = "Search Results> ".$search_string;
         $data['search-string'] = $search_string;
