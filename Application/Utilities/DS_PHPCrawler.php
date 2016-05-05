@@ -84,11 +84,14 @@ class DS_PHPCrawler extends PHPCrawler
                 $crawl->mapper()->update($crawl);
 
                 //send progress report to browser
-                if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
-                $line = ($crawl->getNumLinksFollowed())." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
-                if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
-                $line .= "]";
-                echo $line.$lb."- - - ".$lb;
+                if($crawl->getSessionId() != null)
+                {
+                    if (PHP_SAPI == "cli") $lb = "\n"; else $lb = "<br />";
+                    $line = ($crawl->getNumLinksFollowed())." | ".$DocInfo->http_status_code." - ".$DocInfo->url." [";
+                    if ($DocInfo->received_completely == true) $line .= $DocInfo->bytes_received; else $line .= "N/R";
+                    $line .= "]";
+                    echo $line.$lb."- - - ".$lb;
+                }
 
                 try
                 {
@@ -97,9 +100,12 @@ class DS_PHPCrawler extends PHPCrawler
                 }
                 catch (\Exception $e)
                 {
-                    echo "<hr/>".$e->getMessage()."<br/>";
-                    if(site_info('development-mode',false)==true) echo getExceptionTraceString($e);
-                    echo "<hr/>";
+                    if($crawl->getSessionId() != null)
+                    {
+                        echo "<hr/>".$e->getMessage()."<br/>";
+                        if(site_info('development-mode',false)==true) echo getExceptionTraceString($e);
+                        echo "<hr/>";
+                    }
                 }
 
                 flush();

@@ -46,21 +46,11 @@ function recursive_implode($glue, $pieces)
 function recursive_str_replace($find, $replacements, $subject)
 {
     $num_replacements = 0;
-    str_replace_rv($find, $replacements, $subject, $num_replacements);
+    $subject = str_replace($find, $replacements, $subject, $num_replacements);
     if($num_replacements == 0)
         return $subject;
     else
         return recursive_str_replace($find, $replacements, $subject);
-}
-
-function str_replace_rv($find, $replacements, &$subject, &$num_replacements)
-{
-    $subject = str_replace($find, $replacements, $subject, $num_replacements);
-}
-
-function strip_tags_rv(&$markup)
-{
-    strip_tags($markup);
 }
 
 /**

@@ -90,8 +90,7 @@ class Form extends A_DomainObject
     public function setMarkup($markup)
     {
         $this->markup = A_Utility::trimFormMarkup($markup);
-        strip_tags_rv($this->markup);
-        $this->text = recursive_str_replace(array("\n","\r"), " ", $this->markup);
+        $this->text = recursive_str_replace(array("\n","\r"), " ", strip_tags($this->markup));
         $this->text = recursive_str_replace("  ", " ", $this->text);
         $this->hash = md5($this->markup);
         $this->markDirty();

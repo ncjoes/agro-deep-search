@@ -39,7 +39,7 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
         /*
          * To run automatic crawls through cron-jobs
          * make this request
-         * http://deepsearch.nwubanfarms.com/crawl-engine/run-crawl/?auto-crawl=1&key=k25sFdr85i-kafgFdhsdkl-JJdfgFGDFhftdhFDRs
+         * http://nwubanfarms.com/crawl-engine/run-crawl/?auto-crawl=1&key=k25sFdr85i-kafgFdhsdkl-JJdfgFGDFhftdhFDRs
          */
         if(($auto_mode == 1 and $user_key == $private_key) OR $this->securityPass($requestContext, UserPrivilege::UT_ADMIN, 'crawl-engine'))
         {
