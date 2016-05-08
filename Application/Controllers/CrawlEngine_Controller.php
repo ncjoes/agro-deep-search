@@ -117,18 +117,21 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
     protected function RunCrawl(RequestContext $requestContext)
     {
         $requestContext->setView('_includes/_empty.php');
-        echo "<html>";
-        echo "<header>";
-        echo "<style type='text/css'>";
-        echo "body{font-size:10px; font-family:Gadugi; background-color:black; color:white;}";
-        echo "</style>";
-        echo "</header>";
-        echo "<body>";
+        $auto_crawl_mode = $requestContext->fieldIsSet('auto-crawl', INPUT_GET);
+
+        if(! $auto_crawl_mode)
+        {
+            echo "<html>";
+            echo "<header>";
+            echo "<style type='text/css'>";
+            echo "body{font-size:10px; font-family:Gadugi; background-color:black; color:white;}";
+            echo "</style>";
+            echo "</header>";
+            echo "<body>";
+        }
 
         try
         {
-            $auto_crawl_mode = $requestContext->fieldIsSet('auto-crawl', INPUT_GET);
-
             if($auto_crawl_mode == true or $requestContext->fieldIsSet('crawl-process-starter', INPUT_POST))
             {
                 $fields = $auto_crawl_mode ? array('url-option'=>1,'max-run-time'=>30)
@@ -220,14 +223,15 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
 
                     //Run Crawler
                     set_time_limit($fields['max-run-time'] * 60);
-                    $lb = "<br />";
-                    echo "<p>";
-                    echo "<b>Crawl Started ...</b>".$lb;
-                    echo "Start-URL: ".$fields['val']['setURL'].$lb;
-                    echo "Crawler-ID: ".$crawler->getCrawlerId().$lb;
-                    echo "Start Time: ".date("F d, Y / g:i:s A");
-                    echo "</p>";
-                    echo "<hr/>";
+                    $lb = $auto_crawl_mode ? '\n\r' : "<br />";
+                    $out = "<p>";
+                    $out .= "<b>Crawl Started ...</b>".$lb;
+                    $out .= "Start-URL: ".$fields['val']['setURL'].$lb;
+                    $out .= "Crawler-ID: ".$crawler->getCrawlerId().$lb;
+                    $out .= "Start Time: ".date("F d, Y / g:i:s A");
+                    $out .= "</p>";
+                    $out .= "<hr/>";
+                    echo ($auto_crawl_mode ? strip_tags($out) : $out);
                     $crawler->go();
 
                     //Obtain process report
@@ -244,16 +248,17 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
                     }
 
                     //Crawl Process Summary
-                    echo "<hr/>";
-                    echo "<p>";
-                    echo "<b>Summary</b>".$lb;
-                    echo "Links followed: ".$report->links_followed.$lb;
-                    echo "Documents received: ".$report->files_received.$lb;
-                    echo "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
-                    echo "Stop Time: ".date("F d, Y / g:i:s A").$lb;
-                    echo "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
-                    echo "Process Abort Reason: ".$report->abort_reason." ".$lb;
-                    echo "</p>";
+                    $out = "<hr/>";
+                    $out .= "<p>";
+                    $out .= "<b>Summary</b>".$lb;
+                    $out .= "Links followed: ".$report->links_followed.$lb;
+                    $out .= "Documents received: ".$report->files_received.$lb;
+                    $out .= "Data-size received: ~".get_file_size_unit($report->bytes_received).$lb;
+                    $out .= "Stop Time: ".date("F d, Y / g:i:s A").$lb;
+                    $out .= "Process runtime: ".seconds_to_str($report->process_runtime).$lb;
+                    $out .= "Process Abort Reason: ".$report->abort_reason." ".$lb;
+                    $out .= "</p>";
+                    echo ($auto_crawl_mode ? strip_tags($out) : $out);
 
                     //wrap-up process
                     DomainObjectWatcher::instance()->performOperations();
@@ -287,8 +292,11 @@ class CrawlEngine_Controller extends A_AdministrativeCommands_Controller
             exit;
         }
 
-        echo "</body>";
-        echo "</html>";
+        if(! $auto_crawl_mode)
+        {
+            echo "</body>";
+            echo "</html>";
+        }
     }
 
     protected function CrawlProgressInfo(RequestContext $requestContext)
